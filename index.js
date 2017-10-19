@@ -63,14 +63,39 @@ socket.on('request', function(data, fn){
 
 
 // request lenght test
-console.log('length: ' : data.length);
-if(data.length > 7){
+console.log('length: ' + Object.keys(data).length);
+if(Object.keys(data).length > 7){
   console.log('Big request');
   socket.disconnect();
  return false;
 }
+
+
 console.log(data);
 
+
+
+forEach(data, function(key, value){
+
+
+
+
+
+delete data[key];
+if(value != undefined && value != null && value != ''){
+  if(value > 5000){
+    console.log('Big request');
+  socket.disconnect();
+ return false;
+  }
+
+  data[key] = sanitizer.escape(addslashes(value));
+}
+
+});
+
+
+console.log(data);
 
 });
 
