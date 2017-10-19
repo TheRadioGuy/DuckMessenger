@@ -4,6 +4,7 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var core = require('./core/core.js');
+var LZString = require('lz-string');
 var port = process.env.PORT || 443;
 var fs = require('fs');
 var parseUrl = require('url');
@@ -29,6 +30,49 @@ app.use(express.static(__dirname + '/frontend' ));
 var clients = {}, waitingSend = {};
 io.on('connection', function (socket) {
 
+
+
+
+
+var login, authcode;
+
+
+
+socket.on('request', function(data, fn){
+
+
+
+  try{
+    // if user send a bad request
+      data = JSON.parse(LZString.decompress(data));
+  
+  }
+  catch(e){
+
+ // TODO : Create error's log
+
+  console.log('bad request');
+ socket.disconnect();
+ return false;
+
+
+
+  }
+
+
+
+
+// request lenght test
+console.log('length: ' : data.length);
+if(data.length > 7){
+  console.log('Big request');
+  socket.disconnect();
+ return false;
+}
+console.log(data);
+
+
+});
 
 });
 
