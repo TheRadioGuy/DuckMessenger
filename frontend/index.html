@@ -40,40 +40,114 @@ html{overflow: hidden;background: #5682a3;font-family: Roboto;}
 
  @font-face {
     font-family: ProximaNovaCondesedSemibold; /* Имя шрифта */
-    src: url(Proxima Nova Condensed Semibold.otf); /* Путь к файлу со шрифтом */
+    src: url("fonts/Proxima Nova Condensed Semibold.otf"); /* Путь к файлу со шрифтом */
    }
     @font-face {
     font-family: ProximaNovaRegular; /* Имя шрифта */
-    src: url(Proxima Nova Regular.otf); /* Путь к файлу со шрифтом */
+    src: url("fonts/Proxima Nova Regular.otf"); /* Путь к файлу со шрифтом */
    }
     @font-face {
     font-family: ProximaNovaSemibold; /* Имя шрифта */
-    src: url(Proxima Nova Semibold.otf); /* Путь к файлу со шрифтом */
+    src: url("fonts/Proxima Nova Semibold.otf"); /* Путь к файлу со шрифтом */
    }
 
 
-.PopUpDialog{
+.popUpDialog{
   width: 480px;
 height: 290px;
 position: absolute;
 background:white;
 border-radius: 2px;
-    z-index: 10000005000000;
+    z-index: 10;
 
 position:absolute;
 left:50%;
 top:50%;
 margin:-120px 0 0 -240px;
 overflow: hidden;
+display: none;
 }
 
+.popUpDialogInfo{
+  width: 400px;
+height: 200px;
+position: absolute;
+background:white;
+border-radius: 1px;
+    z-index: 11;
+
+position:absolute;
+left:50%;
+top:50%;
+margin:-100px 0 0 -200px;
+overflow: hidden;
+display: none;
+}
+
+.popUpDialogInfo #title{
+    font-family: Roboto;
+    font-size: 17px;
+    color: #212121;
+    position: absolute;
+    float: left;
+    top: 19px;
+    left: 45px;
+    font-weight: bold;
+
+
+}
+.popUpDialogInfo #text{
+    font-family: Roboto;
+    font-size: 17px;
+    color: #212121;
+    position: relative;
+    text-align: center;
+    top:48px;
+    font-weight: 400;
+  
+
+
+}
+.popUpDialogInfo #cancelButton{
+position: absolute;
+bottom: 2px;
+padding: 9px 7px;
+right: 50px;
+    line-height: 19px;
+}
+.popUpDialogInfo #agreeButton{
+  position: absolute;
+bottom: 2px;
+right: 9px;
+padding: 9px 7px;
+    line-height: 19px;
+}
+#mask{
+  z-index: 8;
+  width: 115%;
+  height: 115%;
+  left: -10%;
+  top: -10%;
+  position: fixed;
+
+  background: rgba(0, 0, 0, 0.3);
+  display: none;
+}
 
 </style>
 </head> 
 <body> 
+<div id="mask"></div>
 
+<div class="popUpDialogInfo" id="infoPopup">
+  
+  <p id="title">Are you love Duck?</p>
+  <br>
+  <p id="text">I love Ducks, do you?</p>
 
-
+  <a class="waves-effect waves-red btn-flat" id="cancelButton" onclick="">CANCEL</a>
+   <a class="waves-effect waves-green btn-flat" id="agreeButton">OK</a>
+</div>
 
 
  <div class="row" style="display: none;background: #e7ebf0;">
@@ -88,6 +162,7 @@ overflow: hidden;
 
 var socket = new ServerCommunitation(io());
 
+var win = new modulesWindow();
 
 
 
@@ -99,6 +174,45 @@ var socket = new ServerCommunitation(io());
 
 
 
+
+function modulesWindow(){
+
+
+  this.closeWindows = function(){
+    $('#mask').hide();
+    $('.popUpDialog').hide();
+    $('.popUpDialogInfo').hide();
+  };
+  this.openWindow = function(win, data){
+    // data = {onAgree:function(){}, onCancel:function(){}}
+    $('#mask').show();
+    $('#'+win).show();
+
+  };
+
+   this.openWindowText = function(win, data){
+     // data = {onAgree:function(){}, onCancel:function(){}, text:'Duck', title:'Quack'}
+    $('#mask').show();
+    $('#'+win).show();
+    $('#'+win+' #title').text(data['title']);
+    $('#'+win+' #text').text(data['text']);
+    $('#'+win+' #agreeButton').attr('onclick', data['onAgree']);
+    $('#'+win+' #cancelButton').attr('onclick', data['onCancel']);
+
+
+  };
+}
+
+$('#cancelButton').on('click', function(){
+console.log('closeWindow');
+win.closeWindows();
+});
+
+
+$('#agreeButton').on('click', function(){
+console.log('closeWindow');
+win.closeWindows();
+});
 
 function getCookie(name) {
   var matches = document.cookie.match(new RegExp(
