@@ -19,6 +19,7 @@
 
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <script src="js/comServer.js"></script>
 <!--   <script src="assets/js/main.js"></script> -->
 
   <script src="/socket.io/socket.io.js"></script>
@@ -94,26 +95,7 @@ var socket = new ServerCommunitation(io());
 
 
 
-function ServerCommunitation(socketObj){
 
-
-
-
-
-  var socket = socketObj;
-
-
-  this.sendRequest = function(params){
-    return new Promise(function(resolve, reject){
-      socket.emit('request', LZString.compress(JSON.stringify(params)), function(data){
-        resolve(data);
-      });
-    });
-    
-  };
-
-
-}
 
 
 
