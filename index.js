@@ -1,5 +1,6 @@
 // Setup basic express server
 var express = require('express');
+var compression = require('compression');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -20,6 +21,7 @@ server.listen(port, function () {
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
+app.use(compression());
 app.use(express.static(__dirname + '/frontend' ));
 
 
@@ -41,32 +43,54 @@ var login, authcode;
 socket.on('request', function(data, fn){
 
 
-
+console.log(data);
   try{
     // if user send a bad request
-      data = JSON.parse(LZString.decompress(data));
+      data = JSON.parse(LZString.decompressFromUTF16(data));
   
   }
   catch(e){
 
  // TODO : Create error's log
 
-  console.log('bad request');
- socket.disconnect();
+  console.log('bad request, JSON stringify dont!');
+
  return false;
 
 
 
   }
 
+  console.log(data);
 
+/*if(isEmpty(fn)){
+  socket.disconnect();
+  console.log('FN is empty');
+  return false;
+
+
+}*/
 
 
 // request lenght test
-console.log('length: ' + Object.keys(data).length);
+try{
+  console.log('length: ' + Object.keys(data).length);
+}
+catch(e){
+   console.log('bad request : isnt object');
+
+ return false;
+}
+
 if(Object.keys(data).length > 7){
   console.log('Big request');
-  socket.disconnect();
+
+ return false;
+}
+
+if(typeof fn != 'function'){
+   console.log('bad request, FN isnt function');
+
  return false;
 }
 
@@ -88,14 +112,78 @@ if(value != undefined && value != null && value != ''){
   socket.disconnect();
  return false;
   }
+  try{
 
-  data[key] = sanitizer.escape(addslashes(value));
+    if(typeof value == 'number') data[key] = value;
+    else data[key] = sanitizer.escape(addslashes(value));
+  }
+  catch(e){
+    // nothing
+  }
+  
 }
 
 });
 
 
 console.log(data);
+
+
+switch(data['method']){
+
+
+
+case 'auth.register':
+core.registerAccountPartOne(data['l'], data['e'], data['name'], data['surname']).then(function(r){
+
+  console.log('end call');
+
+
+
+  if(JSON.parse(LZString.decompressFromUTF16(r))['code']==3){
+    r = JSON.parse(LZString.decompressFromUTF16(r));
+    authcode = r['msg'];
+
+    console.log('Auth code: ' + authcode);
+
+
+    r['msg'] = 'Successful registation';
+
+    r = LZString.compressToUTF16(JSON.stringify(r));
+  }
+
+
+
+
+fn(r);
+});
+break;
+
+case 'auth.validateAccount':
+core.validateAccount(data['login'], data['code'], authcode).then(function(r){
+
+  if(JSON.parse(LZString.decompressFromUTF16(r))['code']==6){
+
+    authcode = '';
+  }
+
+  fn(r);
+});
+break;
+
+
+
+
+case 'utils.isBusyLogin':
+core.isLoginBusy(data['l']).then(function(r){
+fn(r)
+});
+break;
+
+}
+
+
+
 
 });
 
@@ -115,7 +203,10 @@ app.use(function(req, res, next) {
   res.status(404).send('Sorry cant find that!');
 });
 
-
+function empty(s){
+  if(s==undefined || s==null || s=='') return true;
+  else return false;
+}
 
 function strstr( haystack, needle, bool ) { // Find first occurrence of a string
   // 

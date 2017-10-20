@@ -27,7 +27,7 @@
 
   
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-   
+   <script src="js/utf8.js"></script>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <title>DuckMessenger</title> 
  <meta name="description" content="DuckMessenger is a free and opensource Messenger">
@@ -51,7 +51,36 @@ html{overflow: hidden;background: #5682a3;font-family: Roboto;}
     src: url("fonts/Proxima Nova Semibold.otf"); /* Путь к файлу со шрифтом */
    }
 
+@keyframes loadingFirst{
+  from{
+    top: 37%;
+  }
+  45%{
+    height: 100px;
+  }
+  50%{
+    top: 50%;
+  }
+  100%{
+    height: 128px;
+  }
+  to{
+     top: 37%;
+  }
+}
+#firstLoadingAnimation{
+  width: 128px;
+  height:128px;
+  border-radius: 50%;
+  background-color:#3857b2;
+  animation: loadingFirst 1.5s infinite;
+  position: absolute;
+  margin:-64px 0 0 -64px;
+  display: none;
+  left:50%;
+top:50%;
 
+}
 .popUpDialog{
   width: 480px;
 height: 290px;
@@ -138,7 +167,7 @@ padding: 9px 7px;
 </head> 
 <body> 
 <div id="mask"></div>
-
+<div id="firstLoadingAnimation"></div>
 <div class="popUpDialogInfo" id="infoPopup">
   
   <p id="title">Are you love Duck?</p>
@@ -167,9 +196,22 @@ var win = new modulesWindow();
 
 
 
+$(window).on('load', function(){
+  if(getCookie('firstLogin')==undefined){
+setCookie('firstLogin', true);
 
 
+$('#firstLoadingAnimation').show();
+}
 
+});
+$(document).ready(function(){
+ 
+  $('#firstLoadingAnimation').css('animation', 'null');
+  $('#firstLoadingAnimation').animate({top:'-1000px', left:'-1000px', height:'5500px', width:'5500px'}, 450, function(){
+    $('#firstLoadingAnimation').fadeOut(250);
+  });
+})
 
 
 
@@ -269,9 +311,9 @@ function strstr( haystack, needle, bool ) { // Find first occurrence of a string
 }
 
 function AudioOnNewMessage() {
-  var audio = new Audio(); // Создаём новый элемент Audio
-  audio.src = 'audio/newMessage.mp3'; // Указываем путь к звуку "клика"
-  audio.autoplay = true; // Автоматически запускаем
+  var audio = new Audio(); 
+  audio.src = 'audio/newMessage.mp3'; 
+  audio.autoplay = true; 
 }
 
 
