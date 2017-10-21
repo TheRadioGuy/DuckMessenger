@@ -27,7 +27,28 @@ this.authAccount = async function(login){
 
 };
 
+this.enterCode = function(login, code){
 
+	return new Promise(function(r,rj){
+		
+
+		r(socket.sendRequest({method:'auth.enterCode', login:login, code:code}));
+	});
+
+};
+
+
+this.registration = function(email, l, name, surname){
+
+return new Promise(function(r,rj){
+		
+
+r(socket.sendRequest({method:'auth.register', e:email, l:l, name:name, surname:surname}));
+	});
+
+
+
+};
 
 
 

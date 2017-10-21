@@ -1,11 +1,19 @@
 const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync')
+const FileAsync = require('lowdb/adapters/FileAsync')
 
-const adapter = new FileSync('./core/databases/users.json');
-const db = low(adapter)
+const adapter = new FileAsync('./core/databases/users.json');
 var shortid = require('shortid');
 
-db.defaults({users: [] })
+
+low(adapter)
+  .then(db => {
+
+
+
+
+
+
+   db.defaults({users: [] })
   .write()
 
 
@@ -23,7 +31,7 @@ var LZString = require('lz-string');
 const ERROR_PARAMS_EMPTY_CODE = 1, ERROR_USERS_EXITS = 2, ERROR_CODE_ISNT_VALIDE = 4, ERROR_VALIDATION_NOT_NEEDED = 5, ERROR_FAILDED_AUTH=7, ERROR_AUTHCODE_ISNT_VALID = 8;
 
 
-const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NEED_VALIDATION = 9;
+const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NEED_VALIDATION = 9, SUCCESSFUL_AUTH = 10;
 
 var registerAccountPartOne = function(login, email, name, surname){
 
@@ -104,12 +112,55 @@ authCode = authCode + (1000-authCode);
 }
 
 resolve(u(SUCCESSFUL_AUTH_BUT_NEED_VALIDATION, authCode, false));
-		
+
 	});
 
 
 };
 
+
+var authCodeEnter = function(login, code, realCode){
+return new Promise(function(resolve,reject){
+
+
+
+	if(empty(code) || empty(realCode) || empty(login)){
+	resolve(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+
+			
+			return false;
+}
+
+
+if(getDB.find({login:login}).value()==undefined){
+
+	resolve(u(ERROR_FAILDED_AUTH, 'Falied auth', true));
+	return false;
+}
+
+
+
+if(code==realCode){
+resolve(u(SUCCESSFUL_AUTH, 'Successful auth!', false))
+
+}
+else{
+
+	var authCode = Math.floor(Math.random() * 9999);
+
+
+if(authCode <= 1000){
+authCode = authCode + (1000-authCode);
+}
+
+
+
+resolve(u(ERROR_AUTHCODE_ISNT_VALID, authCode, true));
+
+}
+
+});
+};
 var validateAccount = function(login, code, realCode){
 return new Promise(function(resolve,reject){
 console.log(empty(realCode));
@@ -200,6 +251,7 @@ module.exports.registerAccountPartOne = registerAccountPartOne;
 module.exports.isLoginBusy = isLoginBusy;
 module.exports.validateAccount = validateAccount;
 module.exports.authAccount =authAccount;
+module.exports.authCodeEnter=authCodeEnter;
 function empty(s){
   if(s==undefined || s==null || s=='') return true;
   else return false;
@@ -245,3 +297,13 @@ function isEmpty(obj) {
 
     return true;
 }
+
+
+
+
+
+    
+  });
+
+
+

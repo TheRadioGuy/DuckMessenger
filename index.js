@@ -186,10 +186,39 @@ core.authAccount(data['login']).then(function(r){
 });
 break;
 
+
+case 'auth.enterCode':
+core.authCodeEnter(data['login'], data['code'], authcode).then(function(r){
+
+
+
+ if(JSON.parse(LZString.decompressFromUTF16(r))['error_code']==8){
+
+    r = JSON.parse(LZString.decompressFromUTF16(r));
+    authcode = r['msg'];
+    console.log('new auth code : ' + authcode);
+    r['msg'] = 'Authcode isnt valid';
+
+    r = LZString.compressToUTF16(JSON.stringify(r));
+  }
+
+if(JSON.parse(LZString.decompressFromUTF16(r))['code']==10){
+
+   clients[login] = socket.id;
+}
+
+
+
+fn(r);
+
+
+});
+break;
+
 case 'auth.validateAccount':
 core.validateAccount(data['login'], data['code'], authcode).then(function(r){
 
-  if(JSON.parse(LZString.decompressFromUTF16(r))['code']==6){
+  if(JSON.parse(LZString.decompressFromUTF16(r))['error_code']==6){
 
     authcode = '';
     login = data['login'];
