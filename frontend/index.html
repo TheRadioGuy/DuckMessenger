@@ -20,6 +20,7 @@
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   <script src="js/comServer.js"></script>
+  <script src="js/client.js"></script>
 <!--   <script src="assets/js/main.js"></script> -->
 
   <script src="/socket.io/socket.io.js"></script>
@@ -27,7 +28,7 @@
 
   
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-   <script src="js/utf8.js"></script>
+
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <title>DuckMessenger</title> 
  <meta name="description" content="DuckMessenger is a free and opensource Messenger">
@@ -92,11 +93,62 @@ border-radius: 2px;
 position:absolute;
 left:50%;
 top:50%;
-margin:-120px 0 0 -240px;
+margin:-145px 0 0 -240px;
 overflow: hidden;
 display: none;
 }
 
+.simpleBlock{
+    width: 480px;
+height: 290px;
+position: absolute;
+background:white;
+border-radius: 2px;
+    z-index: 10;
+
+position:absolute;
+left:50%;
+top:50%;
+margin:-145px 0 0 -240px;
+overflow: hidden;
+display: none;
+}
+
+.simpleBlock #title{
+  font-family: Roboto;
+    font-size: 17px;
+    color: #212121;
+    position: relative;
+    /* float: left; */
+    /* top: 19px; */
+    /* left: 45px; */
+    text-align: center;
+    font-weight: 400;
+    top: 17px;
+
+
+}
+.subText{
+  font-family: Roboto;
+  color: #7d7d7d;
+  font-size: 12px;
+  font-weight: 300;
+  display: none;
+}
+#blockAuth{
+  height: 220px;
+  margin:-110px 0 0 -240px;
+}
+#blockAuth #nextStepButton{
+ background: #3F51B5;
+    position: relative;
+    top: 16px;
+}
+#blockAuth #subText{
+position: relative;
+    top: 13px;
+
+}
 .popUpDialogInfo{
   width: 400px;
 height: 200px;
@@ -128,7 +180,7 @@ display: none;
 .popUpDialogInfo #text{
     font-family: Roboto;
     font-size: 17px;
-    color: #212121;
+    color: #484747;
     position: relative;
     text-align: center;
     top:48px;
@@ -179,26 +231,55 @@ padding: 9px 7px;
 </div>
 
 
+<div class="simpleBlock" style="display: none;z-index: 4;" id="blockAuth">
+  
+<p id="title">Пожалуйста, введите ваш логин</p>
+
+<center>
+<div class="input-field col" style="    width: 275px;top: 16px;">
+          <input id="myLoginInput" type="text" class="validate">
+          <label for="myLoginInput">Логин</label>
+        </div>
+
+
+<a class="waves-effect waves-light btn" id="nextStepButton">Далее</a>
+<p class="subText" id="subText">Проверка..</p>
+</center>
+
+</div>
+
  <div class="row" style="display: none;background: #e7ebf0;">
  
 
 
 </div>
 
+
+
+
+
 <script>
 
 
 
-var socket = new ServerCommunitation(io());
+var tmpSocket = new ServerCommunitation(io());
 
+var socket = new Client(tmpSocket);
+
+
+tmpSocket = undefined;
 var win = new modulesWindow();
+
+
+
+
 
 
 
 
 $(window).on('load', function(){
   if(getCookie('firstLogin')==undefined){
-setCookie('firstLogin', true);
+
 
 
 $('#firstLoadingAnimation').show();
@@ -206,11 +287,28 @@ $('#firstLoadingAnimation').show();
 
 });
 $(document).ready(function(){
- 
-  $('#firstLoadingAnimation').css('animation', 'null');
-  $('#firstLoadingAnimation').animate({top:'-1000px', left:'-1000px', height:'5500px', width:'5500px'}, 450, function(){
+
+
+  if(getCookie('firstLogin')==undefined){
+    setCookie('firstLogin', true);
+
+    $('#firstLoadingAnimation').css('animation', 'null');
+  $('#firstLoadingAnimation').animate({top:'-1000px', left:'-1000px', height:'5500px', width:'5500px'}, 250, function(){
     $('#firstLoadingAnimation').fadeOut(250);
+
+    setTimeout(function(){
+      $('#blockAuth').show();
+    }, 300);
   });
+
+  }
+
+  else{
+
+    $('#blockAuth').show();
+  }
+ 
+  
 })
 
 

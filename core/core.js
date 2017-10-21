@@ -12,7 +12,7 @@ db.defaults({users: [] })
 
 var getDB = db.get('users');
 
-var mail = require('./classes/mailer.js');
+var mail = require('./classes/mail.js');
 var LZString = require('lz-string');
 
 
@@ -20,10 +20,10 @@ var LZString = require('lz-string');
 
 // errors constant
 // thanks Alexey!
-const ERROR_PARAMS_EMPTY_CODE = 1, ERROR_USERS_EXITS = 2, ERROR_CODE_ISNT_VALIDE = 4, ERROR_VALIDATION_NOT_NEEDED = 5;
+const ERROR_PARAMS_EMPTY_CODE = 1, ERROR_USERS_EXITS = 2, ERROR_CODE_ISNT_VALIDE = 4, ERROR_VALIDATION_NOT_NEEDED = 5, ERROR_FAILDED_AUTH=7, ERROR_AUTHCODE_ISNT_VALID = 8;
 
 
-const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6;
+const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NEED_VALIDATION = 9;
 
 var registerAccountPartOne = function(login, email, name, surname){
 
@@ -77,13 +77,46 @@ authCode = authCode + (1000-authCode);
 };
 
 
+
+var authAccount = function(login){
+	return new Promise(function(resolve,reject){
+
+if(isEmpty(login)){
+
+	resolve(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+
+			
+			return false;
+}
+
+
+
+	if(getDB.find({login:login}).value()==undefined  || getDB.find({login:login}).value()['is_validate'] == 0){
+		resolve(u(ERROR_FAILDED_AUTH, 'Falied auth', true));
+		return false;
+	}
+
+	var authCode = Math.floor(Math.random() * 9999);
+
+
+if(authCode <= 1000){
+authCode = authCode + (1000-authCode);
+}
+
+resolve(u(SUCCESSFUL_AUTH_BUT_NEED_VALIDATION, authCode, false));
+		
+	});
+
+
+};
+
 var validateAccount = function(login, code, realCode){
 return new Promise(function(resolve,reject){
 console.log(empty(realCode));
 console.log(empty(code));
 console.log(empty(login));
 if(empty(code) || empty(realCode) || empty(login)){
-	resolve(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', false));
+	resolve(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
 
 			
 			return false;
@@ -119,9 +152,14 @@ if(code==realCode){
 
 }
 else{
+var authCode = Math.floor(Math.random() * 9999);
 
 
-resolve(u(ERROR_CODE_ISNT_VALIDE, 'Code isnt valid', false));
+if(authCode <= 1000){
+authCode = authCode + (1000-authCode);
+}
+
+resolve(u(ERROR_CODE_ISNT_VALIDE, authCode, false));
 
 }
 
@@ -161,7 +199,7 @@ else resolve(u(1, true, false));
 module.exports.registerAccountPartOne = registerAccountPartOne;
 module.exports.isLoginBusy = isLoginBusy;
 module.exports.validateAccount = validateAccount;
-
+module.exports.authAccount =authAccount;
 function empty(s){
   if(s==undefined || s==null || s=='') return true;
   else return false;

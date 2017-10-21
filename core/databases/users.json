@@ -1,8 +1,34 @@
 {
   "users": [
     {
-      "userid": "rJsXxaDab",
+      "userid": "r1Mix1Y6W",
       "login": "DuckffffferManSy",
+      "email": "fuffffck@gmaifl.ru",
+      "name": "Sergey",
+      "surname": "Duck",
+      "image": "default.png",
+      "contacts": {},
+      "rights": 0,
+      "online": 0,
+      "dialogs": {},
+      "is_validate": 0
+    },
+    {
+      "userid": "SJXe-yFTW",
+      "login": "DuckfffffferManSy",
+      "email": "fuffffck@gmaifl.ru",
+      "name": "Sergey",
+      "surname": "Duck",
+      "image": "default.png",
+      "contacts": {},
+      "rights": 0,
+      "online": 0,
+      "dialogs": {},
+      "is_validate": 0
+    },
+    {
+      "userid": "r1kQ-ktpW",
+      "login": "DuckffffffferManSy",
       "email": "fuffffck@gmaifl.ru",
       "name": "Sergey",
       "surname": "Duck",

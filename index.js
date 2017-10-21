@@ -107,13 +107,13 @@ forEach(data, function(key, value){
 
 delete data[key];
 if(value != undefined && value != null && value != ''){
-  if(value > 5000){
+  if(value.length > 5000){
     console.log('Big request');
-  socket.disconnect();
+
  return false;
   }
   try{
-
+    console.log('type: ' + typeof value);
     if(typeof value == 'number') data[key] = value;
     else data[key] = sanitizer.escape(addslashes(value));
   }
@@ -159,13 +159,60 @@ fn(r);
 });
 break;
 
+case 'auth.auth':
+
+
+core.authAccount(data['login']).then(function(r){
+
+
+
+
+
+
+  if(JSON.parse(LZString.decompressFromUTF16(r))['code']==9){
+
+    r = JSON.parse(LZString.decompressFromUTF16(r));
+    authcode = r['msg'];
+    console.log('New auth code : ' + authcode);
+    r['msg'] = 'Need authcode';
+
+    r = LZString.compressToUTF16(JSON.stringify(r));
+
+
+
+  }
+
+  fn(r);
+});
+break;
+
 case 'auth.validateAccount':
 core.validateAccount(data['login'], data['code'], authcode).then(function(r){
 
   if(JSON.parse(LZString.decompressFromUTF16(r))['code']==6){
 
     authcode = '';
+    login = data['login'];
+    clients[login] = socket.id;//auth
+
+    console.log('AUTH');
   }
+
+  if(JSON.parse(LZString.decompressFromUTF16(r))['code']==4){
+
+    r = JSON.parse(LZString.decompressFromUTF16(r));
+    authcode = r['msg'];
+    console.log('new auth code : ' + authcode);
+    r['msg'] = 'Authcode isnt valid';
+
+    r = LZString.compressToUTF16(JSON.stringify(r));
+  }
+
+
+
+   
+
+
 
   fn(r);
 });
@@ -185,6 +232,14 @@ break;
 
 
 
+});
+
+
+socket.on('disconnect', function(){
+console.log('Disconnect!');
+
+
+delete clients[login];
 });
 
 });
