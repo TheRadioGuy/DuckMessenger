@@ -83,6 +83,11 @@ this.enterCode = function(login, code){
   	}
   	else if(r['code']==SUCCESSFUL_AUTH){
   		// auth!
+
+  		setCookie('lastLogin', r['msg']['login']);
+  		setCookie('lastCrt', r['msg']['crt']);
+
+
   		$('#blockAuth').fadeOut(200);
   	}
 
@@ -127,7 +132,33 @@ $('#needAuthcodeSection').fadeIn(300);
 }
 
 
+this.authByCrt = function(login,crt){
 
+
+socket.authByCrt(login, crt).then(function(r){
+
+
+
+
+console.log(r);
+
+
+
+
+ if(r['code']==10){
+	// auth!!
+
+	$('#blockAuth').fadeOut(200);
+
+	setCookie('lastLogin', r['msg']['login']);
+  		setCookie('lastCrt', r['msg']['crt']);
+}
+
+
+});
+
+
+};
 
 this.validateAccount = function(login, code){
 
@@ -154,6 +185,9 @@ else if(r['code']==6){
 	// auth!!
 
 	$('#blockAuth').fadeOut(200);
+
+	setCookie('lastLogin', r['msg']['login']);
+  		setCookie('lastCrt', r['msg']['crt']);
 }
 
 else if(r['error_code']==4){

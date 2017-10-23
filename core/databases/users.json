@@ -25,6 +25,19 @@
       "online": 0,
       "dialogs": {},
       "is_validate": 1
+    },
+    {
+      "userid": "H15VMiipb",
+      "login": "Zuck",
+      "email": "Zuck",
+      "name": "Zuck",
+      "surname": "Zuck",
+      "image": "default.png",
+      "contacts": {},
+      "rights": 0,
+      "online": 0,
+      "dialogs": {},
+      "is_validate": 1
     }
   ]
 }

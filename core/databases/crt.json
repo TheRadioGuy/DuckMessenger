@@ -1,0 +1,24 @@
+{
+  "crt": [
+    {
+      "login": "Duck",
+      "crt": "2321f378e32f64ed959441137e7ac0108dcf9efe4151c8c898ac0bb77ea681defc19a619869b84ab6910450b3237e1c6b87687bdb0fb2f7acc88451867271135"
+    },
+    {
+      "login": "DuckerMan",
+      "crt": "95127e29a23eb81176e18a06902bdaa2bdce312ad9bb552f505970b3e1732e77d787dee8cef61297d3eba3bc8b5f2d5ac6c25bc1d8b122ec57eab713cc963d75"
+    },
+    {
+      "login": "DuckerMan",
+      "crt": "127b4accd05a6fca9ffc59a48dd8173c8795ee748ca57b03cd179a9d6c3f23045577c4c202640b4f4f99b135fc50caa5ecb685328243abff4e50275477c7aa05"
+    },
+    {
+      "login": "Zuck",
+      "crt": "27d77545ae44278aa8b359cb3fa74de6e5907601ef4b5196b2e6587064d1e51fe6892bc7b722975adb771dc4ceb07889c0388e0ce9b80772ec55f3e49df2d556"
+    },
+    {
+      "login": "Zuck",
+      "crt": "80c9bd1415a1614feffa363e5ae68d6fac0a32b02320d9933e5ed015daa82627a7b0628f8bc80818f4780b7de22cb2f4b28d9628d6c6a0ab04b46ee69fb00c75"
+    }
+  ]
+}

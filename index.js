@@ -203,8 +203,25 @@ core.authCodeEnter(data['login'], data['code'], authcode).then(function(r){
   }
 
 if(JSON.parse(LZString.decompressFromUTF16(r))['code']==10){
+  r = JSON.parse(LZString.decompressFromUTF16(r));
+
+
+
+
+
+
+
+
+
+  r['msg'] = {msg:'Successful auth!', crt:r['msg'], login:data['login']};
+
+
+r = LZString.compressToUTF16(JSON.stringify(r));
+
   authcode='';
    clients[login] = socket.id;
+
+
 }
 
 
@@ -220,9 +237,31 @@ core.validateAccount(data['login'], data['code'], authcode).then(function(r){
 
   if(JSON.parse(LZString.decompressFromUTF16(r))['code']==6){
 
+
     authcode = '';
     login = data['login'];
     clients[login] = socket.id;//auth
+
+
+
+
+    r = JSON.parse(LZString.decompressFromUTF16(r));
+
+
+
+
+
+
+
+
+
+  r['msg'] = {msg:'Successful validation', crt:r['msg'], login:data['login']};
+
+
+r = LZString.compressToUTF16(JSON.stringify(r));
+
+
+
 
     console.log('AUTH');
   }
@@ -247,7 +286,31 @@ core.validateAccount(data['login'], data['code'], authcode).then(function(r){
 });
 break;
 
+case 'auth.authCrt':
+var r = core.authAccountByCrt(data['login'], data['crt']);
 
+r = JSON.parse(LZString.decompressFromUTF16(r));
+
+if(r['code']==10){
+// auth
+
+
+
+
+authcode = '';
+    login = data['login'];
+    clients[login] = socket.id;//auth
+
+
+ r['msg'] = {msg:'Successful auth!', crt:r['msg'], login:data['login']};
+}
+
+
+r = LZString.compressToUTF16(JSON.stringify(r));
+
+fn(r);
+
+break;
 
 
 case 'utils.isBusyLogin':

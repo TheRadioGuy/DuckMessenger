@@ -29,6 +29,19 @@ this.validateAccount = async function(login, code){
 	
 };
 
+this.authByCrt = async function(login, crt){
+
+
+return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'auth.authCrt', login:login, crt:crt}));
+	});
+
+
+
+};
+
 this.authAccount = async function(login){
 
 	return new Promise(function(r,rj){

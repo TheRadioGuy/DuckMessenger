@@ -4,7 +4,7 @@ const FileAsync = require('lowdb/adapters/FileAsync')
 const adapter = new FileAsync('./core/databases/users.json');
 var shortid = require('shortid');
 
-
+var crts = require('./classes/crts.js');
 low(adapter)
   .then(db => {
 
@@ -141,7 +141,12 @@ if(getDB.find({login:login}).value()==undefined){
 
 
 if(code==realCode){
-resolve(u(SUCCESSFUL_AUTH, 'Successful auth!', false))
+
+
+
+
+
+resolve(u(SUCCESSFUL_AUTH, crts.generateCrt(login), false))
 
 }
 else{
@@ -193,7 +198,7 @@ if(code==realCode){
   .write();
 
 
-		resolve(u(SUCCESSFUL_VALIDATION, 'Successful validation', false));
+		resolve(u(SUCCESSFUL_VALIDATION, crts.generateCrt(login), false));
 
 
 
@@ -217,6 +222,26 @@ resolve(u(ERROR_CODE_ISNT_VALIDE, authCode, true));
 });
 }
 
+
+
+var authAccountByCrt = function(login, crt){
+	if(isEmpty(login) || isEmpty(crt)){
+
+		return(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+	}
+
+	if(crts.checkCertificate(login, crt) == true){
+		// auth
+
+		return(u(SUCCESSFUL_AUTH, crts.generateCrt(login), false));
+
+	}
+	else{
+		return(u(ERROR_FAILDED_AUTH, 'Failed auth!', true));
+
+	}
+	
+}
 
 
 var isLoginBusy = function(login){
@@ -252,6 +277,7 @@ module.exports.isLoginBusy = isLoginBusy;
 module.exports.validateAccount = validateAccount;
 module.exports.authAccount =authAccount;
 module.exports.authCodeEnter=authCodeEnter;
+module.exports.authAccountByCrt=authAccountByCrt;
 function empty(s){
   if(s==undefined || s==null || s=='') return true;
   else return false;
