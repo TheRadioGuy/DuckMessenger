@@ -180,7 +180,7 @@ if(code==realCode){
 
 
 	if(getDB.find({login:login}).value()['is_validate'] == 1){
-		resolve(u(ERROR_VALIDATION_NOT_NEEDED, 'Validation dont needed', false));
+		resolve(u(ERROR_VALIDATION_NOT_NEEDED, 'Validation dont needed', true));
 
 	}
 
@@ -193,7 +193,7 @@ if(code==realCode){
   .write();
 
 
-		resolve(u(SUCCESSFUL_VALIDATION, 'Successful validation', true));
+		resolve(u(SUCCESSFUL_VALIDATION, 'Successful validation', false));
 
 
 
@@ -210,7 +210,7 @@ if(authCode <= 1000){
 authCode = authCode + (1000-authCode);
 }
 
-resolve(u(ERROR_CODE_ISNT_VALIDE, authCode, false));
+resolve(u(ERROR_CODE_ISNT_VALIDE, authCode, true));
 
 }
 

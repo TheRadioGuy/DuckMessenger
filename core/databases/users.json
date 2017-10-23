@@ -1,36 +1,23 @@
 {
   "users": [
     {
-      "userid": "r1Mix1Y6W",
-      "login": "DuckffffferManSy",
-      "email": "fuffffck@gmaifl.ru",
-      "name": "Sergey",
-      "surname": "Duck",
+      "userid": "HkQgyqi6W",
+      "login": "DuckerMan",
+      "email": "DuckerMan",
+      "name": "DuckerMan",
+      "surname": "DuckerMan",
       "image": "default.png",
       "contacts": {},
       "rights": 0,
       "online": 0,
       "dialogs": {},
-      "is_validate": 0
+      "is_validate": 1
     },
     {
-      "userid": "SJXe-yFTW",
-      "login": "DuckfffffferManSy",
-      "email": "fuffffck@gmaifl.ru",
-      "name": "Sergey",
-      "surname": "Duck",
-      "image": "default.png",
-      "contacts": {},
-      "rights": 0,
-      "online": 0,
-      "dialogs": {},
-      "is_validate": 0
-    },
-    {
-      "userid": "r1kQ-ktpW",
-      "login": "DuckffffffferManSy",
-      "email": "fuffffck@gmaifl.ru",
-      "name": "Sergey",
+      "userid": "SJpPBciTb",
+      "login": "Duck",
+      "email": "Duck",
+      "name": "Duck",
       "surname": "Duck",
       "image": "default.png",
       "contacts": {},

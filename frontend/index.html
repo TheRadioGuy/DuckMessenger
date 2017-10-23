@@ -124,7 +124,7 @@ display: none;
     /* left: 45px; */
     text-align: center;
     font-weight: 400;
-    top: 17px;
+    top: -5px;
 
 
 }
@@ -139,57 +139,63 @@ display: none;
   height: 220px;
   margin:-110px 0 0 -240px;
 }
-#blockAuth #nextStepButton{
- background: #3F51B5;
+#blockAuth #nextStepButtonAuth{
+
+}
+.nextStepButton{
+   background: #3F51B5;
     position: relative;
     top: 16px;
+}
+.nextStepButton:hover{
+      background-color: #5164ce;
 }
 #blockAuth #subText{
 position: relative;
     top: 13px;
 
 }
-#blockAuth #progressAuth{
+#blockAuth .progressAuth{
   position: relative;
     top: 9px;
     width: 325px;
     display: none;
 }
-.popUpDialogInfo{
-  width: 400px;
-height: 200px;
-position: absolute;
-background:white;
-border-radius: 1px;
-    z-index: 11;
 
-position:absolute;
-left:50%;
-top:50%;
-margin:-100px 0 0 -200px;
-overflow: hidden;
-display: none;
+.popUpDialogInfo{
+   width: 400px;
+    height: 140px;
+    position: absolute;
+    background: white;
+    border-radius: 1px;
+    z-index: 11;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -70px 0 0 -200px;
+    overflow: hidden;
+    display: none;
 }
 
 .popUpDialogInfo #title{
-    font-family: Roboto;
+font-family: Roboto;
     font-size: 17px;
     color: #212121;
     position: absolute;
     float: left;
-    top: 19px;
-    left: 45px;
+    top: 6px;
+    left: 39px;
     font-weight: bold;
 
 
 }
 .popUpDialogInfo #text{
-    font-family: Roboto;
+  font-family: Roboto;
     font-size: 17px;
     color: #484747;
     position: relative;
     text-align: center;
-    top:48px;
+    top: 21px;
     font-weight: 400;
   
 
@@ -239,20 +245,103 @@ padding: 9px 7px;
 
 <div class="simpleBlock" style="display: none;z-index: 4;" id="blockAuth">
   
-<p id="title">Пожалуйста, введите ваш логин</p>
+
 
 <center>
+
+<section id="firstAuthSection">
+  
+<p id="title">Пожалуйста, введите ваш логин</p>
 <div class="input-field col" style="    width: 275px;top: 16px;">
           <input id="myLoginInput" type="text" class="validate">
-          <label for="myLoginInput">Логин</label>
+          <label for="myLoginInput" id="myLoginInputLabel">Логин</label>
         </div>
 
 
-<a class="waves-effect waves-light btn" id="nextStepButton">Далее</a>
+<a class="waves-effect waves-light btn nextStepButton" id="nextStepButtonAuth" onclick="client.authAccount($('#myLoginInput').val());">Далее</a>
 <p class="subText" id="subText">Проверка..</p>
-<div class="progress" id="progressAuth">
+<div class="progress progressAuth" id="progressAuth">
       <div class="indeterminate"></div>
   </div>
+
+</section>
+
+
+
+<section id="needAuthcodeSection" style="display: none;">
+  
+<p id="title">Пожалуйста, введите код авторизации</p>
+<div class="input-field col" style="    width: 275px;top: 16px;">
+          <input id="myAuthcodeInput" type="text" class="validate">
+          <label for="myAuthcodeInput" id="myAuthcodeInputLabel">Код авторизации</label>
+        </div>
+
+
+<a class="waves-effect waves-light btn nextStepButton" id="nextStepButtonAuthcode" onclick="client.enterCode($('#myLoginInput').val(), $('#myAuthcodeInput').val());">Далее</a>
+<p class="subText" id="subText">Проверка..</p>
+<div class="progress progressAuth" id="progressAuthCode">
+      <div class="indeterminate"></div>
+  </div>
+  
+</section>
+
+
+<section id="needRegcodeSection" style="display: none;">
+  
+<p id="title">Пожалуйста, введите код регистрации</p>
+<div class="input-field col" style="    width: 275px;top: 16px;">
+          <input id="myRegcodeInput" type="text" class="validate">
+          <label for="myRegcodeInput">Код регистрации</label>
+        </div>
+
+
+<a class="waves-effect waves-light btn nextStepButton" id="nextStepButtonRegcode" onclick="client.validateAccount($('#myLoginRegInput').val(), $('#myRegcodeInput').val());">Далее</a>
+<p class="subText" id="subText">Проверка..</p>
+<div class="progress progressAuth" id="progressAuthCode">
+      <div class="indeterminate"></div>
+  </div>
+  
+</section>
+
+
+<section id="registrationS" style="display: none;">
+  
+<p id="title">Пожалуйста, введите ваши данные</p>
+
+
+
+<div class="input-field col inline" style="   width: 225px;top: -21px;float: left;">
+          <i class="material-icons prefix" style="    color: #c73636;">account_circle</i>
+          <input id="myNameInput" type="text" class="validate">
+          <label for="myNameInput">Имя</label>
+        </div>
+
+<div class="input-field col inline" style="    width: 225px;top: -21px;float: left;">
+          <i class="material-icons prefix" style="    color: #c73636;">account_circle</i>
+          <input id="mySurnameInput" type="text" class="validate">
+          <label for="mySurnameInput">Фамилия</label>
+        </div>
+
+
+        <div class="input-field col inline" style="   width: 225px;top: -21px;float: left;">
+          <i class="material-icons prefix" style="    color: #c73636;">email</i>
+          <input id="myEmailInput" type="text" class="validate">
+          <label for="myEmailInput">Почта</label>
+        </div>
+
+<div class="input-field col inline" style="    width: 225px;top: -21px;float: left;">
+          <i class="material-icons prefix" style="    color: #c73636;">account_box</i>
+          <input id="myLoginRegInput" type="text" class="validate">
+          <label for="myLoginRegInput">Логин</label>
+        </div>
+
+<a class="waves-effect waves-light btn nextStepButton" id="nextStepButtonRegister" onclick="client.registration($('#myEmailInput').val(), $('#myLoginRegInput').val(), $('#myNameInput').val(), $('#mySurnameInput').val());" style="top: -31px;">Далее</a>
+<p class="subText" id="subText">Проверка..</p>
+<div class="progress progressAuth" id="progressAuthCode" style="top: -29px;">
+      <div class="indeterminate"></div>
+  </div>
+  
+</section>
 
 </center>
 
@@ -274,11 +363,10 @@ padding: 9px 7px;
 
 var tmpSocket = new ServerCommunitation(io());
 
-var socket = new Client(tmpSocket);
+var client = new Client(tmpSocket);
 
 
 tmpSocket = undefined;
-var win = new modulesWindow();
 
 
 
@@ -353,16 +441,7 @@ function modulesWindow(){
   };
 }
 
-$('#cancelButton').on('click', function(){
-console.log('closeWindow');
-win.closeWindows();
-});
 
-
-$('#agreeButton').on('click', function(){
-console.log('closeWindow');
-win.closeWindows();
-});
 
 function getCookie(name) {
   var matches = document.cookie.match(new RegExp(
@@ -475,6 +554,33 @@ function addslashes(str) {
 }
 
 
+
+$(document).on('input', '#myAuthcodeInput', function () {
+  console.log('INPUT');
+  var $item = $(this),
+    value = $item.val();
+
+    if(value.length == 4){
+     client.enterCode($('#myLoginInput').val(), value);
+    }
+    if(value.length > 4){
+      $item.val(value.substr(0, 4));
+    }
+
+});
+
+$(document).on('input', '#myRegcodeInput', function () {
+  var $item = $(this),
+    value = $item.val();
+console.log('INPUT');
+    if(value.length == 4){
+     client.validateAccount($('#myLoginRegInput').val(), value);
+    }
+    if(value.length > 4){
+      $item.val(value.substr(0, 4));
+    }
+
+});
 
 
 setInterval(function(){

@@ -203,7 +203,7 @@ core.authCodeEnter(data['login'], data['code'], authcode).then(function(r){
   }
 
 if(JSON.parse(LZString.decompressFromUTF16(r))['code']==10){
-
+  authcode='';
    clients[login] = socket.id;
 }
 
@@ -218,7 +218,7 @@ break;
 case 'auth.validateAccount':
 core.validateAccount(data['login'], data['code'], authcode).then(function(r){
 
-  if(JSON.parse(LZString.decompressFromUTF16(r))['error_code']==6){
+  if(JSON.parse(LZString.decompressFromUTF16(r))['code']==6){
 
     authcode = '';
     login = data['login'];
@@ -227,7 +227,7 @@ core.validateAccount(data['login'], data['code'], authcode).then(function(r){
     console.log('AUTH');
   }
 
-  if(JSON.parse(LZString.decompressFromUTF16(r))['code']==4){
+  if(JSON.parse(LZString.decompressFromUTF16(r))['error_code']==4){
 
     r = JSON.parse(LZString.decompressFromUTF16(r));
     authcode = r['msg'];
