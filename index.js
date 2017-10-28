@@ -9,6 +9,7 @@ var LZString = require('lz-string');
 var port = process.env.PORT || 443;
 var fs = require('fs');
 var parseUrl = require('url');
+const fileUpload = require('express-fileupload');
 var sanitizer = require('sanitizer');
 var bodyParser = require('body-parser'); // include module
 server.listen(port, function () {
@@ -17,17 +18,81 @@ server.listen(port, function () {
 
 
 
+const accessFilesForImages = ['png', 'jpg', 'jpeg'];
+
 // Routing
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 app.use(compression());
 app.use(express.static(__dirname + '/frontend' ));
+app.use(fileUpload());
+
+
+app.get('/getAttachment/:id', function(req, res){
+var id = req.params.id;
+console.log(id);
+var response = core.attachments.getAttachment(id);
+res.send(JSON.stringify(response));
+});
+
+
+app.post('/uploadImage/:token/:isProfilePhoto', function(req, res) {
+
+  var token = req.params.token;
+   var isProfilePhoto = req.params.isProfilePhoto;
+
+if(token == undefined || isProfilePhoto==undefined || isProfilePhoto=='') {
+
+
+  res.status(500).send('This is error!');
+
+  return false;
+}
 
 
 
 
+  if (!req.files)
+    return res.status(400).send('Your files is empty.');
+ 
+  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+  let sampleFile = req.files.sampleFile;
 
+  let fileName = sampleFile.name, fileData =  sampleFile.data.toString('base64'), fileType = sampleFile.name.split('.').pop(), fileMime = sampleFile.mimetype;
+  
+
+  let Attachment = {login:token, is_profile:0, data:fileData, mime:fileMime};
+  console.log(sampleFile);
+
+
+  console.log(accessFilesForImages);
+    if(isProfilePhoto == 1 && fileType != 'png' && fileType != 'jpg'){
+      res.status(500).send('This files is denied for profileImages!');
+
+      return false;
+
+    }
+
+    if(isProfilePhoto==1){
+      Attachment['is_profile'] = 1;
+    }
+
+
+
+    res.send('all!');
+
+  
+    console.log(sampleFile);
+
+
+    core.attachments.addAttachments(Attachment);
+
+  
+
+
+  
+});
 
 var clients = {}, waitingSend = {};
 io.on('connection', function (socket) {

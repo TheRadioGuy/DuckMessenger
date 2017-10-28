@@ -30,7 +30,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-<title>DuckMessenger</title> 
+<title>Duck Messenger</title> 
  <meta name="description" content="DuckMessenger is a free and opensource Messenger">
 
 
@@ -227,6 +227,55 @@ padding: 9px 7px;
   display: none;
 }
 
+
+div #leftPanelMessages{
+  width: 265px;
+  height: 100%;
+  position: fixed;
+  z-index: 11;
+  background: white;
+  overflow: auto;
+}
+div #leftPanelMessages .dialog{
+  width: 100%;
+  background: red;
+  height: 56px;
+
+}
+div #leftPanelMessages .dialog #templateName{
+    position: absolute;
+    width: 159px;
+    height: 15px;
+    border-radius: 10px;
+    top: -7px;
+    left: 64px;
+    background: #E3F2FD;
+}
+div #leftPanelMessages .dialog #templateImage{
+  position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 100px;
+    top: 3px;
+    left: 5px;
+    background: #caced2;
+}
+div #leftPanelMessages .dialog #templateMessage{
+    position: absolute;
+    width: 159px;
+    height: 13px;
+    border-radius: 10px;
+    top: 19px;
+    left: 64px;
+    background: #d4d7da;
+
+}
+@media screen and (max-width: 480px){
+
+  div #leftPanelMessages{
+    width: 100%;
+  }
+}
 </style>
 </head> 
 <body> 
@@ -349,7 +398,17 @@ padding: 9px 7px;
 
  <div class="row" style="display: none;background: #e7ebf0;">
  
+<div id="leftPanelMessages" class="z-depth-1">
+  
+<div class="dialog" id="dialogPreloader">
+  <p id="templateName"></p>
+   <p id="templateMessage"></p>
+  <div id="templateImage"></div>
 
+
+</div>
+
+</div>
 
 </div>
 

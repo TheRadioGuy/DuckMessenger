@@ -5,6 +5,7 @@ const adapter = new FileAsync('./core/databases/users.json');
 var shortid = require('shortid');
 
 var crts = require('./classes/crts.js');
+var attachments = require('./classes/attachments.js');
 low(adapter)
   .then(db => {
 
@@ -59,7 +60,7 @@ return false;
  }
 
 
-  getDB.push({ userid: shortid.generate(), login: login, email:email, name:name, surname:surname, image:'default.png', contacts:{}, rights:0, online:0, dialogs:{}, is_validate:0})
+  getDB.push({ userid: shortid.generate()+shortid.generate(), login: login, email:email, name:name, surname:surname, image:'defaultImage', contacts:{}, rights:0, online:0, dialogs:{}, is_validate:0})
 
   .write();
 
@@ -278,6 +279,9 @@ module.exports.validateAccount = validateAccount;
 module.exports.authAccount =authAccount;
 module.exports.authCodeEnter=authCodeEnter;
 module.exports.authAccountByCrt=authAccountByCrt;
+
+
+module.exports.attachments=attachments;
 function empty(s){
   if(s==undefined || s==null || s=='') return true;
   else return false;

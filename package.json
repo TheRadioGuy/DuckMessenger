@@ -13,6 +13,7 @@
     "body-parser": "^1.18.2",
     "compression": "^1.7.1",
     "express": "^4.16.2",
+    "express-fileupload": "^0.3.0",
     "lowdb": "^1.0.0",
     "lz-string": "^1.4.4",
     "nodemailer": "^4.2.0",

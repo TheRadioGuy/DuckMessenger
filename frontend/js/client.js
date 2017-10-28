@@ -84,6 +84,7 @@ this.enterCode = function(login, code){
   	else if(r['code']==SUCCESSFUL_AUTH){
   		// auth!
 
+  		$('.row').fadeIn(250);
   		setCookie('lastLogin', r['msg']['login']);
   		setCookie('lastCrt', r['msg']['crt']);
 
@@ -147,7 +148,7 @@ console.log(r);
 
  if(r['code']==10){
 	// auth!!
-
+	$('.row').fadeIn(250);
 	$('#blockAuth').fadeOut(200);
 
 	setCookie('lastLogin', r['msg']['login']);
@@ -184,6 +185,8 @@ if(r['error_code']==ERROR_PARAMS_EMPTY_CODE){
 else if(r['code']==6){
 	// auth!!
 
+	$('.row').fadeIn(250);
+
 	$('#blockAuth').fadeOut(200);
 
 	setCookie('lastLogin', r['msg']['login']);
@@ -219,6 +222,85 @@ win.closeWindows();
 
 
 
+function createBlobFromSource (b64Data, contentType, sliceSize) {
+  contentType = contentType || '';
+  sliceSize = sliceSize || 512;
+
+  var byteCharacters = atob(b64Data);
+  var byteArrays = [];
+
+  for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    var byteNumbers = new Array(slice.length);
+    for (var i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    var byteArray = new Uint8Array(byteNumbers);
+
+    byteArrays.push(byteArray);
+  }
+
+  var blob = new Blob(byteArrays, {type: contentType});
+
+var blobUrl = URL.createObjectURL(blob);
+
+return blobUrl;
+}
+
+this.getFile = function(id){
+	return new Promise(function(resolve,reject){
+
+
+			$.get('/getAttachment/'+id, {}, function(r){
+
+
+
+	try{
+		r = JSON.parse(r);
+
+
+
+	}
+
+
+	catch(e){
+
+		resolve(false);
+		return false;
+
+	}
+try{
+	var blob = createBlobFromSource(r['data'], r['mime']);
+}
+catch(e){
+	resolve(false);
+	return false;
+}
+resolve(blob);
+
+
+
+
+
+});
+
+
+
+	});
+
+
+
+}
+
+this.uploadFile = function(file, isProfileImage){
+
+}
+
+function insertDialogs(dialog){
+
+}
 
 
 }
