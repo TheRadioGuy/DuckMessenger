@@ -65,7 +65,7 @@ var getDialogs = function(){
 						getFileSecter(z['msg']['image']).then(function(url){
 
 
-							$(`<div class="dialog" id="messageGolyb">
+							$(`<div class="dialog" id="message`+value['with']+`">
   <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
    <p id="textMessage" style="
 ">`+message+`</p>
