@@ -238,8 +238,12 @@ div #leftPanelMessages{
 }
 div #leftPanelMessages .dialog{
   width: 100%;
-  background: red;
+  
   height: 56px;
+
+      top: 48px;
+    margin-top: -15px;
+
 
 }
 div #leftPanelMessages .dialog #templateName{
@@ -247,10 +251,15 @@ div #leftPanelMessages .dialog #templateName{
     width: 159px;
     height: 15px;
     border-radius: 10px;
-    top: -7px;
+    top: -5px;
     left: 64px;
     background: #E3F2FD;
 }
+
+
+
+
+
 div #leftPanelMessages .dialog #templateImage{
   position: absolute;
     width: 48px;
@@ -269,6 +278,35 @@ div #leftPanelMessages .dialog #templateMessage{
     left: 64px;
     background: #d4d7da;
 
+}
+
+div #leftPanelMessages .dialog #userName{
+       position: relative;
+    font-size: 15px;
+    top: 6px;
+    left: 62px;
+    color: #212121;
+    font-weight: 500;
+        width: 182px;
+}
+
+div #leftPanelMessages .dialog #profilePhoto{
+position: relative;
+    width: 48px;
+    height: 48px;
+    top: -68px;
+    left: 6px;
+    border-radius: 100px;
+}
+
+
+div #leftPanelMessages .dialog #textMessage{
+      position: relative;
+    font-size: 14px;
+    top: -9px;
+    left: 63px;
+    color: #797979;
+        width: 182px;
 }
 @media screen and (max-width: 480px){
 
@@ -400,13 +438,14 @@ div #leftPanelMessages .dialog #templateMessage{
  
 <div id="leftPanelMessages" class="z-depth-1">
   
-<div class="dialog" id="dialogPreloader">
-  <p id="templateName"></p>
-   <p id="templateMessage"></p>
-  <div id="templateImage"></div>
 
 
-</div>
+<!-- <div class="dialog" id="messageGolyb">
+  <p id="userName">Тимур Ганиуллин</p>
+   <p id="textMessage" style="
+">го в майн</p>
+  <img src="https://pp.userapi.com/c840638/v840638859/f4b7/IPoJGS6Zfyo.jpg" id="profilePhoto"></img>
+</div> -->
 
 </div>
 
@@ -421,7 +460,13 @@ div #leftPanelMessages .dialog #templateMessage{
 
 
 var tmpSocket = new ServerCommunitation(io());
+tmpSocket.socketCopy.on('connect', function(){
 
+
+
+
+ 
+})
 var client = new Client(tmpSocket);
 
 
@@ -432,6 +477,10 @@ tmpSocket = undefined;
 
 
 
+
+ if(getCookie('lastLogin') != undefined && getCookie('lastCrt')!=undefined){
+  client.authByCrt(getCookie('lastLogin'), getCookie('lastCrt'));
+}
 
 
 $(window).on('load', function(){
@@ -501,15 +550,17 @@ function modulesWindow(){
 }
 
 
-if(getCookie('lastLogin') != undefined && getCookie('lastCrt')!=undefined){
+/*if(getCookie('lastLogin') != undefined && getCookie('lastCrt')!=undefined){
   client.authByCrt(getCookie('lastLogin'), getCookie('lastCrt'));
-}
+}*/
 function getCookie(name) {
   var matches = document.cookie.match(new RegExp(
     "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
   ));
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
+
+
 
 function setCookie(name, value, options) {
   options = options || {};
@@ -566,27 +617,9 @@ function AudioOnNewMessage() {
 
 
 
-   function GeneratePublicKey256(){
-            var key = Array();
+   
 
-            for(var i = 0;i < 33;i++){
-              if(key.length == 32){
-                 return toHexString(key);
-              
-              }
-
-
-            key.push(Math.floor(Math.random() * 256));
-            }
-            
-
-             }
-
-       function toHexString(byteArray) {
-  return Array.from(byteArray, function(byte) {
-    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-  }).join('')
-}
+     
 
 
 function escapeHtml(text) {

@@ -34,15 +34,41 @@ else return {data:data['data'], mime:data['mime']};
 }
 var addAttachments = function(Attachment){
 	Attachment['id'] = shortid.generate() + shortid.generate();
+
+    Attachment['type'] = whatTheType(Attachment['mime']);
+
 getDB.push(Attachment).write();
-return true;
+return JSON.stringify({id: Attachment['id'], type:Attachment['type']});
 
 }
+
+
+var isTokenValide = function(token, tokens){
+
+
+return false /*  tokens[token] */;
+};
 module.exports.getAttachment=getAttachment;
 module.exports.addAttachments=addAttachments;
+module.exports.isTokenValide = isTokenValide;
+
+
+function whatTheType(mime){
+
+    console.log(mime);
+
+
+    var type = mime.split('/')[0];
 
 
 
+
+    if(type != 'video' && type != 'photo' && type!='audio') type = 'document';
+
+
+
+    return type;
+}
 function isEmpty(obj) {
 
     // null and undefined are "empty"

@@ -1,0 +1,264 @@
+{
+  "dialogs": [
+    {
+      "dialogWith": "Tester",
+      "dialogAuthor": "DuckerMan",
+      "dialogId": "S1zgV86NAZSkmlNUaN0-BkVlV8TNAZ",
+      "message": "e612e53182c879"
+    },
+    {
+      "dialogWith": "DuckerMan",
+      "dialogAuthor": "DuckerMan",
+      "dialogId": "rJM_bS0E0bS1XdWr0V0bByV_bBRNAb",
+      "message": "2eb7c51381b7d8e5fe39526d8b"
+    },
+    {
+      "dialogWith": "DuckerMan",
+      "dialogAuthor": "TesterZ",
+      "dialogId": "r1MSCbkSAZBJXrCWJSCWrkEHRb1r0Z",
+      "message": "d9590f4a26c320290eb05e2f"
+    }
+  ],
+  "messages": [
+    {
+      "id": "rJlN8pE0WSyxlNUpNCWBJblNI640b",
+      "is_read": 0,
+      "message": "Привет)",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509377575
+    },
+    {
+      "id": "BkkHUpERWHyxJBL6E0ZSybJBUpNAW",
+      "is_read": 0,
+      "message": "Игноришь?!",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509377590
+    },
+    {
+      "id": "S1b88TNCbS1ebUUa4RbrJ-WULpNR-",
+      "is_read": 0,
+      "message": "Привет, не заметил)",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1509377608
+    },
+    {
+      "id": "HJZwsaE0bSJgZDi6E0-rkZWvi6EAb",
+      "is_read": 0,
+      "message": "8a95b6baa3badce15e6218173054b07c42c41538a27b635d703a402d93c48ba699fc",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1509378905
+    },
+    {
+      "id": "HkokGAVCbH1xsJfA4A-r1bsJfA4C-",
+      "is_read": 0,
+      "message": "8a95b6baa3badce15e6218173054b07c42c41538a27b635d703a402d93c48ba699fc",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1509380579
+    },
+    {
+      "id": "SyDOGRVRZHyevOf0N0brJZDOMRERW",
+      "is_read": 0,
+      "message": "2eb7c51381b7d8e5fe39526d8b",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509380719
+    },
+    {
+      "id": "Syf2GRVAWr1xz2zR40WHyZf2f0NR-",
+      "is_read": 0,
+      "message": "2eb7c51381b7d8e5fe39526d8b",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509380778
+    },
+    {
+      "id": "By6JXAER-rye6JX0VAWHJbTJQ0NC-",
+      "is_read": 0,
+      "message": "2eb7c51381b7d8e5fe39526d8b",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509380836
+    },
+    {
+      "id": "r1_ZSCECWryl_ZH0NAZSJWubSAN0b",
+      "is_read": 0,
+      "message": "2eb7c51381b7d8e5fe39526d8b",
+      "to": "DuckerMan",
+      "from": "DuckerMan",
+      "date": 1509381376
+    },
+    {
+      "id": "SJZ3B0E0bBkg-nSCEAbBybW3rAV0Z",
+      "is_read": 0,
+      "message": "2eb7c51381b7d8e5fe39526d8b",
+      "to": "DuckerMan",
+      "from": "DuckerMan",
+      "date": 1509381544
+    },
+    {
+      "id": "H1mkLR40-HJe7JIRVA-S1-m1I0V0b",
+      "is_read": 0,
+      "message": "8a95b6baa3badce15e621817",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1509381595
+    },
+    {
+      "id": "HJMQ8040bS1gG7LRN0ZB1-MQI0VCW",
+      "is_read": 0,
+      "message": "8a95b6baa3badce15e621817",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1509381658
+    },
+    {
+      "id": "S19cUAERZS1x99LAEAWSk-9cL04RW",
+      "is_read": 0,
+      "message": "2eb7c51381b7d8e5fe39526d8b",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509381778
+    },
+    {
+      "id": "HyksUC4RZHJx1oIAEAZSybkjU04AW",
+      "is_read": 0,
+      "message": "2eb7c51381b7d8e5fe39526d8b",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509381782
+    },
+    {
+      "id": "SyjoO0E0bH1liiOC4AZHkbioOR40Z",
+      "is_read": 0,
+      "message": "2eb5c51c",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509382306
+    },
+    {
+      "id": "B1gA_ANCWBkegAd0ER-Skbe0uRVA-",
+      "is_read": 0,
+      "message": "2eb5c51c",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509382344
+    },
+    {
+      "id": "SJ6QFRNCbrJla7Y0ERZrJbamt0VCZ",
+      "is_read": 0,
+      "message": "2e53b90f",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509382436
+    },
+    {
+      "id": "HJvhKAV0WHkxw3FRNA-SJZP2Y0NRW",
+      "is_read": 0,
+      "message": "3e27b0d4",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509382575
+    },
+    {
+      "id": "BJ43qRVRZrJeNh9CNRZHyZNnqA4C-",
+      "is_read": 0,
+      "message": "3e27b0d4",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509382827
+    },
+    {
+      "id": "rkjyi04AbB1xsJoA4AWSJ-i1j04Ab",
+      "is_read": 0,
+      "message": "3e27b0d4",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509382883
+    },
+    {
+      "id": "rycWsCV0WSJx5Wj0VAWSJ-5-j0VA-",
+      "is_read": 0,
+      "message": "3e27b0d4",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509382914
+    },
+    {
+      "id": "H1CfoA4RZSJg0fiR4RbByWRzoRVAW",
+      "is_read": 0,
+      "message": "0026c84e",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509382934
+    },
+    {
+      "id": "Sya3n0V0WS1lT2hANCbrkZan2RNAb",
+      "is_read": 0,
+      "message": "0026c84e",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509383349
+    },
+    {
+      "id": "SJqa3C4CWH1x56hA40brkb5a3CECW",
+      "is_read": 0,
+      "message": "8b0b2669",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509383362
+    },
+    {
+      "id": "rkp02A4AZrkea03A40bH1-aRnCVAb",
+      "is_read": 0,
+      "message": "8b0b2669",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509383381
+    },
+    {
+      "id": "BkvJpR4AWrklDypCE0ZrkWvkpRNCb",
+      "is_read": 0,
+      "message": "e615e53e",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509383390
+    },
+    {
+      "id": "HkkfTR4RZBJgyfaCNA-S1b1MT0VAb",
+      "is_read": 0,
+      "message": "e615e53e",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509383430
+    },
+    {
+      "id": "B1hQR0VCZH1xh7C0V0bHkWnXCR4AW",
+      "is_read": 0,
+      "message": "e612e53182c879",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509383716
+    },
+    {
+      "id": "rJD4AC4AbSkePEARVRZBy-PVAAERW",
+      "is_read": 0,
+      "message": "e612e53182c879",
+      "to": "DuckerMan",
+      "from": "Tester",
+      "date": 1509383727
+    },
+    {
+      "id": "HyB0Z1HA-BJlrAWyH0br1ZHRZ1HRZ",
+      "is_read": 0,
+      "message": "d9590f4a26c320290eb05e2f",
+      "to": "TesterZ",
+      "from": "DuckerMan",
+      "date": 1509384652
+    }
+  ]
+}

@@ -6,6 +6,8 @@ var shortid = require('shortid');
 
 var crts = require('./classes/crts.js');
 var attachments = require('./classes/attachments.js');
+
+
 low(adapter)
   .then(db => {
 
@@ -14,13 +16,12 @@ low(adapter)
 
 
 
-   db.defaults({users: [] })
+   db.defaults({users: []})
   .write()
 
 
 
 var getDB = db.get('users');
-
 var mail = require('./classes/mail.js');
 var LZString = require('lz-string');
 
@@ -32,8 +33,10 @@ var LZString = require('lz-string');
 const ERROR_PARAMS_EMPTY_CODE = 1, ERROR_USERS_EXITS = 2, ERROR_CODE_ISNT_VALIDE = 4, ERROR_VALIDATION_NOT_NEEDED = 5, ERROR_FAILDED_AUTH=7, ERROR_AUTHCODE_ISNT_VALID = 8;
 
 
-const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NEED_VALIDATION = 9, SUCCESSFUL_AUTH = 10;
+const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NEED_VALIDATION = 9, SUCCESSFUL_AUTH = 10, SUCCESSFUL_GENERATE_TOKEN = 11;
 
+
+const SUCCESSFUL_GETTING_INFO = 15;
 var registerAccountPartOne = function(login, email, name, surname){
 
 
@@ -223,7 +226,19 @@ resolve(u(ERROR_CODE_ISNT_VALIDE, authCode, true));
 });
 }
 
+var getFastInfo = function(login){
+	return new Promise(function(resolve,reject){
+		var info = getDB.find({login:login}).value();
 
+
+		if(info == undefined){
+			info = {name:'DELETED', surname:'', userid:0};
+		}
+resolve(u(SUCCESSFUL_GETTING_INFO, {name:info['name'], surname:info['surname'], userid:info['userid'], image:info['image']} , false));
+
+	});
+
+};
 
 var authAccountByCrt = function(login, crt){
 	if(isEmpty(login) || isEmpty(crt)){
@@ -243,6 +258,26 @@ var authAccountByCrt = function(login, crt){
 	}
 	
 }
+
+
+var generateToken = function(login){
+return new Promise(function(resolve,reject){
+
+
+if(isEmpty(login)){
+
+	resolve(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+
+			
+			return false;
+}
+
+var token = shortid.generate() + shortid.generate() + shortid.generate();
+resolve(u(SUCCESSFUL_GENERATE_TOKEN, token, false));
+
+
+});
+};
 
 
 var isLoginBusy = function(login){
@@ -279,7 +314,8 @@ module.exports.validateAccount = validateAccount;
 module.exports.authAccount =authAccount;
 module.exports.authCodeEnter=authCodeEnter;
 module.exports.authAccountByCrt=authAccountByCrt;
-
+module.exports.generateToken=generateToken;
+module.exports.getFastInfo=getFastInfo;
 
 module.exports.attachments=attachments;
 function empty(s){

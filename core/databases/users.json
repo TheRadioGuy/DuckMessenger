@@ -6,7 +6,7 @@
       "email": "DuckerMan",
       "name": "DuckerMan",
       "surname": "DuckerMan",
-      "image": "default.png",
+      "image": "defaultImage",
       "contacts": {},
       "rights": 0,
       "online": 0,
@@ -19,7 +19,7 @@
       "email": "Duck",
       "name": "Duck",
       "surname": "Duck",
-      "image": "default.png",
+      "image": "defaultImage",
       "contacts": {},
       "rights": 0,
       "online": 0,
@@ -32,12 +32,28 @@
       "email": "Zuck",
       "name": "Zuck",
       "surname": "Zuck",
-      "image": "default.png",
+      "image": "defaultImage",
+      "contacts": {},
+      "rights": 0,
+      "online": 0,
+      "dialogs": {},
+      "is_validate": 1
+    },
+    {
+      "userid": "S1yIiiVCbrkl1Uij4RW",
+      "login": "Tester",
+      "email": "tester@Mail.sru",
+      "name": "Tester",
+      "surname": "Testerov",
+      "image": "defaultImage",
       "contacts": {},
       "rights": 0,
       "online": 0,
       "dialogs": {},
       "is_validate": 1
     }
+  ],
+  "tokens": [
+    "BJP0BF7CbBJxDCrFXC-rkZP0BFmRZ"
   ]
 }

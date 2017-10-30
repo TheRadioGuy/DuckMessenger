@@ -2,6 +2,7 @@ function Client(serverCommunitation){
 	var win = new modulesWindow();
 var socket = serverCommunitation;
 
+this.openSocket = socket;
 
 const ERROR_PARAMS_EMPTY_CODE = 1, ERROR_USERS_EXITS = 2, ERROR_CODE_ISNT_VALIDE = 4, ERROR_VALIDATION_NOT_NEEDED = 5, ERROR_FAILDED_AUTH=7, ERROR_AUTHCODE_ISNT_VALID = 8;
 
@@ -10,6 +11,88 @@ const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NE
 
 
 
+
+socket.socketCopy.on('new message', function(msg){
+msg = JSON.parse(LZString.decompressFromUTF16(msg))['msg'];
+var key = getKeyForUser(msg['from']);
+
+if(key==undefined) key = getKeyForUser(msg['to']);
+
+
+
+
+console.log('key : ' + key);
+msg['message'] = decryptMessage(msg['message'], key);
+
+
+
+console.log(msg);
+});
+
+socket.socketCopy.on('encryptionKey', function(key){
+key = JSON.parse(LZString.decompressFromUTF16(key));
+
+
+
+console.log(key);
+
+setKeyForUser(key['from'], key['key']);
+});
+
+
+
+function setKey(to, key){
+socket.setKey(to, key);
+return true;
+}
+
+this.getDialogs = function(){
+	socket.getDialogs().then(function(r){
+
+		console.log(r);
+
+
+		forEach(r['msg'], function(key, value){
+			
+			var message = decryptMessage(value['message'], getKeyForUser(value['with']));
+			
+
+					socket.fastInfo(value['with']).then(function(z){
+						console.log(value);
+						console.log(z);
+
+
+						getFileSecter(z['msg']['image']).then(function(url){
+
+
+							$(`<div class="dialog" id="messageGolyb">
+  <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
+   <p id="textMessage" style="
+">`+message+`</p>
+  <img src="`+url+`" id="profilePhoto"></img>
+</div>`).prependTo('#leftPanelMessages');
+
+
+						});
+
+
+
+						
+					});
+		});
+	});
+}
+
+
+
+
+function forEach(data, callback){
+  for(var key in data){
+    if(data.hasOwnProperty(key)){
+      callback(key, data[key]);
+    }
+  }
+}
 
 
 
@@ -84,6 +167,7 @@ this.enterCode = function(login, code){
   	else if(r['code']==SUCCESSFUL_AUTH){
   		// auth!
 
+
   		$('.row').fadeIn(250);
   		setCookie('lastLogin', r['msg']['login']);
   		setCookie('lastCrt', r['msg']['crt']);
@@ -122,6 +206,8 @@ this.authAccount=function(login){
   			
   			$('#firstAuthSection').hide();
 			$('#registrationS').fadeIn(300);	
+			$('#myLoginRegInput').focus();
+			$('#myLoginRegInput').val(login);
   	}
   	else if(r['code']==SUCCESSFUL_AUTH_BUT_NEED_VALIDATION){
   		$('#firstAuthSection').hide();
@@ -160,6 +246,122 @@ console.log(r);
 
 
 };
+
+
+
+var encryptMessage = function(text, key){
+var textBytes = aesjs.utils.utf8.toBytes(text);
+key = aesjs.utils.hex.toBytes(key);
+var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
+var encryptedBytes = aesCtr.encrypt(textBytes);
+var encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
+return encryptedHex;
+
+
+};
+
+ var decryptMessage = function(text, key){
+var encryptedBytes = aesjs.utils.hex.toBytes(text);
+ key = aesjs.utils.hex.toBytes(key);
+// The counter mode of operation maintains internal state, so to 
+// decrypt a new instance must be instantiated. 
+var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
+var decryptedBytes = aesCtr.decrypt(encryptedBytes);
+ 
+// Convert our bytes back into text 
+var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
+return decryptedText;
+
+};
+
+
+
+
+
+this.sendMessage = function(message,to){
+	var key = getKeyForUser(to);
+	if(key==undefined){
+		key = generateEncryptKey();
+		setKeyForUser(to, key);
+
+
+
+
+		setKey(to, key);
+
+	}
+	
+	message = encryptMessage(message, key);
+
+
+socket.sendMessage(message, to).then(function(r){
+	console.log(r);
+});
+};
+
+
+  function toHexString(byteArray) {
+  return Array.from(byteArray, function(byte) {
+    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+  }).join('')
+}
+
+
+var getKeyForUser = function(id){
+var keys = localStorage.getItem('keys');
+
+
+if(keys == undefined || keys == "null") return undefined;
+
+
+keys = JSON.parse(keys);
+
+
+return keys[id];
+};
+
+var setKeyForUser = function(id, key){
+
+	var keys = localStorage.getItem('keys');
+	if(keys == undefined || keys == "null") keys = {};
+	else keys = JSON.parse(keys);
+
+
+	keys[id] = key;
+
+	localStorage.setItem('keys', JSON.stringify(keys));
+
+
+}
+
+
+
+var generateEncryptKey = function(){
+            var key = Array();
+
+            for(var i = 0;i < 33;i++){
+              if(key.length == 32){
+                 return toHexString(new Uint8Array(key));
+              
+              }
+
+
+            key.push(Math.floor(Math.random() * 256));
+            }
+            
+
+             }
+
+
+
+this.getLinkAttachments = function(){
+socket.getLinkAttachments().then(function(r){
+	console.log(r);
+});
+};
+
+
+
 
 this.validateAccount = function(login, code){
 
@@ -248,6 +450,54 @@ var blobUrl = URL.createObjectURL(blob);
 
 return blobUrl;
 }
+
+
+
+var getFileSecter = function(id){
+	return new Promise(function(resolve,reject){
+
+
+			$.get('/getAttachment/'+id, {}, function(r){
+
+
+
+	try{
+		r = JSON.parse(r);
+
+
+
+	}
+
+
+	catch(e){
+
+		resolve(false);
+		return false;
+
+	}
+try{
+	var blob = createBlobFromSource(r['data'], r['mime']);
+}
+catch(e){
+	resolve(false);
+	return false;
+}
+resolve(blob);
+
+
+
+
+
+});
+
+
+
+	});
+
+
+
+}
+
 
 this.getFile = function(id){
 	return new Promise(function(resolve,reject){

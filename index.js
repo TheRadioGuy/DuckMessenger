@@ -5,9 +5,11 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var core = require('./core/core.js');
+var dialogs = require('./core/classes/dialogs.js');
 var LZString = require('lz-string');
 var port = process.env.PORT || 443;
 var fs = require('fs');
+var aesjs = require('aes-js');
 var parseUrl = require('url');
 const fileUpload = require('express-fileupload');
 var sanitizer = require('sanitizer');
@@ -39,10 +41,12 @@ res.send(JSON.stringify(response));
 
 app.post('/uploadImage/:token/:isProfilePhoto', function(req, res) {
 
-  var token = req.params.token;
+  var login = core.attachments.isTokenValide(req.params.token, tokens);
    var isProfilePhoto = req.params.isProfilePhoto;
 
-if(token == undefined || isProfilePhoto==undefined || isProfilePhoto=='') {
+   console.log('Login: ' + login)
+
+if(login == false || isProfilePhoto==undefined || isProfilePhoto=='') {
 
 
   res.status(500).send('This is error!');
@@ -62,7 +66,7 @@ if(token == undefined || isProfilePhoto==undefined || isProfilePhoto=='') {
   let fileName = sampleFile.name, fileData =  sampleFile.data.toString('base64'), fileType = sampleFile.name.split('.').pop(), fileMime = sampleFile.mimetype;
   
 
-  let Attachment = {login:token, is_profile:0, data:fileData, mime:fileMime};
+  let Attachment = {login:login, is_profile:0, data:fileData, mime:fileMime, name:fileName};
   console.log(sampleFile);
 
 
@@ -80,13 +84,10 @@ if(token == undefined || isProfilePhoto==undefined || isProfilePhoto=='') {
 
 
 
-    res.send('all!');
+    res.send( core.attachments.addAttachments(Attachment));
 
   
     console.log(sampleFile);
-
-
-    core.attachments.addAttachments(Attachment);
 
   
 
@@ -94,16 +95,19 @@ if(token == undefined || isProfilePhoto==undefined || isProfilePhoto=='') {
   
 });
 
-var clients = {}, waitingSend = {};
+var clients = {}, waitingSend = {}, tokens = {};
 io.on('connection', function (socket) {
 
 
 
 
 
-var login, authcode;
+var login, authcode, key;
 
-
+socket.on('setKey', function(key){
+key = key;
+console.log('New key: ' + key);
+});
 
 socket.on('request', function(data, fn){
 
@@ -297,6 +301,31 @@ fn(r);
 });
 break;
 
+case 'key.setKey':
+if(isEmpty(data['key']) || isEmpty(data['to'] || isEmpty(login))){
+  fn(LZString.compressToUTF16(JSON.stringify({error_code:1, error:1, msg:'Params is empty'})));
+  return false;
+}
+else{
+
+
+  if(clients[data['to']] == undefined){
+
+
+    // wait list..
+
+    waitingSend[data['to']] = LZString.compressToUTF16(JSON.stringify({from:login, key:data['key']}));
+    console.log('Wait send..')
+  }
+  else{
+
+
+    io.to(clients[data['to']]).emit('encryptionKey', LZString.compressToUTF16(JSON.stringify({from:login, key:data['key']}))) ;
+
+  }
+
+}
+break;
 case 'auth.validateAccount':
 core.validateAccount(data['login'], data['code'], authcode).then(function(r){
 
@@ -378,6 +407,53 @@ fn(r);
 break;
 
 
+
+case 'messages.send':
+
+console.log(data['message']);
+dialogs.sendMessage(data['message'], data['to'], login).then(function(r){
+
+if(JSON.parse(LZString.decompressFromUTF16(r))['code']==12){
+  console.log('client ID : ' + clients[data['to']]);
+  io.to(clients[data['to']]).emit('new message', r);
+  // send...
+}
+
+
+  fn(r);
+});
+break;
+case 'info.getFast':
+core.getFastInfo(data['login']).then(function(r){
+  fn(r);
+});
+break;
+case 'messages.getDialogs':
+dialogs.getDialogs(login).then(function(r){
+
+
+
+
+
+  fn(r);
+});
+break;
+case 'attachments.getLink':
+core.generateToken(login).then(function(r){
+
+  r = JSON.parse(LZString.decompressFromUTF16(r));
+
+  if(r['code']==11){
+
+    tokens[r['msg']] = login;
+
+
+    console.log(tokens);
+  }
+  r = LZString.compressToUTF16(JSON.stringify(r));
+  fn(r);
+});
+break;
 case 'utils.isBusyLogin':
 core.isLoginBusy(data['l']).then(function(r){
 fn(r)
@@ -482,3 +558,19 @@ function addslashes(str) {
     str=str.replace(/\0/g,'\\0');
     return str;
 }
+
+
+ var decryptRequest = function(text, key){
+var textBytes = aesjs.utils.utf8.toBytes(text);
+var keyBytes = aesjs.utils.hex.toBytes(key);
+
+var aesCtr = new aesjs.ModeOfOperation.ctr(keyBytes, new aesjs.Counter(5));
+var decryptedBytes = aesCtr.decrypt(textBytes);
+ 
+// Convert our bytes back into text 
+var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
+console.log(decryptedText);
+
+return decryptedText;
+
+};
