@@ -46,11 +46,11 @@ socket.setKey(to, key);
 return true;
 }
 
-this.getDialogs = function(){
+var getDialogs = function(){
 	socket.getDialogs().then(function(r){
 
 		console.log(r);
-
+		$('#prealoderDialogs').hide();
 
 		forEach(r['msg'], function(key, value){
 			
@@ -80,6 +80,8 @@ this.getDialogs = function(){
 						
 					});
 		});
+
+		
 	});
 }
 
@@ -167,6 +169,7 @@ this.enterCode = function(login, code){
   	else if(r['code']==SUCCESSFUL_AUTH){
   		// auth!
 
+  		getDialogs();
 
   		$('.row').fadeIn(250);
   		setCookie('lastLogin', r['msg']['login']);
@@ -234,6 +237,8 @@ console.log(r);
 
  if(r['code']==10){
 	// auth!!
+
+	getDialogs()
 	$('.row').fadeIn(250);
 	$('#blockAuth').fadeOut(200);
 
@@ -386,7 +391,7 @@ if(r['error_code']==ERROR_PARAMS_EMPTY_CODE){
 
 else if(r['code']==6){
 	// auth!!
-
+	getDialogs()
 	$('.row').fadeIn(250);
 
 	$('#blockAuth').fadeOut(200);
