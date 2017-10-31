@@ -289,6 +289,7 @@ r = LZString.compressToUTF16(JSON.stringify(r));
 
   authcode='';
    clients[login] = socket.id;
+   login = data['login'];
 
 
 }
@@ -393,6 +394,8 @@ if(r['code']==10){
 
 authcode = '';
     login = data['login'];
+
+
     clients[login] = socket.id;//auth
 
 
@@ -429,6 +432,8 @@ core.getFastInfo(data['login']).then(function(r){
 });
 break;
 case 'messages.getDialogs':
+
+console.log('Login : ' + login);
 dialogs.getDialogs(login).then(function(r){
 
 
@@ -436,6 +441,17 @@ dialogs.getDialogs(login).then(function(r){
 
 
   fn(r);
+});
+break;
+
+
+case 'messages.get':
+dialogs.getMessages(data['login'], login).then(function(r){
+
+
+
+fn(r);
+
 });
 break;
 case 'attachments.getLink':

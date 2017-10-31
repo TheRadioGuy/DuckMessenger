@@ -59,6 +59,12 @@ return new Promise(function(r,rj){
 
 };
 
+this.getMessages=function(login){
+return new Promise(function(r,rj){
+		r(sendRequest({method:'messages.get', login:login}));
+	});
+};
+
 this.fastInfo = function(login){
 
 	return new Promise(function(r,rj){

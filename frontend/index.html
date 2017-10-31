@@ -240,12 +240,31 @@ div #leftPanelMessages .dialog{
   width: 100%;
   
   height: 56px;
-
+  background-color: white;
       top: 48px;
-    margin-top: -15px;
+    margin-top: 0px;
 
 
 }
+div#messageTester:first-child {
+    /* top: 28px; */
+    margin-top: -17px;
+}
+
+
+
+.selectedDialog{
+background-color: #1976D2 !important;
+}
+
+.selectedName{
+color: #ffffff !important;
+}
+
+.selectedText{
+color: #e8e8e8 !important;
+}
+
 div #leftPanelMessages .dialog #templateName{
     position: absolute;
     width: 159px;
@@ -283,7 +302,7 @@ div #leftPanelMessages .dialog #templateMessage{
 div #leftPanelMessages .dialog #userName{
        position: relative;
     font-size: 15px;
-    top: 6px;
+    top: -8px;
     left: 62px;
     color: #212121;
     font-weight: 500;
@@ -294,7 +313,7 @@ div #leftPanelMessages .dialog #profilePhoto{
 position: relative;
     width: 48px;
     height: 48px;
-    top: -68px;
+    top: -82px;
     left: 6px;
     border-radius: 100px;
 }
@@ -303,7 +322,7 @@ position: relative;
 div #leftPanelMessages .dialog #textMessage{
       position: relative;
     font-size: 14px;
-    top: -9px;
+    top: -23px;
     left: 63px;
     color: #797979;
         width: 182px;
@@ -312,6 +331,13 @@ div #leftPanelMessages .dialog #textMessage{
 
   div #leftPanelMessages{
     width: 100%;
+  }
+}
+
+@media screen and (max-width: 320px){
+  #blockAuth{
+    width: 320px;
+    margin: -110px 0 0 -160px;
   }
 }
 </style>

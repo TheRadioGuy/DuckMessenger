@@ -7,7 +7,7 @@
 const ERROR_PARAMS_EMPTY_CODE = 1, ERROR_USERS_EXITS = 2, ERROR_CODE_ISNT_VALIDE = 4, ERROR_VALIDATION_NOT_NEEDED = 5, ERROR_FAILDED_AUTH=7, ERROR_AUTHCODE_ISNT_VALID = 8;
 
 
-const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NEED_VALIDATION = 9, SUCCESSFUL_AUTH = 10, SUCCESSFUL_GENERATE_TOKEN = 11, SUCCESSFUL_SENDING_MESSAGE=12, NEW_MESSAGE=13, SUCCESSFUL_GET_DIALOGS = 14;
+const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NEED_VALIDATION = 9, SUCCESSFUL_AUTH = 10, SUCCESSFUL_GENERATE_TOKEN = 11, SUCCESSFUL_SENDING_MESSAGE=12, NEW_MESSAGE=13, SUCCESSFUL_GET_DIALOGS = 14, SUCCESSFUL_GET_MESSAGES=15;
 
 
 
@@ -37,6 +37,70 @@ var dialogsDB = db.get('dialogs');
 var messagesDB = db.get('messages');
 
 
+
+
+
+var getMessages = function(login, loginMy){
+return new Promise(function(resolve,reject){
+
+
+if(isEmpty(login) || isEmpty(loginMy)){
+
+    resolve(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+        return false;
+
+
+}
+
+
+
+var messagesOne = messagesDB.filter({to: login, from:loginMy})
+  .sortBy('date')
+  .take(99999999999999999999999999999999999999) // Fix!
+  .value();
+
+
+  var messagesTwo = messagesDB.filter({to: loginMy, from:login})
+  .sortBy('date')
+  .take(99999999999999999999999999999999999999) // Fix!
+  .value();
+
+
+
+
+
+
+async.forEachOf(messagesTwo, function (value, key, callback) {
+  
+
+
+
+
+
+messagesOne.push(value);
+
+
+
+  callback();
+}, function (err) {
+    if (err) console.error(err.message);
+    // configs is now a map of JSON data
+    resolve(u(SUCCESSFUL_GET_MESSAGES, messagesOne, false));
+   
+
+
+ return false;
+});
+
+
+
+
+
+
+
+
+});
+};
 var getDialogs = function(login){
 // SUCCESSFUL_GET_DIALOGS
 
@@ -64,13 +128,13 @@ async.forEachOf(dialogsNotSort, function (value, key, callback) {
 if(value['dialogWith'] == login){
 
     
-dialogs.push({with:value['dialogAuthor'], dialogId:value['dialogId'], message:value['message']});
+dialogs.push({with:value['dialogAuthor'], dialogId:value['dialogId'], message:value['message'], time:value['time']});
 
 
 }
 
 else if(value['dialogAuthor']==login){
-dialogs.push({with:value['dialogWith'], dialogId:value['dialogId'], message:value['message']});
+dialogs.push({with:value['dialogWith'], dialogId:value['dialogId'], message:value['message'], time:value['time']});
 
 }
 
@@ -137,13 +201,13 @@ return new Promise(function(resolve,reject){
         if(hasDialogs==undefined){
             // Create new
 
-            dialogsDB.push({dialogWith:login, dialogAuthor:to, dialogId:shortid.generate()+shortid.generate()+shortid.generate(), message:msg}).write();
+            dialogsDB.push({dialogWith:login, dialogAuthor:to, dialogId:shortid.generate()+shortid.generate()+shortid.generate(), message:msg, time:Math.floor(Date.now()/1000)}).write();
         }
         else{
 
             // update
 
-            dialogsDB.find({dialogWith:to, dialogAuthor:login}).assign({message:msg}).write();
+            dialogsDB.find({dialogWith:to, dialogAuthor:login}).assign({message:msg, time:Math.floor(Date.now()/1000)}).write();
         }
 
     }
@@ -153,7 +217,7 @@ return new Promise(function(resolve,reject){
 
         // update  message
 
-         dialogsDB.find({dialogWith:login, dialogAuthor:to}).assign({message:msg}).write();
+         dialogsDB.find({dialogWith:login, dialogAuthor:to}).assign({message:msg, time:Math.floor(Date.now()/1000)}).write();
 
 
     }
@@ -186,6 +250,7 @@ return new Promise(function(resolve,reject){
 };
 module.exports.sendMessage=sendMessage;
 module.exports.getDialogs=getDialogs;
+module.exports.getMessages=getMessages;
 function forEach(data, callback){
   for(var key in data){
     if(data.hasOwnProperty(key)){

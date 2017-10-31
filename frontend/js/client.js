@@ -12,6 +12,10 @@ const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NE
 
 
 
+
+
+var cache = {}; // Cache for blobs.
+
 socket.socketCopy.on('new message', function(msg){
 msg = JSON.parse(LZString.decompressFromUTF16(msg))['msg'];
 var key = getKeyForUser(msg['from']);
@@ -65,7 +69,7 @@ var getDialogs = function(){
 						getFileSecter(z['msg']['image']).then(function(url){
 
 
-							$(`<div class="dialog" id="message`+value['with']+`">
+							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+value['with']+`')" id="message`+value['with']+`">
   <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
    <p id="textMessage" style="
 ">`+message+`</p>
@@ -85,6 +89,29 @@ var getDialogs = function(){
 	});
 }
 
+
+
+
+
+
+
+
+
+this.selectDialog = function(login){
+$('#message'+login).addClass('selectedDialog');
+$('#message'+login+' #userName').addClass('selectedName');
+$('#message'+login+' #textMessage').addClass('selectedText');
+
+
+
+socket.getMessages(login).then(function(r){
+console.log(r);
+})
+
+
+
+
+};
 
 
 
