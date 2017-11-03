@@ -1,8 +1,9 @@
 function Client(serverCommunitation){
 	var win = new modulesWindow();
 var socket = serverCommunitation;
-
+var isMobile = $(window).width() <= 480;
 this.openSocket = socket;
+this.openWindow = win;
 
 const ERROR_PARAMS_EMPTY_CODE = 1, ERROR_USERS_EXITS = 2, ERROR_CODE_ISNT_VALIDE = 4, ERROR_VALIDATION_NOT_NEEDED = 5, ERROR_FAILDED_AUTH=7, ERROR_AUTHCODE_ISNT_VALID = 8;
 
@@ -31,6 +32,64 @@ msg['message'] = decryptMessage(msg['message'], key);
 
 
 console.log(msg);
+
+
+
+
+
+
+
+$('#message'+msg['from']).prependTo('#leftPanelMessages');
+
+$('#message'+msg['from']+' #textMessage').text(msg['message']);
+
+
+
+if($('#message'+msg['from']).length==0){
+
+
+console.log('length null');
+	socket.fastInfo(msg['from']).then(function(z){
+						
+						console.log(z);
+
+
+						getFileSecter(z['msg']['image']).then(function(url){
+							if(url == false) return false;
+
+							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+msg['from']+`')" id="message`+msg['from']+`">
+  <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
+   <p id="textMessage" class="truncate" style="
+">`+msg['message']+`</p>
+  <img src="`+url+`" id="profilePhoto"></img>
+</div>`).prependTo('#leftPanelMessages');
+
+
+						});
+
+
+
+						
+					});
+
+
+}
+
+
+
+
+
+
+
+if($('#block'+msg['from']).length!=0){
+
+
+$('#block'+msg['from']+' .messagesList').append(`<li class="messageToMe">`+msg['message']+`</li>`);
+
+$('#block'+login).scrollTop(9999999999999999999999999999999999999);
+
+}
+
 });
 
 socket.socketCopy.on('encryptionKey', function(key){
@@ -50,15 +109,27 @@ socket.setKey(to, key);
 return true;
 }
 
+
 var getDialogs = function(){
 	socket.getDialogs().then(function(r){
 
 		console.log(r);
 		$('#prealoderDialogs').hide();
+		if(isEmpty(r['msg'])){
 
+			console.log('No dialogs');
+
+			$('#noDialogsText').show();
+		}
 		forEach(r['msg'], function(key, value){
+			var message;
+			try{
+				message = decryptMessage(value['message'], getKeyForUser(value['with']));
+			}
+			catch(e){
+				message = '<span style="color:#ce4242;">Ошибка</span>';
+			}
 			
-			var message = decryptMessage(value['message'], getKeyForUser(value['with']));
 			
 
 					socket.fastInfo(value['with']).then(function(z){
@@ -67,11 +138,11 @@ var getDialogs = function(){
 
 
 						getFileSecter(z['msg']['image']).then(function(url){
-
+							if(url == false) return false;
 
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+value['with']+`')" id="message`+value['with']+`">
   <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
-   <p id="textMessage" style="
+   <p id="textMessage" class="truncate" style="
 ">`+message+`</p>
   <img src="`+url+`" id="profilePhoto"></img>
 </div>`).prependTo('#leftPanelMessages');
@@ -98,15 +169,187 @@ var getDialogs = function(){
 
 
 this.selectDialog = function(login){
+
+	$('.dialog').removeClass('selectedDialog');
+$('.dialog #userName').removeClass('selectedName');
+$('.dialog #textMessage').removeClass('selectedText');
+
+
+
 $('#message'+login).addClass('selectedDialog');
 $('#message'+login+' #userName').addClass('selectedName');
 $('#message'+login+' #textMessage').addClass('selectedText');
 
 
 
+
+if(isMobile){
+
+
+	win.closeMobileWindow($('#leftPanelMessages'), $('.rightBlock'));
+
+	
+	
+}
+
+
+
+// paste messageBlock
+$('.messagesBlock').hide();
+if($('#block'+login).length!=0){
+
+$('#block'+login).show();
+
+}
+
+else{
+
+
+
+
+
+
+
+
+
+
+
+
+	socket.getOnline(login).then(function(r){
+var online = r['msg'];
+
+console.log(online);
+var text;
+
+if(online['online'] == 0){
+
+
+	var lastOnline = online['lastOnline'];
+	var timeNow = Math.floor(Date.now()/1000);
+
+
+	var difference = timeNow - lastOnline;
+
+	console.log(difference);
+
+
+
+	var days = Math.round(difference/86400);
+	if(lastOnline == 0){
+		text = '<p class="topPanelLastonline offline">Был в сети мамонт лет назад</p>';
+	}
+	else if(days <= 0){
+
+			var hours = Math.round(difference / 3600);
+
+	if(hours<= 0){
+
+
+		var minutes = Math.round(difference / 60);
+		if(minutes == 0) text = '<p class="topPanelLastonline offline">Был в сети недавно</p>';
+		text = '<p class="topPanelLastonline offline">Был в сети '+minutes+' минут назад</p>';
+
+
+	}
+
+	else{
+
+		text = '<p class="topPanelLastonline offline">Был в сети '+hours+' часов назад</p>';
+	}
+
+	}
+
+	else if(days>= 14){
+		text = '<p class="topPanelLastonline offline">Был в сети давно</p>';
+	}
+
+	else{
+
+		text = '<p class="topPanelLastonline offline">Был в сети '+days+' дней назад</p>';
+	}
+
+
+
+
+	
+}
+else text = '<p class="topPanelLastonline online">в сети</p>';
+
+
+
+
+
+
+	$(`<div class="messagesBlock" id="block`+login+`">
+  
+  <div id="userInfoTopPanel" class="z-depth-2">
+  	<i class="waves-effect waves-circle material-icons mobileBackButton backDialogs" onclick="client.openWindow.closeMobileWindow($('.rightBlock'), $('#leftPanelMessages'));">arrow_back</i>
+    <img src="`+$('#message'+login+' #profilePhoto').attr('src')+`" id="profilePhotoTopPanel">
+  <p id="topPanelName">`+$('#message'+login+' #userName').text()+`</p>
+  `+text+`
+  </div>
+
+
+<ul class='messagesList'>
+
+
+
+</ul>
+
+<div class="messagesSendSection" style="
+">
+
+<i class="material-icons sendAttachmentButton" style="" onclick="$('.uploadFileInput').trigger('click'); console.log('Choose file');">attachment</i>
+
+
+<div class="messageSendBlock" contenteditable="true" style="
+"></div>
+</div>
+  
+</div>`).prependTo('.rightBlock');
+
+
+});
+
+}
+
+
+$('#spinnerMessages').show();
+
+
+if($('#block'+login+' .messageFromMe ').length==0 && $('#block'+login+' .messageToMe ').length==0){
+
 socket.getMessages(login).then(function(r){
-console.log(r);
+$('#spinnerMessages').hide();
+	var messages = r['msg'];
+
+
+forEach(messages, function(key, value){
+
+	console.log(value);
+var whoIsWho = (getCookie('lastLogin') == value['from']) ? value['to'] : value['from'];
+
+
+var text = decryptMessage(value['message'], getKeyForUser(whoIsWho));
+
+
+var messageClass = (value['to'] == whoIsWho) ? 'messageFromMe' : 'messageToMe';
+
+$(`<li class='`+messageClass+`'>`+text+`</li>`).prependTo('#block' +whoIsWho+ ' .messagesList');
+
+console.log(messageClass);
+
+});
+
+$('#block'+login).scrollTop(9999999999999999999999999999999999999);
+$('#spinnerMessages').hide();
 })
+
+}
+
+else $('#spinnerMessages').hide();
+
+
 
 
 
@@ -195,8 +438,23 @@ this.enterCode = function(login, code){
   	}
   	else if(r['code']==SUCCESSFUL_AUTH){
   		// auth!
-
+  		$('#blockAuth').remove();
   		getDialogs();
+
+  		$('#infoPanelLogin').text(login);
+
+  		socket.fastInfo(login).then(function(info){
+  			$('#infoPanelName').text(info['msg']['name']+' ' + info['msg']['surname']);
+  			
+
+  			getFileSecter(info['msg']['image']).then(function(photo){ // load photo
+  				$('#infoPanelImage').attr('src', photo);
+
+  			});
+  			
+  		});
+
+
 
   		$('.row').fadeIn(250);
   		setCookie('lastLogin', r['msg']['login']);
@@ -264,10 +522,25 @@ console.log(r);
 
  if(r['code']==10){
 	// auth!!
-
+	$('#blockAuth').remove();
 	getDialogs()
 	$('.row').fadeIn(250);
 	$('#blockAuth').fadeOut(200);
+
+	$('#infoPanelLogin').text(login);
+
+  		socket.fastInfo(login).then(function(info){
+  			$('#infoPanelName').text(info['msg']['name']+' ' + info['msg']['surname']);
+  			
+
+  			getFileSecter(info['msg']['image']).then(function(photo){ // load photo
+  				$('#infoPanelImage').attr('src', photo);
+
+  			});
+  			
+  		});
+
+
 
 	setCookie('lastLogin', r['msg']['login']);
   		setCookie('lastCrt', r['msg']['crt']);
@@ -279,7 +552,25 @@ console.log(r);
 
 };
 
+this.onResize = function(){
 
+	isMobile = $(window).width() <= 480;
+  if($(window).width() > 480){
+      var widthBlock = $(window).width() - 265;
+
+
+      $('#leftPanelMessages').css('left', '0px');
+
+  $('.rightBlock').width(widthBlock);
+    $('.rightBlock').css('left', '265px');
+  }
+
+  else{
+    $('.rightBlock').width($(window).width());
+    $('.rightBlock').css('left', '0px');
+
+  }
+};
 
 var encryptMessage = function(text, key){
 var textBytes = aesjs.utils.utf8.toBytes(text);
@@ -310,6 +601,47 @@ return decryptedText;
 
 
 
+var sendMessageProtected = function(message,to){
+	var key = getKeyForUser(to);
+	if(key==undefined){
+		key = generateEncryptKey();
+		setKeyForUser(to, key);
+
+
+
+
+		setKey(to, key);
+
+	}
+	var messageRaw = message;
+	message = encryptMessage(message, key);
+
+	console.log('msg : ' + message);
+
+if(to != getCookie('lastLogin')){
+
+	var randomID = generateEncryptKey();
+
+	$('#block'+to+' .messagesList').append(`<li class="messageFromMe" id='messageID`+randomID+`'>`+messageRaw+`<i class="material-icons statusSendMessage">access_time</i></li>`);
+
+	$('#message'+to).prependTo('#leftPanelMessages');
+
+
+
+$('#message'+to+' #textMessage').text(messageRaw);
+
+$('#block'+to).scrollTop(9999999999999999999999999999999999999);
+	// wait send msg
+}
+socket.sendMessage(message, to).then(function(r){
+	console.log(r);
+	$('#messageID'+randomID+' .statusSendMessage').text('check');
+	$('#messageID'+randomID).attr('id', r['msg']['id']);
+
+});
+};
+
+
 this.sendMessage = function(message,to){
 	var key = getKeyForUser(to);
 	if(key==undefined){
@@ -322,12 +654,31 @@ this.sendMessage = function(message,to){
 		setKey(to, key);
 
 	}
-	
+	var messageRaw = message;
 	message = encryptMessage(message, key);
 
+	console.log('msg : ' + message);
 
+if(to != getCookie('lastLogin')){
+
+	var randomID = generateEncryptKey();
+
+	$('#block'+to+' .messagesList').append(`<li class="messageFromMe" id='messageID`+randomID+`'>`+messageRaw+`<i class="material-icons statusSendMessage">access_time</i></li>`);
+
+	$('#message'+to).prependTo('#leftPanelMessages');
+
+
+
+$('#message'+to+' #textMessage').text(messageRaw);
+
+$('#block'+to).scrollTop(9999999999999999999999999999999999999);
+	// wait send msg
+}
 socket.sendMessage(message, to).then(function(r){
 	console.log(r);
+	$('#messageID'+randomID+' .statusSendMessage').text('check');
+	$('#messageID'+randomID).attr('id', r['msg']['id']);
+
 });
 };
 
@@ -386,11 +737,6 @@ var generateEncryptKey = function(){
 
 
 
-this.getLinkAttachments = function(){
-socket.getLinkAttachments().then(function(r){
-	console.log(r);
-});
-};
 
 
 
@@ -418,8 +764,25 @@ if(r['error_code']==ERROR_PARAMS_EMPTY_CODE){
 
 else if(r['code']==6){
 	// auth!!
+
+	$('#blockAuth').remove();
 	getDialogs()
 	$('.row').fadeIn(250);
+
+
+	$('#infoPanelLogin').text(login);
+
+  		socket.fastInfo(login).then(function(info){
+  			$('#infoPanelName').text(info['msg']['name']+' ' + info['msg']['surname']);
+  			
+
+  			getFileSecter(info['msg']['image']).then(function(photo){ // load photo
+  				$('#infoPanelImage').attr('src', photo);
+
+  			});
+  			
+  		});
+
 
 	$('#blockAuth').fadeOut(200);
 
@@ -576,13 +939,207 @@ resolve(blob);
 
 }
 
-this.uploadFile = function(file, isProfileImage){
+var uploadFile = function(file, isProfileImage, token, to){
+
+
+
+var fd = new FormData();
+fd.append('file', file);
+  var xhr = new XMLHttpRequest();
+
+  // обработчик для закачки
+  xhr.upload.onprogress = function(event) {
+    console.log(event.loaded + ' / ' + event.total);
+  }
+
+  // обработчики успеха и ошибки
+  // если status == 200, то это успех, иначе ошибка
+  xhr.onload = xhr.onerror = function() {
+    if (this.status == 200) {
+      var info = JSON.parse(this.responseText);
+
+      console.log(info);
+
+      sendMessageProtected(info['type']+'_'+info['id']+'_'+info['name'], to);
+    } else {
+      console.log("error " + this.status);
+    }
+  };
+
+  xhr.open("POST", "/uploadImage/"+token+"/"+isProfileImage, true);
+  xhr.send(fd);
+
+
+
+}
+this.onLoadAttachment = function(files){
+
+var to = $('.selectedDialog').attr('id').replace('message', '');
+
+
+  $.each( files, function( key, value ){
+
+
+
+
+        console.log('Load file...');
+
+
+
+
+  socket.getLinkAttachments().then(function(r){
+	var link = r['msg'];
+
+	console.log('link : ' + link);
+
+
+console.log(files[0]);
+	
+uploadFile(files[0], 0, link, to);
+
+	
+
+});
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 
-function insertDialogs(dialog){
+function messageParser(text){
+	var obj = {text:text, is_attachment:0, attachment:['document', 'ducks.jpg', 'id']};
+	return obj;
+}
+
+
+// Loops...
+
+setInterval(function(){
+	// get online loop
+
+	if(document.hidden==true) return false; // quack?
+	if($('.selectedDialog').attr('id')!=undefined){
+		console.log('Is online?');
+
+
+
+	var login = $('.selectedDialog').attr('id').replace('message', ''); // selected dialog
+
+
+
+		socket.getOnline(login).then(function(r){
+var online = r['msg'];
+
+console.log(online);
+var text;
+
+if(online['online'] == 0){
+	
+
+	var lastOnline = online['lastOnline'];
+	var timeNow = Math.floor(Date.now()/1000);
+
+
+	var difference = timeNow - lastOnline;
+
+	console.log(difference);
+
+
+
+	var days = Math.round(difference/86400);
+	if(lastOnline == 0){
+		text = 'Был в сети мамонт лет назад';
+	}
+	else if(days <= 0){
+
+			var hours = Math.round(difference / 3600);
+
+	if(hours<= 0){
+
+
+		var minutes = Math.round(difference / 60);
+		if(minutes == 0) text = 'Был в сети недавно';
+		text = 'Был в сети '+minutes+' минут назад';
+
+
+	}
+
+	else{
+
+		text = 'Был в сети '+hours+' часов назад';
+	}
+
+	}
+
+	else if(days>= 14){
+		text = 'Был в сети давно';
+	}
+
+	else{
+
+		text = 'Был в сети '+days+' дней назад';
+	}
+
+
+
+	
+
+	$('#block'+login+' .topPanelLastonline').addClass('offline');
+	$('#block'+login+' .topPanelLastonline').removeClass('online');
+	
+
+
 
 }
+else{
+	$('#block'+login+' .topPanelLastonline').removeClass('offline');
+	$('#block'+login+' .topPanelLastonline').addClass('online');
+	text = 'в сети';
+
+
+} 
+
+$('#block'+login+' .topPanelLastonline').text(text);
+
+
+
+
+	
+
+
+});
+
+
+
+	}
+
+
+
+
+}, 4000);
+
+
+
+setInterval(function(){
+if(document.hidden==true) return false; // quack?
+console.log('Set online');
+socket.setOnline();
+
+
+}, 10000);
 
 
 }

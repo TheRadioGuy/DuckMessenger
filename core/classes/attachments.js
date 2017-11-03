@@ -38,7 +38,7 @@ var addAttachments = function(Attachment){
     Attachment['type'] = whatTheType(Attachment['mime']);
 
 getDB.push(Attachment).write();
-return JSON.stringify({id: Attachment['id'], type:Attachment['type']});
+return JSON.stringify({id: Attachment['id'], type:Attachment['type'], name:Attachment['name']});
 
 }
 
@@ -46,7 +46,7 @@ return JSON.stringify({id: Attachment['id'], type:Attachment['type']});
 var isTokenValide = function(token, tokens){
 
 
-return false /*  tokens[token] */;
+return tokens[token] ;
 };
 module.exports.getAttachment=getAttachment;
 module.exports.addAttachments=addAttachments;
@@ -63,7 +63,7 @@ function whatTheType(mime){
 
 
 
-    if(type != 'video' && type != 'photo' && type!='audio') type = 'document';
+    if(type != 'video' && type != 'image' && type!='audio') type = 'document';
 
 
 

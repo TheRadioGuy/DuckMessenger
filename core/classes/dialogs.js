@@ -85,6 +85,11 @@ messagesOne.push(value);
 }, function (err) {
     if (err) console.error(err.message);
     // configs is now a map of JSON data
+
+    messagesOne.sort(function(obj1, obj2) {
+  // Сортировка по убыванию
+  return obj2.date-obj1.date;
+});
     resolve(u(SUCCESSFUL_GET_MESSAGES, messagesOne, false));
    
 

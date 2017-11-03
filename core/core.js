@@ -63,7 +63,7 @@ return false;
  }
 
 
-  getDB.push({ userid: shortid.generate()+shortid.generate(), login: login, email:email, name:name, surname:surname, image:'defaultImage', contacts:{}, rights:0, online:0, dialogs:{}, is_validate:0})
+  getDB.push({ userid: shortid.generate()+shortid.generate(), login: login, email:email, name:name, surname:surname, image:'defaultImage', rights:0, online:0, is_validate:0, lastOnline:0})
 
   .write();
 
@@ -234,7 +234,7 @@ var getFastInfo = function(login){
 		if(info == undefined){
 			info = {name:'DELETED', surname:'', userid:0};
 		}
-resolve(u(SUCCESSFUL_GETTING_INFO, {name:info['name'], surname:info['surname'], userid:info['userid'], image:info['image']} , false));
+resolve(u(SUCCESSFUL_GETTING_INFO, {name:info['name'], surname:info['surname'], userid:info['userid'], image:info['image'], online:info['online'], lastOnline:info['lastOnline']} , false));
 
 	});
 
@@ -307,6 +307,49 @@ else resolve(u(1, true, false));
 
 
 
+var setOnline = function(login){
+return new Promise(function(resolve, reject){
+	if(isEmpty(login)){
+			resolve(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+
+			
+			return false;
+	}
+
+
+	getDB.find({ login: login}).assign({online:1}).write();
+
+	resolve(u(0, true, false));
+
+
+	clearTimeout(timerID);
+	var timerID = setTimeout(function(){
+		getDB.find({ login: login}).assign({lastOnline:Math.floor(Date.now()/1000), online:0}).write();
+
+		console.log('Delete online =( ');
+	}, 9000);
+});
+}
+
+var getOnline = function(login){
+return new Promise(function(resolve, reject){
+	if(isEmpty(login)){
+			resolve(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+
+			
+			return false;
+	}
+
+
+	var online = getDB.find({ login: login}).value();
+
+	resolve(u(0, {online:online['online'], lastOnline:online['lastOnline']}, false));
+
+
+
+});
+}
+
 
 module.exports.registerAccountPartOne = registerAccountPartOne;
 module.exports.isLoginBusy = isLoginBusy;
@@ -317,6 +360,8 @@ module.exports.authAccountByCrt=authAccountByCrt;
 module.exports.generateToken=generateToken;
 module.exports.getFastInfo=getFastInfo;
 
+module.exports.setOnline=setOnline;
+module.exports.getOnline=getOnline;
 module.exports.attachments=attachments;
 function empty(s){
   if(s==undefined || s==null || s=='') return true;

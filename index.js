@@ -28,8 +28,9 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 })); 
 app.use(compression());
 app.use(express.static(__dirname + '/frontend' ));
-app.use(fileUpload());
-
+app.use(fileUpload({
+  limits: { fileSize: 50 * 1024 * 1024 },
+}));
 
 app.get('/getAttachment/:id', function(req, res){
 var id = req.params.id;
@@ -56,14 +57,17 @@ if(login == false || isProfilePhoto==undefined || isProfilePhoto=='') {
 
 
 
+delete tokens[req.params.token];
+
+
 
   if (!req.files)
     return res.status(400).send('Your files is empty.');
  
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  let sampleFile = req.files.sampleFile;
+  let sampleFile = req.files.file;
 
-  let fileName = sampleFile.name, fileData =  sampleFile.data.toString('base64'), fileType = sampleFile.name.split('.').pop(), fileMime = sampleFile.mimetype;
+  let fileName = sampleFile.name.replace('_', ''), fileData =  sampleFile.data.toString('base64'), fileType = sampleFile.name.split('.').pop(), fileMime = sampleFile.mimetype;
   
 
   let Attachment = {login:login, is_profile:0, data:fileData, mime:fileMime, name:fileName};
@@ -291,6 +295,10 @@ r = LZString.compressToUTF16(JSON.stringify(r));
    clients[login] = socket.id;
    login = data['login'];
 
+if(!isEmpty(waitingSend[login])){
+  socket.emit('encryptionKey', waitingSend[login]);
+  console.log('Send key!');
+} 
 
 }
 
@@ -327,6 +335,18 @@ else{
 
 }
 break;
+
+case 'account.setOnline':
+core.setOnline(login).then(function(r){
+  fn(r);
+});
+break;
+
+case 'account.getOnline':
+core.getOnline(data['login']).then(function(r){
+  fn(r);
+});
+break;
 case 'auth.validateAccount':
 core.validateAccount(data['login'], data['code'], authcode).then(function(r){
 
@@ -337,6 +357,10 @@ core.validateAccount(data['login'], data['code'], authcode).then(function(r){
     login = data['login'];
     clients[login] = socket.id;//auth
 
+if(!isEmpty(waitingSend[login])){
+  socket.emit('encryptionKey', waitingSend[login]);
+  console.log('Send key!');
+} 
 
 
 
@@ -397,6 +421,11 @@ authcode = '';
 
 
     clients[login] = socket.id;//auth
+if(!isEmpty(waitingSend[login])){
+  socket.emit('encryptionKey', waitingSend[login]);
+  console.log('Send key!');
+} 
+
 
 
  r['msg'] = {msg:'Successful auth!', crt:r['msg'], login:data['login']};

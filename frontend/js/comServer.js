@@ -59,6 +59,8 @@ return new Promise(function(r,rj){
 
 };
 
+
+
 this.getMessages=function(login){
 return new Promise(function(r,rj){
 		r(sendRequest({method:'messages.get', login:login}));
@@ -80,6 +82,22 @@ return new Promise(function(r,rj){
 	});
 };
 
+this.setOnline = function(){
+	return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'account.setOnline'}));
+	});
+
+};
+this.getOnline = function(login){
+	return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'account.getOnline', login:login}));
+	});
+
+};
 this.authAccount = async function(login){
 
 	return new Promise(function(r,rj){

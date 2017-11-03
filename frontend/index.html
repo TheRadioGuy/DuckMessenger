@@ -19,6 +19,7 @@
 
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
   <script src="js/comServer.js"></script>
   <script src="js/client.js"></script>
 <!--   <script src="assets/js/main.js"></script> -->
@@ -246,11 +247,20 @@ div #leftPanelMessages .dialog{
 
 
 }
-div#messageTester:first-child {
+div #leftPanelMessages .dialog:first-child {
     /* top: 28px; */
-    margin-top: -17px;
+    margin-top: -3px;
 }
 
+
+div#topPanelWithMenu {
+  position: absolute;
+    background: white;
+    width: 100%;
+    height: 45px;
+    top: 0px;
+
+}
 
 
 .selectedDialog{
@@ -313,11 +323,48 @@ div #leftPanelMessages .dialog #profilePhoto{
 position: relative;
     width: 48px;
     height: 48px;
-    top: -83px;
+    top: -81px;
     left: 6px;
     border-radius: 100px;
 }
+.messagesBlock {
+    overflow: auto;
+    height: 93%;
+}
+.statusSendMessage{
+      font-size: 16px;
+    position: relative;
+    bottom: -9px;
+    right: -4px;
+    float: right;
+    color: #1bff1b;
+}
 
+
+.mobileBackButton {
+    color: #757575;
+    position: relative;
+    float: left;
+     font-size: 32px;
+     display: none;
+
+}
+.backDialogs{
+  margin-top: 7px;
+    margin-left: 12px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+}
+    
+
+.rightBlock{
+  background: #ececec;
+  position: absolute;
+  height: 100%;
+  left: 265px;
+  z-index: 1;
+}
 
 div #leftPanelMessages .dialog #textMessage{
       position: relative;
@@ -326,23 +373,223 @@ div #leftPanelMessages .dialog #textMessage{
     left: 63px;
     color: #797979;
         width: 182px;
+        height: 19px;
 }
+
+
+div #userInfoTopPanel {
+ width: 100%;
+    height: 45px;
+    background: white;
+    z-index: 15;
+    position: fixed;
+    top: 0px
+}
+
+#topPanelName{
+
+      font-size: 17px;
+    position: relative;
+    float: left;
+    display: inline;
+    margin-top: 2px;
+    margin-left: 3px;
+    color: #272727;
+    font-weight: 500
+}
+
+.topPanelLastonline{
+  display: inline-block;
+    position: absolute;
+    float: left;
+    left: 54px;
+    top: 10px;
+    font-size: 13px;
+}
+#profilePhotoTopPanel{
+  width: 45px;
+    height: 45px;
+    position: relative;
+    border-radius: 50%;
+    float: left;
+        margin-left: 6px;
+}
+p.topPanelLastonline.online{
+    color: #388E3C;
+}
+p.topPanelLastonline.offline{
+  color: #969696;
+}
+
+#noDialogsText{
+  color: #565656;
+    font-size: 18px;
+    position: absolute;
+    left: 10%;
+    display: none;
+    top: 39%;
+}
+
+.messageSendBlock{
+position: absolute;
+    bottom: 0px;
+    width: 100%;
+  
+    height: 47px;
+    border-radius: 4px;
+    color: #212121;
+    padding-left: 35px;
+    padding-top: 10px;
+    padding-right: 40px;
+    overflow: auto;
+    background: white;
+    border-bottom: 1px solid #dedede;
+}
+
+.messagesSendSection{
+position: absolute;
+    bottom: 0px;
+    width: 100%;
+  
+    height: 47px;
+}
+
+.sendAttachmentButton{
+      transform: rotate(90deg);
+    position: absolute;
+    font-size: 32px;
+    height: 36px;
+    width: 36px;
+    color: #757575;
+    cursor: pointer;
+    left: -3px;
+    top: 8px;
+    z-index: 23;
+
+}
+
+
+/* Dialogs */
+
+
+
+
+
+.messagesList{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+      position: relative;
+    top: 54px;
+}
+
+.messagesList li{
+display: inline-block;
+    clear: both;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    max-width: 200px;
+  
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-family: Roboto;
+}
+
+.messageToMe{
+  background: #eee;
+  float: left;
+  background: #7cb8ef;
+    color: white;
+    border-bottom-left-radius: 5px;
+    max-width: 200px;
+    word-wrap: break-word;
+
+}
+
+.messageFromMe{
+  float: right;
+  background: #0084ff;
+  color: #fff;
+  max-width: 200px;
+    word-wrap: break-word;
+      border-bottom-right-radius: 5px;
+
+      margin-right: 6px;
+}
+
+.messageToMe + .messageFromMe{
+  border-bottom-right-radius: 5px;
+}
+
+.messageFromMe + .messageFromMe{
+  border-bottom-right-radius: 5px;
+}
+
+
+
+
+
+/* end */
 @media screen and (max-width: 480px){
 
   div #leftPanelMessages{
     width: 100%;
   }
-}
 
-@media screen and (max-width: 320px){
-  #blockAuth{
-    width: 320px;
-    margin: -110px 0 0 -160px;
+  .topPanelLastonline {
+    display: inline-block;
+    position: absolute;
+    float: left;
+    left: 98px;
+    top: 10px;
+    font-size: 13px;
+}
+#noDialogsText{
+  left: 15%;
+}
+  .mobileBackButton{
+    display: block;
+  }
+   #blockAuth{
+    width: 100%;
+    margin: -110px 0 0 -0px;
+    left: 0px;
   }
 }
+
+
 </style>
 </head> 
 <body> 
+
+
+
+
+
+
+<ul id="slide-out" class="side-nav">
+    <li><div class="user-view">
+      <div class="background">
+        <img src="images/background.jpg">
+      </div>
+      <a href="#!info"><img class="circle" id="infoPanelImage" src="images/defaultprofileimage.jpg"></a>
+      <a href="#!info"><span class="white-text name" id="infoPanelName" class="truncate">Орехус</span></a>
+      <a href="#!info"><span class="white-text email" id="infoPanelLogin" class="truncate">орехус@gmail.com</span></a>
+    </div></li>
+    
+    <li class="waves-effect" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons">settings</i><span style="margin-left: -17px;">Настройки</span></a></li>
+    <li class="waves-effect" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons">contacts</i><span style="margin-left: -17px;">Контакты</span></a></li>
+  
+  </ul>
+  
+
+
+
+
+
+
 <div id="mask"></div>
 <div id="firstLoadingAnimation"></div>
 <div class="popUpDialogInfo" id="infoPopup">
@@ -463,7 +710,14 @@ div #leftPanelMessages .dialog #textMessage{
  <div class="row" style="display: none;background: #e7ebf0;">
  
 <div id="leftPanelMessages" class="z-depth-1">
-  
+  <div id="topPanelWithMenu">
+    <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons" style="    font-size: 46px;
+    color: #757575;
+    top: -1px;
+    position: relative;
+}">menu</i></a>
+
+  </div>
 
 
 <div class="preloader-wrapper active" id="prealoderDialogs" style="
@@ -495,16 +749,84 @@ div #leftPanelMessages .dialog #textMessage{
 
 </div>
 
+
+
+
+
+<div class="rightBlock">
+  
+<div class="preloader-wrapper big active " id="spinnerMessages" style="
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    z-index: 100;
+    left: 42%;
+    top: 43%;
+    display: none;
+    -webkit-animation: container-rotate 1010ms linear infinite;
+    animation: container-rotate 1010ms linear infinite;
+">
+    <div class="spinner-layer spinner-red-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+
+
+<!-- <div class="messagesBlock" id="blockTester">
+  
+  <div id="userInfoTopPanel" class="z-depth-2">
+    <img src="" id="profilePhotoTopPanel">
+  <p id="topPanelName">Тимур Ганиуллин</p>
+  <p id="topPanelLastonline">Онлайн</p>
+  </div>
+
+
+</div> -->
+
+</div>
+
 </div>
 
 
+<form style="opacity: 0;position: absolute;left: -1000%;" id="formInputFile">
+  
+  <input type="file" name="file" class="uploadFileInput" multiple style="
+">
+  <input type="submit" value="" class="buttonLoadFile" style="
+">
 
+</form>
 
 
 <script>
 
 
+$('.uploadFileInput').on('change', function(e){
+ 
 
+    var files = this.files;
+
+    client.onLoadAttachment(files);
+});
+
+
+
+ $('.button-collapse').sideNav({
+      menuWidth: 320, // Default is 300
+      edge: 'left', // Choose the horizontal origin
+      closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+      draggable: true, // Choose whether you can drag to open on touch screens,
+      onOpen: function(el) { /* Do Stuff */ }, // A function to be called when sideNav is opened
+      onClose: function(el) { /* Do Stuff  */ }, // A function to be called when sideNav is closed
+    }
+  );
 var tmpSocket = new ServerCommunitation(io());
 tmpSocket.socketCopy.on('connect', function(){
 
@@ -527,6 +849,17 @@ tmpSocket = undefined;
  if(getCookie('lastLogin') != undefined && getCookie('lastCrt')!=undefined){
   client.authByCrt(getCookie('lastLogin'), getCookie('lastCrt'));
 }
+
+
+client.onResize();
+
+
+
+$(window).resize(function(e){
+client.onResize();
+
+});
+
 
 
 $(window).on('load', function(){
@@ -567,6 +900,11 @@ $(document).ready(function(){
 
 
 
+
+
+
+
+
 function modulesWindow(){
 
 
@@ -581,6 +919,20 @@ function modulesWindow(){
     $('#'+win).show();
 
   };
+
+  this.closeMobileWindow=function(windowClose, windowOpen){
+
+    windowOpen.show();
+    windowOpen.css('left', '0px');
+    console.log(windowClose);
+    console.log(windowOpen);
+    windowClose.animate({left:'-105%'}, 200);
+  
+    windowClose.fadeOut(50);
+
+  };
+
+
 
    this.openWindowText = function(win, data){
      // data = {onAgree:function(){}, onCancel:function(){}, text:'Duck', title:'Quack'}
@@ -694,6 +1046,17 @@ function addslashes(str) {
 }
 
 
+/*
+$('.messageSendBlock').on('focus', function(){
+console.log('Focus on msg block');
+$('.messageSendBlock').height('75px');
+$('.messageSendBlock').css('border-bottom', '2px solid #dedede;');
+});
+$('.messageSendBlock').on('blur', function(){
+console.log('blur on msg block');
+$('.messageSendBlock').height('47px');
+$('.messageSendBlock').css('border-bottom', '1px solid #dedede;');
+});*/
 
 $(document).on('input', '#myAuthcodeInput', function () {
   console.log('INPUT');
@@ -722,11 +1085,41 @@ console.log('INPUT');
 
 });
 
+function isEmpty(obj) {
+
+    // null and undefined are "empty"
+    if (obj == null) return true;
+
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length > 0)    return false;
+    if (obj.length === 0)  return true;
+
+    // If it isn't an object at this point
+    // it is empty, but it can't be anything *but* empty
+    // Is it empty?  Depends on your application.
+    if (typeof obj !== "object") return true;
+
+    // Otherwise, does it have any properties of its own?
+    // Note that this doesn't handle
+    // toString and valueOf enumeration bugs in IE < 9
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+
+    return true;
+}
 
 setInterval(function(){
   if(!document.hidden) $('title').html('Duck Messenger');
   
-}, 777)
+}, 777);
+
+
+
+
+
+
 </script>
 </body> 
 </html>
