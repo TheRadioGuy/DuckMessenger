@@ -37,6 +37,41 @@
 
 <style>
 
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #f6f5f5;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #ffffff;
+}
+::-webkit-scrollbar-track {
+  background: #c3bebe;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #666666;
+}
+::-webkit-scrollbar-track:active {
+  background: #847d7d;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 html{overflow: hidden;background: #5682a3;font-family: Roboto;}
 @import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans:100,200,300,400,500,600,700|Poiret+One|Roboto:100,200,300, 300i,400, 400i,500, 500i,700&subset=cyrillic');
 
@@ -433,7 +468,7 @@ p.topPanelLastonline.offline{
 .messageSendBlock{
 position: absolute;
     bottom: 0px;
-    width: 100%;
+    width: 90%;
   
     height: 47px;
     border-radius: 4px;
@@ -446,11 +481,26 @@ position: absolute;
     border-bottom: 1px solid #dedede;
 }
 
+.sendMsgButton{
+      position: absolute;
+    right: 3px;
+    font-size: 35px;
+    color: #757575;
+    cursor: pointer;
+    transition: 300ms;
+    top: 6px;
+
+}
+
+.sendMsgButton:hover{
+color: #5a5a5a;
+}
+
 .messagesSendSection{
 position: absolute;
     bottom: 0px;
     width: 100%;
-  
+  background: white;
     height: 47px;
 }
 
@@ -469,6 +519,11 @@ position: absolute;
 }
 
 
+.dialogsImageSend{
+          max-width: 305px;
+    max-height: 450px;
+    cursor: pointer;
+}
 /* Dialogs */
 
 
@@ -490,7 +545,7 @@ display: inline-block;
     padding-bottom: 5px;
     padding-left: 7px;
     padding-right: 7px;
-    max-width: 200px;
+    max-width: 320px;
   
     border-radius: 6px;
     margin-bottom: 6px;
@@ -503,7 +558,7 @@ display: inline-block;
   background: #7cb8ef;
     color: white;
     border-bottom-left-radius: 5px;
-    max-width: 200px;
+    max-width: 320px;
     word-wrap: break-word;
 
 }
@@ -512,7 +567,7 @@ display: inline-block;
   float: right;
   background: #0084ff;
   color: #fff;
-  max-width: 200px;
+  max-width: 320px;
     word-wrap: break-word;
       border-bottom-right-radius: 5px;
 
@@ -538,6 +593,10 @@ display: inline-block;
     width: 100%;
   }
 
+
+  #blockAuth .progressAuth{
+    width: 291px;
+  }
   .topPanelLastonline {
     display: inline-block;
     position: absolute;
@@ -898,7 +957,21 @@ $(document).ready(function(){
 
 
 
+$(window).on('keyup', function(e){
+if(e.keyCode==13){
+  if($('.selectedDialog').attr('id')==undefined) return false;
 
+
+  var to = $('.selectedDialog').attr('id').replace('message', '');
+
+
+  client.sendMessage($('#block'+to+' .messageSendBlock').text(), to);
+  setTimeout(function(){
+    $('#block'+to+' .messageSendBlock').html('');
+  }, 250);
+  
+} 
+});
 
 
 

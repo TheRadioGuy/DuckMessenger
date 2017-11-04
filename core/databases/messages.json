@@ -4,8 +4,8 @@
       "dialogWith": "Tester",
       "dialogAuthor": "DuckerMan",
       "dialogId": "S1zgV86NAZSkmlNUaN0-BkVlV8TNAZ",
-      "message": "76797a4731128ba1c566e9c45a26afe4",
-      "time": 1509562200
+      "message": "765e7a4230297bcea1068ca63143cf6ffb6b3b604a786903",
+      "time": 1509815534
     },
     {
       "dialogWith": "DuckerMan",
@@ -23,8 +23,8 @@
       "dialogWith": "DuckerMan",
       "dialogAuthor": "TheToxa",
       "dialogId": "HyfrYPnuAbrJXHFwn_0WHkNHYw2OR-",
-      "message": "523992c48ff6a22ac5fe46d6034dc65187898ea14bf124da9de99c37d8be01976e1c9f3e9f26570116d4",
-      "time": 1509737748
+      "message": "ebce22233b26cb60",
+      "time": 1509815474
     },
     {
       "dialogWith": "TheToxa",
@@ -36,268 +36,204 @@
   ],
   "messages": [
     {
-      "id": "ry0PX5PCZBkeRvm9DAbryZ0vm5DA-",
+      "id": "B1No2OLjRWS1HjhO8iCZB1IshOLsR-",
       "is_read": 0,
-      "message": "76797a4731128ba1c566e9c45a26afe4",
-      "to": "DuckerMan",
-      "from": "Tester",
-      "date": 1509561190
-    },
-    {
-      "id": "BJoYQ9D0bH1esF7cvA-HybiYQqDRW",
-      "is_read": 0,
-      "message": "767e7a4930287bcd",
-      "to": "Tester",
-      "from": "DuckerMan",
-      "date": 1509561219
-    },
-    {
-      "id": "rJxwP5vRZSkggvD9vAWS1ZlDw5DCb",
-      "is_read": 0,
-      "message": "76797a4731128ba1c566e9c45a26afe4",
-      "to": "DuckerMan",
-      "from": "Tester",
-      "date": 1509562200
-    },
-    {
-      "id": "r1BYwndRWrylBKvh_0-rkWBtw3uAb",
-      "is_read": 0,
-      "message": "ebc4231e3a113afd6f253e",
+      "message": "523992c48ff6b90bc5f933890d4fa464a6a88ea635cc3bd3ece99c30c2ed14eb371992",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509635965
+      "date": 1509808306
     },
     {
-      "id": "r1ijD3_0WSJgjoP2_0bHJ-isP3OCZ",
+      "id": "HyVMcqIsRbBkrG55IiCbHJLMccLsR-",
       "is_read": 0,
-      "message": "ebf123163a143bc36f20d11d7e",
+      "message": "523992c48ff69870d9ea62911453c6518789b28e65da22d39fd19c32caba29832f1ea0229c36570116d4",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509636003
+      "date": 1509808777
     },
     {
-      "id": "B1VhP3_C-BklE3wnuCbr1-Nhv2uRb",
+      "id": "BkNBQoUs0-SySSQjUiC-SkUHXs8jC-",
       "is_read": 0,
-      "message": "ebf522203b283afa6f28d11e9184b9d751335c188868f66967637bd11a5cc8fa",
+      "message": "523992c48ff69870f2e26ccb144fa46496d3e89a6bd34fca9fe99c37d8be01976e1c9f3e9f26570116d4",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509636011
+      "date": 1509808924
     },
     {
-      "id": "BJI5Ypu0WBJx85tp_AZByb8ct6u0-",
+      "id": "rJ4V0nIi0bB1rNA3LsC-rk8NR3UjRb",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fe",
+      "message": "523992c48ff6982ac5de53cc0d4fd751879b8e8c36d14fd69fe49c37d8be01976e1c9f3e9f26570116d4",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509640589
+      "date": 1509809356
     },
     {
-      "id": "ryJQ5aORZByxkQ9TuAZSyZJmqpO0Z",
+      "id": "SkcxCLjA-BJxcgALiR-r1Z9gCUoAb",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fe",
+      "message": "523992c48ff6b90bd9d66de7794fd751969b878f61893bd0ecd19c3097bf5eaf2d0e",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509640727
+      "date": 1509809649
     },
     {
-      "id": "r1tq9TuAWSklF95adAZB1WK55TuCW",
+      "id": "HJZ-bds0-rJe-bZ_j0ZHybWW-Oj0Z",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fe",
+      "message": "78844c726a795a910d40b474f5ec2fd66c326d188d69ce990d3113b4710da1477c",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509640848
+      "date": 1509814521
     },
     {
-      "id": "B1gJoauRWr1glks6u0WSJ-eJja_CZ",
+      "id": "S1QWZOs0brylX-ZOjAZHkZ7WZ_jRb",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90",
+      "message": "78844c726a795a910d40b474f5ec2fd66c326d188d69ce990d3113b4710da1477c",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509640919
+      "date": 1509814522
     },
     {
-      "id": "HkkpRTu0-Bkey60pOCZHyZJaAp_CW",
+      "id": "HkaUZdi0brygaIZOiR-Sk-6IWdo0b",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90",
+      "message": "523992c48ff6b90bd9d66de7794fd751969b878f61893bd0ecd19c3097bf5eaf2d0e",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509641911
+      "date": 1509814613
     },
     {
-      "id": "Sy6Nk0OR-SJx64y0OA-SyWaEJ0OCW",
+      "id": "Hk_cbdoCZHke_5-_i0WHyW_5bOsCZ",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90",
+      "message": "7e3c89",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509642037
+      "date": 1509814671
     },
     {
-      "id": "SJUyWRd0-ByeI1-0_AWHJWUkbRu0-",
+      "id": "B1y0-OjC-SJeyR-OoCWHkbJCbOsAW",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90",
+      "message": "ebce22233b26",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509642462
+      "date": 1509814727
     },
     {
-      "id": "SkiXbR_RWBygiQW0ORbSJ-oXZRdCW",
+      "id": "SJdQfOsAbrye_mGdoAZrkW_QzdiCb",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90",
+      "message": "ebfb222c3b26",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509642530
+      "date": 1509814815
     },
     {
-      "id": "rJT7WCdA-B1lambAOCZHJb6XW0dRW",
+      "id": "HyRQMdsCbB1l07Gdi0WHkb0mf_j0Z",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90",
+      "message": "ebf5231c3b293af16f22d111918844bd045a0f7bd6075e",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509642532
+      "date": 1509814821
     },
     {
-      "id": "SJRX-RuR-S1x0QZRd0-rJbRQbA_0W",
+      "id": "r135X_oRbrJl35QOo0-SkW3cXusRW",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90",
+      "message": "ebce22233b26",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509642533
+      "date": 1509815187
     },
     {
-      "id": "BkCNZAORZHkg0EZAd0-Skb0VbRO0Z",
+      "id": "SkSyN_iCZByxSJNdiAbHJ-B1VOsAb",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90a7260d3313b9703ea0708cebd972963a2f2e479371a3",
+      "message": "ebf623163b283bc3",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509642550
+      "date": 1509815260
     },
     {
-      "id": "HkiwZCORbrkgiv-CuA-HkZsPbAdCZ",
+      "id": "SJDkN_oCbS1ewyNdiC-Sybw1EuiRb",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90a7260d3313b9703ea0708cebd972963a2f2e479371a3",
+      "message": "ebf723173a193bc66f2dd02f9185",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509642595
+      "date": 1509815263
     },
     {
-      "id": "SJ2v-A_CWSkl2wbRu0-rJ-nP-R_C-",
+      "id": "ryY14_jCbB1lYJNOiRWr1-Fk4dj0Z",
       "is_read": 0,
-      "message": "ebcb22233a113af36f25d0266d1cd84f82a7fee93b90a7260d3313b9703ea0708cebd972963a2f2e479371a3",
+      "message": "ebc623133a193af16f20d027",
       "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509642596
+      "date": 1509815264
     },
     {
-      "id": "HyUl6GqAWH1gLgpz90ZrJZ8gaM90Z",
+      "id": "H17IV_jRWHJl7UVusRWHkbXLVdoRb",
+      "is_read": 0,
+      "message": "1f7cd48088c58522d4b72ac82e5bfd68ffc5ffe76bdc04cabdd4a652c5e2148731069639fd5a570d09d039f91488a8",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509815370
+    },
+    {
+      "id": "HydI4djCZSJguU4OsAbSk-_LNOjAZ",
+      "is_read": 0,
+      "message": "ebf1231f",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509815375
+    },
+    {
+      "id": "rysUEuo0-r1go8VdiAWBJZsIN_sAb",
       "is_read": 0,
       "message": "ebf5231c3b293af16f22d111918844bd045a0f7bd60756",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727470
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509815378
     },
     {
-      "id": "rJjH6zqA-BJljr6G50WSJbsBpfcA-",
+      "id": "Sy2U4ujAZSke3UNdj0WrJb3IVdoRb",
       "is_read": 0,
-      "message": "ebf523333a083ad9",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727555
+      "message": "ebce22263a15",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509815380
     },
     {
-      "id": "B1JO6f5AZB1gyuTz9AWHkWy_Tf50b",
+      "id": "BkCIN_oCWSke0L4_o0bBk-RU4_sC-",
       "is_read": 0,
-      "message": "6e486bfe32fb71f4a051b618ee458d15c096",
+      "message": "ead32316ca795d910fb0d11091844581056e",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509815381
+    },
+    {
+      "id": "H1fPVOsRWHygGwEuoAWBJZzDE_iRZ",
+      "is_read": 0,
+      "message": "ebf32336ca7975912f40a774d1ec09d67f327419ad",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509815386
+    },
+    {
+      "id": "HJO3EdsAbSkl_2Vuj0-ryZOhVuiRZ",
+      "is_read": 0,
+      "message": "ebce22233b26",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509815472
+    },
+    {
+      "id": "ryonVOiAbSkxo3Euj0Zr1Wi34uiAb",
+      "is_read": 0,
+      "message": "ebce22233b26cb60",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509815474
+    },
+    {
+      "id": "Sk8eBOoR-rJg8eHOjAZHJ-LgBusRZ",
+      "is_read": 0,
+      "message": "765e7a4230297bcea1068ca63143cf6ffb6b3b604a786903",
       "to": "Tester",
-      "from": "TheToxa",
-      "date": 1509727591
-    },
-    {
-      "id": "Bk8Ypf5R-rke8YazcAWS1W8K6f90-",
-      "is_read": 0,
-      "message": "ebc923363a0bcb",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727614
-    },
-    {
-      "id": "BJV9afcCWSye4qTGqC-HJ-45pGqC-",
-      "is_read": 0,
-      "message": "ebc422263b2a3af46f2b3e",
-      "to": "TheToxa",
       "from": "DuckerMan",
-      "date": 1509727628
-    },
-    {
-      "id": "r1ai6M90bSJg6oaf50-S1Zpo6GcCW",
-      "is_read": 0,
-      "message": "ebce23133a13ca910b40b474faec2439f5",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727652
-    },
-    {
-      "id": "H1DhTzc0Wrkgw2TM9RbHk-D2TfqCb",
-      "is_read": 0,
-      "message": "ebfbd3735c7952910d40bf74f8",
-      "to": "TheToxa",
-      "from": "DuckerMan",
-      "date": 1509727662
-    },
-    {
-      "id": "HkEaTM9RWHklNapzcR-SkZE66GqCW",
-      "is_read": 0,
-      "message": "ebc8231d3a123aff6f24d11190ba",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727676
-    },
-    {
-      "id": "rycA6G9C-Hyxc06f5AZrJZ90TGcCb",
-      "is_read": 0,
-      "message": "ebf623163a123af46f23d024918c44baf43264188568f0685463762f805ce015f8b950824aa3dcbbf663e95aac7136e1e0d24d",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727697
-    },
-    {
-      "id": "rJuPCf9R-HJxuPAz5C-rJ-OPRfcRb",
-      "is_read": 0,
-      "message": "ebccd3726d787b7e9f40a374d9ec2bd66ac20f78d607a7030c0b12817032a0778dd325e2e5",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727840
-    },
-    {
-      "id": "HyeTRMq0ZSkeg6RzqRZHk-gpRz90Z",
-      "is_read": 0,
-      "message": "ebf32232ca795e910a40ba74f1ec21d75c3353f6",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727927
-    },
-    {
-      "id": "B1apRGq0ZH1gppAf5RWBk-a6RG50-",
-      "is_read": 0,
-      "message": "ebc223173b2aca9101418375c1ed1fd7563267188999",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727940
-    },
-    {
-      "id": "SkUAAz50ZSklUCAMcCZBkbICRfcA-",
-      "is_read": 0,
-      "message": "ebf523193a173bc16f2e3e84",
-      "to": "DuckerMan",
-      "from": "TheToxa",
-      "date": 1509727949
-    },
-    {
-      "id": "H16zHScR-rJxafSHcAbryZTfSBcRb",
-      "is_read": 0,
-      "message": "523992c48ff6a22ac5fe46d6034dc65187898ea14bf124da9de99c37d8be01976e1c9f3e9f26570116d4",
-      "to": "TheToxa",
-      "from": "DuckerMan",
-      "date": 1509737748
+      "date": 1509815534
     }
   ]
 }

@@ -33,7 +33,7 @@ else return {data:data['data'], mime:data['mime']};
 
 }
 var addAttachments = function(Attachment){
-	Attachment['id'] = shortid.generate() + shortid.generate();
+	Attachment['id'] = (shortid.generate() + shortid.generate()).replace('_', '-');
 
     Attachment['type'] = whatTheType(Attachment['mime']);
 

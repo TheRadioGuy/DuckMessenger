@@ -304,11 +304,13 @@ else text = '<p class="topPanelLastonline online">в сети</p>';
 
 <div class="messageSendBlock" contenteditable="true" style="
 "></div>
+
+<i class="material-icons sendMsgButton" onclick="client.sendMessage($('#block`+login+` .messageSendBlock').text(), '`+login+`')">send</i>
 </div>
   
 </div>`).prependTo('.rightBlock');
 
-
+$('#block'+login+' .messageSendBlock').focus();
 });
 
 }
@@ -601,7 +603,12 @@ return decryptedText;
 
 
 
-var sendMessageProtected = function(message,to){
+var sendMessageProtected = async function(message,to, fileInfo){
+
+	$('#block'+to+' .messageSendBlock').text('');
+
+
+
 	var key = getKeyForUser(to);
 	if(key==undefined){
 		key = generateEncryptKey();
@@ -614,21 +621,26 @@ var sendMessageProtected = function(message,to){
 
 	}
 	var messageRaw = message;
-	message = encryptMessage(message, key);
 
-	console.log('msg : ' + message);
+
+	message = encryptMessage(message, key);
+	var randomID = generateEncryptKey();
+	// NOTE
+	messageParser(messageRaw, 'messageFromMe', randomID, `<i class="material-icons statusSendMessage">access_time</i>`).then(function(messageInfo){
+		console.log(messageInfo);
+
 
 if(to != getCookie('lastLogin')){
 
-	var randomID = generateEncryptKey();
+	
 
-	$('#block'+to+' .messagesList').append(`<li class="messageFromMe" id='messageID`+randomID+`'>`+messageRaw+`<i class="material-icons statusSendMessage">access_time</i></li>`);
+	$('#block'+to+' .messagesList').append(messageInfo['template']);
 
 	$('#message'+to).prependTo('#leftPanelMessages');
 
 
 
-$('#message'+to+' #textMessage').text(messageRaw);
+$('#message'+to+' #textMessage').text(messageInfo['dialogsText']);
 
 $('#block'+to).scrollTop(9999999999999999999999999999999999999);
 	// wait send msg
@@ -639,11 +651,24 @@ socket.sendMessage(message, to).then(function(r){
 	$('#messageID'+randomID).attr('id', r['msg']['id']);
 
 });
+
+
+
+
+		
+	});
+
+	
+
+
+
 };
 
 
 this.sendMessage = function(message,to){
-	var key = getKeyForUser(to);
+
+	$('#block'+to+' .messageSendBlock').text('');
+var key = getKeyForUser(to);
 	if(key==undefined){
 		key = generateEncryptKey();
 		setKeyForUser(to, key);
@@ -655,21 +680,26 @@ this.sendMessage = function(message,to){
 
 	}
 	var messageRaw = message;
-	message = encryptMessage(message, key);
 
-	console.log('msg : ' + message);
+
+	message = encryptMessage(message, key);
+	var randomID = generateEncryptKey();
+	// NOTE
+	messageParser(messageRaw, 'messageFromMe', randomID, `<i class="material-icons statusSendMessage">access_time</i>`).then(function(messageInfo){
+		console.log(messageInfo);
+
 
 if(to != getCookie('lastLogin')){
 
-	var randomID = generateEncryptKey();
+	
 
-	$('#block'+to+' .messagesList').append(`<li class="messageFromMe" id='messageID`+randomID+`'>`+messageRaw+`<i class="material-icons statusSendMessage">access_time</i></li>`);
+	$('#block'+to+' .messagesList').append(messageInfo['template']);
 
 	$('#message'+to).prependTo('#leftPanelMessages');
 
 
 
-$('#message'+to+' #textMessage').text(messageRaw);
+$('#message'+to+' #textMessage').text(messageInfo['dialogsText']);
 
 $('#block'+to).scrollTop(9999999999999999999999999999999999999);
 	// wait send msg
@@ -680,6 +710,12 @@ socket.sendMessage(message, to).then(function(r){
 	$('#messageID'+randomID).attr('id', r['msg']['id']);
 
 });
+
+
+
+
+		
+	});
 };
 
 
@@ -939,7 +975,7 @@ resolve(blob);
 
 }
 
-var uploadFile = function(file, isProfileImage, token, to){
+var uploadFile = function(file, isProfileImage, token, to, fileInfo){
 
 
 
@@ -960,7 +996,7 @@ fd.append('file', file);
 
       console.log(info);
 
-      sendMessageProtected(info['type']+'_'+info['id']+'_'+info['name'], to);
+      sendMessageProtected(info['type']+'_'+info['id']+'_'+info['name'], to, fileInfo);
     } else {
       console.log("error " + this.status);
     }
@@ -979,9 +1015,25 @@ var to = $('.selectedDialog').attr('id').replace('message', '');
 
   $.each( files, function( key, value ){
 
+  	var fileInfo = {};
+
+  	var loadBlob = URL.createObjectURL(value);
+
+  	fileInfo['blob'] = loadBlob;
+  	fileInfo['name'] = value.name;
+  	fileInfo['type'] = value.type.split('/')[0];
 
 
 
+
+
+
+    if(fileInfo['type'] != 'video' && fileInfo['type'] != 'image' && fileInfo['type']!='audio') fileInfo['type'] = 'document';
+
+
+
+
+  	console.log(fileInfo);
         console.log('Load file...');
 
 
@@ -993,9 +1045,8 @@ var to = $('.selectedDialog').attr('id').replace('message', '');
 	console.log('link : ' + link);
 
 
-console.log(files[0]);
 	
-uploadFile(files[0], 0, link, to);
+uploadFile(value, 0, link, to, fileInfo);
 
 	
 
@@ -1019,9 +1070,61 @@ uploadFile(files[0], 0, link, to);
 
 }
 
-function messageParser(text){
-	var obj = {text:text, is_attachment:0, attachment:['document', 'ducks.jpg', 'id']};
-	return obj;
+var messageParser = function (text, messageClass, id, att){
+/*	var obj = {text:text, is_attachment:0, attachment:['document', 'ducks.jpg', 'id']};
+	return obj;*/
+
+	return new Promise(function(resolve,reject){
+
+			var template;
+	var infoText = text.split('_');
+	var dialogsText;
+
+
+	if(typeof infoText[2] == 'undefined'){
+		template = `<li class='`+messageClass+`' id='messageID`+id+`'>`+text+att+`</li>`;
+		dialogsText = text;
+
+		resolve({template:template, dialogsText:dialogsText});
+	}
+	else{
+
+		getFileSecter(infoText[1]).then(function(url){
+
+			console.log('Blob : ' + url);
+
+
+			switch(infoText[0]){
+			case 'image':
+			template = `<li class='`+messageClass+`' id='messageID`+id+`'><img src='`+url+`' class='dialogsImageSend'>`+att+`</li>`;
+			dialogsText = 'фотография';
+			break;
+			case 'video':
+			dialogsText = 'видео';
+			break;
+			case 'audio':
+			dialogsText = 'аудио';
+			break;
+
+			case 'document':
+			dialogsText = 'документ';
+			break;
+
+		}
+
+		resolve({template:template, dialogsText:dialogsText});
+
+		});
+
+		
+	}
+
+
+
+	});
+
+
+
 }
 
 
