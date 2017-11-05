@@ -86,7 +86,7 @@ if($('#block'+msg['from']).length!=0){
 
 $('#block'+msg['from']+' .messagesList').append(`<li class="messageToMe">`+msg['message']+`</li>`);
 
-$('#block'+login).scrollTop(9999999999999999999999999999999999999);
+$('#block'+msg['from']).scrollTop(9999999999999999999999999999999999999);
 
 }
 
@@ -982,16 +982,33 @@ var uploadFile = function(file, isProfileImage, token, to, fileInfo){
 var fd = new FormData();
 fd.append('file', file);
   var xhr = new XMLHttpRequest();
+  $('#mask').show(50);
+  $('.fileUploadingInfo').show();
+  $('.fileUploadingInfo .filePreview').attr('src', fileInfo['blob']);
+  $('.fileUploadingInfo .fileName').attr('src', fileInfo['name']);
+
+
+
 
   // обработчик для закачки
   xhr.upload.onprogress = function(event) {
-    console.log(event.loaded + ' / ' + event.total);
+
+  	 var percentComplete = event.loaded / event.total;
+
+  	 	$('.fileUploadingInfo .bytesLoading #loading').text(event.loaded);
+  	 	$('.fileUploadingInfo .bytesLoading #total').text(event.total);
+  	  $('.fileUploadingInfo .loadProgress .determinate').css('width', percentComplete+'%');
+    console.log(percentComplete);
   }
 
   // обработчики успеха и ошибки
   // если status == 200, то это успех, иначе ошибка
   xhr.onload = xhr.onerror = function() {
     if (this.status == 200) {
+
+    	$('.fileUploadingInfo .loadProgress .determinate').css('width', '100%');
+    	$('.fileUploadingInfo').fadeOut(250);
+    	$('#mask').hide();
       var info = JSON.parse(this.responseText);
 
       console.log(info);
@@ -1237,7 +1254,7 @@ $('#block'+login+' .topPanelLastonline').text(text);
 
 
 setInterval(function(){
-if(document.hidden==true) return false; // quack?
+if(document.hidden==true  || getCookie('lastLogin')==undefined) return false; // quack?
 console.log('Set online');
 socket.setOnline();
 

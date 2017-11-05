@@ -23,8 +23,8 @@
       "dialogWith": "DuckerMan",
       "dialogAuthor": "TheToxa",
       "dialogId": "HyfrYPnuAbrJXHFwn_0WHkNHYw2OR-",
-      "message": "ebce22233b26cb60",
-      "time": 1509815474
+      "message": "523992c48ff6a80bf2e245dc020fd75ca689878170c1478b8ed19c3097bf5eaf2d0e",
+      "time": 1509904478
     },
     {
       "dialogWith": "TheToxa",
@@ -234,6 +234,54 @@
       "to": "Tester",
       "from": "DuckerMan",
       "date": 1509815534
+    },
+    {
+      "id": "BkA_pa20WH1gRdTp3C-rJWRO6pnRb",
+      "is_read": 0,
+      "message": "073cc29d3a083afe6e10d114918e44b304560f72d601a70b0c0dff2ec8bd4e",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509903733
+    },
+    {
+      "id": "Hk_eyA3C-HJgOl10hC-By-_l1R3A-",
+      "is_read": 0,
+      "message": "ebee22233b26",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509904111
+    },
+    {
+      "id": "SyvZy03A-BJxvWkCnCWSyWwWkC3CZ",
+      "is_read": 0,
+      "message": "523992c48ff6a838c5a856cf710fd55c87d3e88051f347d79de99c40cde517aa091c8d7caa1d1e",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509904126
+    },
+    {
+      "id": "SyR5yRnRWBkxC9kC20bHybAc1A2A-",
+      "is_read": 0,
+      "message": "523992c48ff6980bc5a662957152d751a6d3e8a865c047d7ecd19c37d8be01976e1c9f3e9f26570116d4",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509904277
+    },
+    {
+      "id": "H14Wfg0nA-S1BZflCnAWB1UbzxC30-",
+      "is_read": 0,
+      "message": "523992c48ff6980bf2f267c37152d72b87898e9341de368becd19c40cde517aa091c8d7caa1d1e",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509904393
+    },
+    {
+      "id": "HJIPgC3R-SJeUDg0h0-HJZIvxC3AW",
+      "is_read": 0,
+      "message": "523992c48ff6a80bf2e245dc020fd75ca689878170c1478b8ed19c3097bf5eaf2d0e",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509904478
     }
   ]
 }

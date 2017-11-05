@@ -252,12 +252,13 @@ padding: 9px 7px;
     line-height: 19px;
 }
 #mask{
-  z-index: 8;
+  z-index: 14;
   width: 115%;
   height: 115%;
   left: -10%;
   top: -10%;
   position: fixed;
+  cursor: pointer;
 
   background: rgba(0, 0, 0, 0.3);
   display: none;
@@ -583,8 +584,46 @@ display: inline-block;
 }
 
 
+.fileUploadingInfo{
+    width: 320px;
+    height: 140px;
+    margin: -70px 0 0 -160px;
+    z-index: 15;
+}
 
+.fileUploadingInfo .filePreview{
+      position: absolute;
+    width: 110px;
+    height: 110px;
+    top: 15px;
+    left: 15px;
+}
+.fileUploadingInfo .fileName{
+    display: inline-block;
+    position: absolute;
+    left: 141px;
+    font-size: 16px;
+    color: #212121;
+    font-weight: 400;
+    top: 0px;
+}
+.fileUploadingInfo .bytesLoading{
+    display: inline-block;
+    position: absolute;
+    left: 141px;
+    font-size: 13px;
+    color: #565656;
+    font-weight: 400;
+    top: 27px;
+}
 
+.fileUploadingInfo .loadProgress {
+    position: absolute;
+    width: 96%;
+    left: 7px;
+    border-radius: 1px;
+    bottom: -9px;
+}
 
 /* end */
 @media screen and (max-width: 480px){
@@ -623,7 +662,15 @@ display: inline-block;
 </head> 
 <body> 
 
+<div class="popUpDialog fileUploadingInfo"><img src="" class="filePreview" style="
+  ">
+  <p class="fileName truncate">Алексей Кривов.png</p>
+  <p class="bytesLoading"><span id="loading">1.2мб</span> / <span id="total">10мб</span></p>
 
+  <div class="progress loadProgress">
+      <div class="determinate" style="width: 70%;background: #a5a5a5;"></div>
+  </div>
+  </div>
 
 
 
@@ -977,7 +1024,11 @@ if(e.keyCode==13){
 
 
 
-
+$('#mask').on('click', function(){
+  $('.popUpDialog').hide();
+  $('#mask').hide();
+    $('.popUpDialogInfo').hide();
+});
 function modulesWindow(){
 
 
@@ -988,8 +1039,8 @@ function modulesWindow(){
   };
   this.openWindow = function(win, data){
     // data = {onAgree:function(){}, onCancel:function(){}}
-    $('#mask').show();
-    $('#'+win).show();
+    $('#mask').show(50);
+    $('#'+win).show(25);
 
   };
 
