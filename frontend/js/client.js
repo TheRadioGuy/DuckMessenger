@@ -997,7 +997,7 @@ fd.append('file', file);
 
   	 	$('.fileUploadingInfo .bytesLoading #loading').text(event.loaded);
   	 	$('.fileUploadingInfo .bytesLoading #total').text(event.total);
-  	  $('.fileUploadingInfo .loadProgress .determinate').css('width', percentComplete+'%');
+  	  $('.fileUploadingInfo .loadProgress .determinate').css('width', percentComplete*100+'%');
     console.log(percentComplete);
   }
 
