@@ -51,7 +51,7 @@ var registerAccountPartOne = function(login, email, name, surname){
 		}
 
 		
-
+		login = login.replace(/[^a-z ^1-9]/ig, '');
 
 
  if(getDB.find({login:login, email:email}).value()!=undefined){

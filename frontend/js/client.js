@@ -132,16 +132,16 @@ var getDialogs = function(){
 			
 			
 
-					socket.fastInfo(value['with']).then(function(z){
+			
 						console.log(value);
-						console.log(z);
+						
 
 
-						getFileSecter(z['msg']['image']).then(function(url){
+						getFileSecter(value['image']).then(function(url){
 							if(url == false) return false;
 
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+value['with']+`')" id="message`+value['with']+`">
-  <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
+  <p id="userName">`+value['name']+" " + value['surname'] +`</p>
    <p id="textMessage" class="truncate" style="
 ">`+message+`</p>
   <img src="`+url+`" id="profilePhoto"></img>
@@ -152,8 +152,7 @@ var getDialogs = function(){
 
 
 
-						
-					});
+				
 		});
 
 		
@@ -632,18 +631,13 @@ var sendMessageProtected = async function(message,to, fileInfo){
 
 if(to != getCookie('lastLogin')){
 
+
 	
 
-	$('#block'+to+' .messagesList').append(messageInfo['template']);
-
-	$('#message'+to).prependTo('#leftPanelMessages');
 
 
+	
 
-$('#message'+to+' #textMessage').text(messageInfo['dialogsText']);
-
-$('#block'+to).scrollTop(9999999999999999999999999999999999999);
-	// wait send msg
 }
 socket.sendMessage(message, to).then(function(r){
 	console.log(r);
@@ -693,6 +687,24 @@ if(to != getCookie('lastLogin')){
 
 	
 
+	socket.fastInfo(to).then(function(z){
+						
+						console.log(z);
+
+
+						getFileSecter(z['msg']['image']).then(function(url){
+							if(url == false) return false;
+
+							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+to+`')" id="message`+to+`">
+  <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
+   <p id="textMessage" class="truncate" style="
+">`+messageRaw+`</p>
+  <img src="`+url+`" id="profilePhoto"></img>
+</div>`).prependTo('#leftPanelMessages');
+
+
+
+							
 	$('#block'+to+' .messagesList').append(messageInfo['template']);
 
 	$('#message'+to).prependTo('#leftPanelMessages');
@@ -703,6 +715,15 @@ $('#message'+to+' #textMessage').text(messageInfo['dialogsText']);
 
 $('#block'+to).scrollTop(9999999999999999999999999999999999999);
 	// wait send msg
+
+
+
+						});
+
+
+
+						
+					});
 }
 socket.sendMessage(message, to).then(function(r){
 	console.log(r);
@@ -985,7 +1006,7 @@ fd.append('file', file);
   $('#mask').show(50);
   $('.fileUploadingInfo').show();
   $('.fileUploadingInfo .filePreview').attr('src', fileInfo['blob']);
-  $('.fileUploadingInfo .fileName').attr('src', fileInfo['name']);
+  $('.fileUploadingInfo .fileName').text(fileInfo['name']);
 
 
 
@@ -995,8 +1016,8 @@ fd.append('file', file);
 
   	 var percentComplete = event.loaded / event.total;
 
-  	 	$('.fileUploadingInfo .bytesLoading #loading').text(event.loaded);
-  	 	$('.fileUploadingInfo .bytesLoading #total').text(event.total);
+  	 	$('.fileUploadingInfo .bytesLoading #loading').text(event.loaded/1024/1024+'мб');
+  	 	$('.fileUploadingInfo .bytesLoading #total').text(event.total/1024/1024+'мб');
   	  $('.fileUploadingInfo .loadProgress .determinate').css('width', percentComplete*100+'%');
     console.log(percentComplete);
   }
@@ -1090,6 +1111,8 @@ uploadFile(value, 0, link, to, fileInfo);
 var messageParser = function (text, messageClass, id, att){
 /*	var obj = {text:text, is_attachment:0, attachment:['document', 'ducks.jpg', 'id']};
 	return obj;*/
+
+	text = escapeHtml(text);
 
 	return new Promise(function(resolve,reject){
 

@@ -18,7 +18,7 @@ server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
-
+var async = require('async');
 
 const accessFilesForImages = ['png', 'jpg', 'jpeg'];
 
@@ -464,12 +464,79 @@ case 'messages.getDialogs':
 
 console.log('Login : ' + login);
 dialogs.getDialogs(login).then(function(r){
+r = JSON.parse(LZString.decompressFromUTF16(r));
 
+
+if(r['code']==14){
+
+
+
+var response = {};
+response['code'] = 14;
+response['error']=0;
+response['msg'] = [];
+var i = 0;
+
+var length = r['msg'].length;
+
+
+async.forEachOf(r['msg'], function (value, key, callback) {
+  
+
+
+core.getFastInfo(value['with']).then(function(z){
+i++;
+  z = JSON.parse(LZString.decompressFromUTF16(z));
+
+
+  var msgsInfo = value;
+  msgsInfo['image'] = z['msg']['image'];
+  msgsInfo['lastOnline'] = z['msg']['lastOnline'];
+  msgsInfo['name'] = z['msg']['name'];
+  msgsInfo['online'] = z['msg']['online'];
+  msgsInfo['surname'] = z['msg']['surname'];
+  msgsInfo['userid'] = z['msg']['userid'];
+
+  response['msg'].push(msgsInfo);
+
+  if(length == i){
+    console.log(response);
+response = LZString.compressToUTF16(JSON.stringify(response));
+
+
+
+
+  fn(response);
+  }
+
+});
+
+
+
+  callback();
+}, function (err) {
+    if (err) console.error(err.message);
+   
+
+   
+
+});
+
+
+}
+
+else{
+r = LZString.compressToUTF16(JSON.stringify(r));
 
 
 
 
   fn(r);
+
+}
+
+
+
 });
 break;
 
