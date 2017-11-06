@@ -116,7 +116,7 @@ console.log('New key: ' + key);
 socket.on('request', function(data, fn){
 
 
-console.log(data);
+
   try{
     // if user send a bad request
       data = JSON.parse(LZString.decompressFromUTF16(data));

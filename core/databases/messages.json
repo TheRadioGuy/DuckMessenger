@@ -23,8 +23,8 @@
       "dialogWith": "DuckerMan",
       "dialogAuthor": "TheToxa",
       "dialogId": "HyfrYPnuAbrJXHFwn_0WHkNHYw2OR-",
-      "message": "523992c48ff6a80bf2e245dc020fd75ca689878170c1478b8ed19c3097bf5eaf2d0e",
-      "time": 1509904478
+      "message": "152686",
+      "time": 1509983503
     },
     {
       "dialogWith": "TheToxa",
@@ -290,6 +290,14 @@
       "to": "Tester",
       "from": "DuckerMan",
       "date": 1509983283
+    },
+    {
+      "id": "H1OzrbARZB1xdGBbCAbSJ-_zHWAAZ",
+      "is_read": 0,
+      "message": "152686",
+      "to": "TheToxa",
+      "from": "DuckerMan",
+      "date": 1509983503
     }
   ]
 }
