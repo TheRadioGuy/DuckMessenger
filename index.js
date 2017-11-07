@@ -479,7 +479,15 @@ var i = 0;
 
 var length = r['msg'].length;
 
+if(length==0){
+r = LZString.compressToUTF16(JSON.stringify(r));
 
+
+
+
+  fn(r);
+  return false;
+}
 async.forEachOf(r['msg'], function (value, key, callback) {
   
 

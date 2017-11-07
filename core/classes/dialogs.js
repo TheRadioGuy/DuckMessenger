@@ -150,6 +150,12 @@ dialogs.push({with:value['dialogWith'], dialogId:value['dialogId'], message:valu
 }, function (err) {
     if (err) console.error(err.message);
     // configs is now a map of JSON data
+
+
+    dialogsNotSort.sort(function(obj1, obj2) {
+  // Сортировка по убыванию
+  return obj2.time-obj1.time;
+});
     console.log(dialogsNotSort);
    
 

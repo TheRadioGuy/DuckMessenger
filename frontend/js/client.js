@@ -35,13 +35,13 @@ console.log(msg);
 
 
 
-
+messageParser(msg['message'], 'messageToMe', msg['id'], '').then(function(messageInfo){
 
 
 
 $('#message'+msg['from']).prependTo('#leftPanelMessages');
 
-$('#message'+msg['from']+' #textMessage').text(msg['message']);
+$('#message'+msg['from']+' #textMessage').text(messageInfo['dialogsText']);
 
 
 
@@ -60,7 +60,7 @@ console.log('length null');
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+msg['from']+`')" id="message`+msg['from']+`">
   <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
    <p id="textMessage" class="truncate" style="
-">`+msg['message']+`</p>
+">`+messageInfo['dialogsText']+`</p>
   <img src="`+url+`" id="profilePhoto"></img>
 </div>`).prependTo('#leftPanelMessages');
 
@@ -84,11 +84,20 @@ console.log('length null');
 if($('#block'+msg['from']).length!=0){
 
 
-$('#block'+msg['from']+' .messagesList').append(`<li class="messageToMe">`+msg['message']+`</li>`);
+$('#block'+msg['from']+' .messagesList').append(messageInfo['template']);
 
 $('#block'+msg['from']).scrollTop(9999999999999999999999999999999999999);
 
 }
+
+
+	console.log(messageInfo);
+});
+
+
+
+
+
 
 });
 
@@ -135,7 +144,7 @@ var getDialogs = function(){
 			
 						console.log(value);
 						
-
+						if(typeof message.split('_')[2] != 'undefined') message = message.split('_')[0];
 
 						getFileSecter(value['image']).then(function(url){
 							if(url == false) return false;
@@ -145,7 +154,7 @@ var getDialogs = function(){
    <p id="textMessage" class="truncate" style="
 ">`+message+`</p>
   <img src="`+url+`" id="profilePhoto"></img>
-</div>`).prependTo('#leftPanelMessages');
+</div>`).appendTo('#leftPanelMessages');
 
 
 						});
@@ -336,9 +345,18 @@ var text = decryptMessage(value['message'], getKeyForUser(whoIsWho));
 
 var messageClass = (value['to'] == whoIsWho) ? 'messageFromMe' : 'messageToMe';
 
-$(`<li class='`+messageClass+`'>`+text+`</li>`).prependTo('#block' +whoIsWho+ ' .messagesList');
+messageParser(text, messageClass, value['id'], '').then(function(messageInfo){
+
+
+$('#block' +whoIsWho+ ' .messagesList').append(messageInfo['template']); 
 
 console.log(messageClass);
+
+
+
+});
+
+
 
 });
 
@@ -632,8 +650,52 @@ var sendMessageProtected = async function(message,to, fileInfo){
 if(to != getCookie('lastLogin')){
 
 
-	
+if($('#message'+to).length==0){
 
+
+
+	socket.fastInfo(to).then(function(z){
+						
+						console.log(z);
+
+
+						getFileSecter(z['msg']['image']).then(function(url){
+							if(url == false) return false;
+
+							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+to+`')" id="message`+to+`">
+  <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
+   <p id="textMessage" class="truncate" style="
+">`+messageRaw+`</p>
+  <img src="`+url+`" id="profilePhoto"></img>
+</div>`).prependTo('#leftPanelMessages');
+
+
+
+							
+	
+	// wait send msg
+
+
+
+						});
+
+
+
+						
+					});
+}
+
+
+	
+$('#block'+to+' .messagesList').append(messageInfo['template']);
+
+	$('#message'+to).prependTo('#leftPanelMessages');
+
+
+
+$('#message'+to+' #textMessage').text(messageInfo['dialogsText']);
+
+$('#block'+to).scrollTop(9999999999999999999999999999999999999);
 
 
 	
@@ -687,6 +749,10 @@ if(to != getCookie('lastLogin')){
 
 	
 
+if($('#message'+to).length==0){
+
+
+
 	socket.fastInfo(to).then(function(z){
 						
 						console.log(z);
@@ -705,15 +771,7 @@ if(to != getCookie('lastLogin')){
 
 
 							
-	$('#block'+to+' .messagesList').append(messageInfo['template']);
-
-	$('#message'+to).prependTo('#leftPanelMessages');
-
-
-
-$('#message'+to+' #textMessage').text(messageInfo['dialogsText']);
-
-$('#block'+to).scrollTop(9999999999999999999999999999999999999);
+	
 	// wait send msg
 
 
@@ -724,6 +782,21 @@ $('#block'+to).scrollTop(9999999999999999999999999999999999999);
 
 						
 					});
+}
+
+
+	
+$('#block'+to+' .messagesList').append(messageInfo['template']);
+
+	$('#message'+to).prependTo('#leftPanelMessages');
+
+
+
+$('#message'+to+' #textMessage').text(messageInfo['dialogsText']);
+
+$('#block'+to).scrollTop(9999999999999999999999999999999999999);
+
+
 }
 socket.sendMessage(message, to).then(function(r){
 	console.log(r);
