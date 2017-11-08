@@ -1089,8 +1089,8 @@ fd.append('file', file);
 
   	 var percentComplete = event.loaded / event.total;
 
-  	 	$('.fileUploadingInfo .bytesLoading #loading').text(event.loaded/1024/1024.toString().substr(0, 4)+'мб');
-  	 	$('.fileUploadingInfo .bytesLoading #total').text(event.total/1024/1024.toString().substr(0, 4)+'мб');
+  	 	$('.fileUploadingInfo .bytesLoading #loading').text((event.loaded/1024/1024).toString().substr(0, 4)+'мб');
+  	 	$('.fileUploadingInfo .bytesLoading #total').text((event.total/1024/1024).toString().substr(0, 4)+'мб');
   	  $('.fileUploadingInfo .loadProgress .determinate').css('width', percentComplete*100+'%');
     console.log(percentComplete);
   }
