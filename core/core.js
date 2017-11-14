@@ -226,6 +226,14 @@ resolve(u(ERROR_CODE_ISNT_VALIDE, authCode, true));
 });
 }
 
+
+var changeProfilePhoto = function(login, photoID){
+
+getDB.find({login:login}).assign({image:photoID}).write();
+return u(0, true, false);
+};
+
+
 var getFastInfo = function(login){
 	return new Promise(function(resolve,reject){
 		var info = getDB.find({login:login}).value();
@@ -322,8 +330,8 @@ return new Promise(function(resolve, reject){
 	resolve(u(0, true, false));
 
 
-	clearTimeout(timerID);
-	var timerID = setTimeout(function(){
+	
+	setTimeout(function(){
 		getDB.find({ login: login}).assign({lastOnline:Math.floor(Date.now()/1000), online:0}).write();
 
 		console.log('Delete online =( ');
@@ -350,6 +358,8 @@ return new Promise(function(resolve, reject){
 });
 }
 
+
+module.exports.changeProfilePhoto=changeProfilePhoto;
 
 module.exports.registerAccountPartOne = registerAccountPartOne;
 module.exports.isLoginBusy = isLoginBusy;

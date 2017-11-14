@@ -75,7 +75,7 @@ delete tokens[req.params.token];
 
 
   console.log(accessFilesForImages);
-    if(isProfilePhoto == 1 && fileType != 'png' && fileType != 'jpg'){
+    if(isProfilePhoto == 1 && fileMime.split('/')[0] != 'image'){
       res.status(500).send('This files is denied for profileImages!');
 
       return false;
@@ -83,15 +83,17 @@ delete tokens[req.params.token];
     }
 
     if(isProfilePhoto==1){
+
       Attachment['is_profile'] = 1;
     }
 
 
+    var response = core.attachments.addAttachments(Attachment);
 
-    res.send( core.attachments.addAttachments(Attachment));
 
-  
-    console.log(sampleFile);
+    res.send(response);
+    if(Attachment['is_profile']==1) core.changeProfilePhoto(login, JSON.parse(response)['id']);
+    
 
   
 
@@ -455,6 +457,16 @@ if(JSON.parse(LZString.decompressFromUTF16(r))['code']==12){
   fn(r);
 });
 break;
+
+case 'messages.setTyping':
+io.to(clients[data['to']]).emit('typing', LZString.compressToUTF16(JSON.stringify({type:1, who:login}))) ;
+
+setTimeout(function(){
+  console.log('end typing');
+io.to(clients[data['to']]).emit('typing', LZString.compressToUTF16(JSON.stringify({type:0, who:login}))) ;
+}, 5000);
+break;
+
 case 'info.getFast':
 core.getFastInfo(data['login']).then(function(r){
   fn(r);

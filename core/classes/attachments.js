@@ -2,13 +2,26 @@
 
 
 
+
+
+
+
+
 const low = require('lowdb')
+
+
+
+
+
+
 const FileAsync = require('lowdb/adapters/FileAsync')
 
 const adapter = new FileAsync('./core/databases/attachments.json');
 var shortid = require('shortid');
 low(adapter)
   .then(db => {
+
+
 
 
 
@@ -37,7 +50,11 @@ var addAttachments = function(Attachment){
 
     Attachment['type'] = whatTheType(Attachment['mime']);
 
+
+
+
 getDB.push(Attachment).write();
+
 return JSON.stringify({id: Attachment['id'], type:Attachment['type'], name:Attachment['name']});
 
 }

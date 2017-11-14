@@ -1,6 +1,17 @@
 function Client(serverCommunitation){
+
+
+
+	var blobsCaches = {};
 	var win = new modulesWindow();
 var socket = serverCommunitation;
+
+
+
+
+
+var audios = {};
+
 var isMobile = $(window).width() <= 480;
 this.openSocket = socket;
 this.openWindow = win;
@@ -16,6 +27,9 @@ const SUCCESSFUL_REGISTER = 3, SUCCESSFUL_VALIDATION = 6, SUCCESSFUL_AUTH_BUT_NE
 
 
 var cache = {}; // Cache for blobs.
+
+
+
 
 socket.socketCopy.on('new message', function(msg){
 msg = JSON.parse(LZString.decompressFromUTF16(msg))['msg'];
@@ -55,6 +69,9 @@ console.log('length null');
 
 
 						getFileSecter(z['msg']['image']).then(function(url){
+
+
+
 							if(url == false) return false;
 
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+msg['from']+`')" id="message`+msg['from']+`">
@@ -112,7 +129,13 @@ setKeyForUser(key['from'], key['key']);
 });
 
 
+socket.socketCopy.on('typing', function(msg){
+msg = JSON.parse(LZString.decompressFromUTF16(msg));
 
+console.log('call');
+
+console.log(msg);
+});
 function setKey(to, key){
 socket.setKey(to, key);
 return true;
@@ -292,7 +315,8 @@ else text = '<p class="topPanelLastonline online">в сети</p>';
   
   <div id="userInfoTopPanel" class="z-depth-2">
   	<i class="waves-effect waves-circle material-icons mobileBackButton backDialogs" onclick="client.openWindow.closeMobileWindow($('.rightBlock'), $('#leftPanelMessages'));">arrow_back</i>
-    <img src="`+$('#message'+login+' #profilePhoto').attr('src')+`" id="profilePhotoTopPanel">
+    <img src="`+$('#message'+login+' #profilePhoto').attr('src')+`" id="profilePhotoTopPanel" onclick="$('.photoWatcher').fadeIn(200);
+$('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '`+$('#message'+login+' #profilePhoto').attr('src')+`');">
   <p id="topPanelName">`+$('#message'+login+' #userName').text()+`</p>
   `+text+`
   </div>
@@ -1069,7 +1093,7 @@ resolve(blob);
 
 }
 
-var uploadFile = function(file, isProfileImage, token, to, fileInfo){
+var uploadFile = function(file, isProfileImage, token, to, fileInfo, cb){
 
 
 
@@ -1107,7 +1131,7 @@ fd.append('file', file);
 
       console.log(info);
 
-      sendMessageProtected(info['type']+'_'+info['id']+'_'+info['name'], to, fileInfo);
+      cb(info, to, fileInfo); 
     } else {
       console.log("error " + this.status);
     }
@@ -1119,6 +1143,67 @@ fd.append('file', file);
 
 
 }
+
+var uploadImageProfile = function(file, token , cb){
+
+
+var fd = new FormData();
+fd.append('file', file);
+  var xhr = new XMLHttpRequest();
+
+
+
+
+  // обработчик для закачки
+  xhr.upload.onprogress = function(event) {
+
+  	 var percentComplete = event.loaded / event.total;
+
+  	
+    console.log(percentComplete);
+  }
+
+  // обработчики успеха и ошибки
+  // если status == 200, то это успех, иначе ошибка
+  xhr.onload = xhr.onerror = function() {
+    if (this.status == 200) {
+
+
+    	
+
+      cb(URL.createObjectURL(file)); 
+    } else {
+      console.log("error " + this.status);
+    }
+  };
+
+  xhr.open("POST", "/uploadImage/"+token+"/1", true);
+  xhr.send(fd);
+
+
+};
+
+this.onLoadProfilePhoto = function(files){
+
+	console.log('call');
+var file = files[0];
+
+  socket.getLinkAttachments().then(function(r){
+	var link = r['msg'];
+
+	console.log('link : ' + link);
+
+
+	uploadImageProfile(file, link, function(blob){
+		console.log('Successful!');
+	})
+
+	
+
+});
+
+
+};
 this.onLoadAttachment = function(files){
 
 var to = $('.selectedDialog').attr('id').replace('message', '');
@@ -1157,7 +1242,9 @@ var to = $('.selectedDialog').attr('id').replace('message', '');
 
 
 	
-uploadFile(value, 0, link, to, fileInfo);
+uploadFile(value, 0, link, to, fileInfo, function(info,to,fileInfo){
+	sendMessageProtected(info['type']+'_'+info['id']+'_'+info['name'], to, fileInfo);
+});
 
 	
 
@@ -1209,7 +1296,8 @@ var messageParser = function (text, messageClass, id, att){
 
 			switch(infoText[0]){
 			case 'image':
-			template = `<li class='`+messageClass+`' id='messageID`+id+`'><img src='`+url+`' class='dialogsImageSend'>`+att+`</li>`;
+			template = `<li class='`+messageClass+`' id='messageID`+id+`'><img src='`+url+`' class='dialogsImageSend' onclick="$('.photoWatcher').fadeIn(200);
+$('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '`+url+`');">`+att+`</li>`;
 			dialogsText = 'фотография';
 			break;
 			case 'video':
@@ -1217,6 +1305,50 @@ var messageParser = function (text, messageClass, id, att){
 			break;
 			case 'audio':
 			dialogsText = 'аудио';
+
+			
+
+			window.audio = new AudioPlayer(url);
+
+
+			template = `<li class='`+messageClass+`' id='messageID`+id+`'>			<div class="audioMessage" style="
+    width: 280px;
+    height: 42px;
+">
+
+
+<div class="playOrStopButton" onclick="
+if($(this).children().text() == 'play_arrow'){
+$(this).children().text('pause');
+console.log(window.audio);
+window.audio.playAudio();
+} 
+
+else{
+	window.audio.stopAudio();
+$(this).children().text('play_arrow');
+}
+"><i class="material-icons" style="
+    color: #757575;
+    font-size: 41px;
+    position: relative;
+    margin-top: 0px;
+    margin-left: -0.5px;
+">play_arrow</i>
+</div>
+
+    <p class="audioName truncate">DJ LIVE - Работай!</p>
+<div class="audioTime">
+    <div class="audioFullTime" style="
+    width: 50%;
+    height: 3px;
+    background: #e4e4e4;
+    transition: 300ms;
+"></div>
+</div>
+</div>`+att+`</li>`;
+
+
 			break;
 
 			case 'document':
@@ -1358,5 +1490,45 @@ socket.setOnline();
 }, 10000);
 
 
+
+this.seePhoto = function(url){
+
+};
+
 }
+
+
+
+function AudioPlayer(tAudio){
+// У тебя у курносой
+var audio = new Audio(tAudio);
+this.duration = audio.duration;
+
+var interval;
+// Маршрут один
+
+this.stopAudio = function(){
+audio.pause();
+}; // stop auto!
+
+this.playAudio = function(){
+audio.play();
+};
+
+
+
+this.subsribeToUpdate = function(cb){
+ // cb is callback
+ clearInterval(interval);
+
+
+interval = setInterval(function(){
+	cb(audio.currentTime);
+}, 1000);
+
+
+};
+
+};
+
 

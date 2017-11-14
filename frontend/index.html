@@ -119,6 +119,7 @@ top:50%;
 
 }
 .popUpDialog{
+   z-index: 15;
   width: 480px;
 height: 290px;
 position: absolute;
@@ -199,6 +200,7 @@ position: relative;
 }
 
 .popUpDialogInfo{
+   z-index: 15;
    width: 400px;
     height: 140px;
     position: absolute;
@@ -348,7 +350,7 @@ div #leftPanelMessages .dialog #templateMessage{
 div #leftPanelMessages .dialog #userName{
        position: relative;
     font-size: 15px;
-    top: -8px;
+    top: -11px;
     left: 62px;
     color: #212121;
     font-weight: 500;
@@ -405,7 +407,7 @@ position: relative;
 div #leftPanelMessages .dialog #textMessage{
       position: relative;
     font-size: 14px;
-    top: -23px;
+    top: -26px;
     left: 63px;
     color: #797979;
         width: 182px;
@@ -429,7 +431,7 @@ div #userInfoTopPanel {
     float: left;
     display: inline;
     margin-top: 2px;
-    margin-left: 3px;
+    margin-left: 12px;
     color: #272727;
     font-weight: 500
 }
@@ -443,12 +445,14 @@ div #userInfoTopPanel {
     font-size: 13px;
 }
 #profilePhotoTopPanel{
-  width: 45px;
-    height: 45px;
+    width: 36px;
+    height: 36px;
     position: relative;
     border-radius: 50%;
     float: left;
         margin-left: 6px;
+            top: 4px;
+            cursor: pointer;
 }
 p.topPanelLastonline.online{
     color: #388E3C;
@@ -625,7 +629,147 @@ display: inline-block;
     bottom: -9px;
 }
 
+
+.audioMessage{
+      width: 280px;
+    height: 42px;
+}
+.audioMessage .playOrStopButton{
+      position: relative;
+    width: 40px;
+    margin-left: 3px;
+    top: 1px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    float: left;
+        cursor: pointer;
+}
+
+.audioMessage .audioTime{
+position: relative;
+    width: 81%;
+    height: 3px;
+    margin-left: 47px;
+    top: -19px;
+    background: #c3c3c3;
+}
+.audioMessage .audioFullTime{
+    width: 50%;
+    height: 3px;
+    background: #e4e4e4;
+    transition: 300ms;
+}
+.audioMessage .audioName{
+position: relative;
+    font-size: 15px;
+    color: white;
+    left: 3px;
+    margin-top: 0px;
+    top: -3px;
+}
 /* end */
+
+.mySettings{
+  display: none;
+
+   z-index: 15;
+}
+.mySettings #headerBlock{
+    position: absolute;
+    width: 100%;
+    height: 99px;
+    background: #a2a2f1;
+}
+.mySettings #myProfilePhoto{
+border-radius: 50%;
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin-left: 33px;
+    margin-top: 16px;
+    display: inline-block;
+    float: left;
+
+}
+.mySettings #nameAndSurname{
+  position: relative;
+    float: left;
+    display: inline-block;
+    font-size: 15px;
+    color: white;
+    font-family: Roboto;
+    margin-left: 7px;
+    margin-top: 18px;
+    font-weight: 500;
+}
+
+.mySettings #loginUser{
+position: absolute;
+    left: 103px;
+    top: 26px;
+    /* float: left; */
+    /* clear: left; */
+    display: inline-block;
+    font-size: 15px;
+    color: #f1eded;
+    font-family: Roboto;
+}
+
+.mySettings #buttonChangeProfilePhoto{
+  position: absolute;
+    right: 17px;
+    top: 70px;
+    background: #66538a;
+}
+
+
+.photoWatcher{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+display: none;
+  background: rgba(0,0,0, 0.64);
+  z-index: 16;
+  cursor: pointer;
+  transition: 300ms;
+}
+
+.photoWatcher:hover{
+
+  background: rgba(0,0,0, 0.57);
+}
+
+
+.photoWatcher .imageView{
+   cursor: pointer;
+position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    max-width: 75%;
+    max-height: 75%;
+}
+.photoWatcher .closeIcon{
+    position: absolute;
+    right: 11px;
+    top: 12px;
+    color: #e8e5e5;
+    font-size: 36px;
+    transition: 300ms;
+    cursor: pointer;
+    transform: rotate(-41deg);
+}
+.photoWatcher .closeIcon:hover{
+  color: white;
+
+
+}
+
 @media screen and (max-width: 480px){
 
   div #leftPanelMessages{
@@ -661,6 +805,23 @@ display: inline-block;
 </style>
 </head> 
 <body> 
+<div class="photoWatcher" onclick="$(this).fadeOut(100)">
+  <i class="material-icons closeIcon" onclick="$(this).parent().fadeOut(100); $(this).css('transform', 'rotate(-41deg)');">close</i>
+<img src="" class="imageView">
+</div>
+<div class="popUpDialog mySettings">
+
+
+
+  <div id="headerBlock">
+   <p id="loginUser" style="" class='truncate'>@DuckerMan</p>
+    <img src="" id="myProfilePhoto" style="cursor: pointer;" onclick="$('.photoWatcher').fadeIn(200);
+$('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', $(this).attr('src'));">
+    <p id="nameAndSurname" style="" class='truncate'>Sergey the Duck</p>
+ <a class="btn-floating btn-large waves-effect waves-light waves-effect waves-circle" id="buttonChangeProfilePhoto" onclick="console.log('trugger'); $('.uploadImageInput').trigger('click');"><i class="material-icons">add_a_photo</i></a>
+  </div>
+
+</div>
 
 <div class="popUpDialog fileUploadingInfo"><img src="" class="filePreview" style="
   ">
@@ -680,13 +841,25 @@ display: inline-block;
       <div class="background">
         <img src="images/background.jpg">
       </div>
-      <a href="#!info"><img class="circle" id="infoPanelImage" src="images/defaultprofileimage.jpg"></a>
+
+
+      <a href="#!info"><img onclick="$('.photoWatcher').fadeIn(200);
+$('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', $(this).attr('src'));" class="circle" id="infoPanelImage" src="images/defaultprofileimage.jpg"></a>
       <a href="#!info"><span class="white-text name" id="infoPanelName" class="truncate">Орехус</span></a>
       <a href="#!info"><span class="white-text email" id="infoPanelLogin" class="truncate">орехус@gmail.com</span></a>
     </div></li>
     
-    <li class="waves-effect" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons">settings</i><span style="margin-left: -17px;">Настройки</span></a></li>
+    <li class="waves-effect" style="width: 100%;" onclick="$('#mask').show(50);
+$('.mySettings').show(25);
+$('#nameAndSurname').text($('#infoPanelName').text());
+
+$('#loginUser').text($('#infoPanelLogin').text());
+
+$('#myProfilePhoto').attr('src', $('#infoPanelImage').attr('src'));
+"><a style="cursor: pointer;"><i class="material-icons">settings</i><span style="margin-left: -17px;">Настройки</span></a></li>
     <li class="waves-effect" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons">contacts</i><span style="margin-left: -17px;">Контакты</span></a></li>
+
+    <li class="waves-effect" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons">&#xE8AF;</i><span style="margin-left: -17px;">Поддержка</span></a></li>
   
   </ul>
   
@@ -905,6 +1078,18 @@ display: inline-block;
   
   <input type="file" name="file" class="uploadFileInput" multiple style="
 ">
+
+
+  <input type="file" name="file" onchange=" 
+
+
+   if($('.uploadImageInput').get(0).files.length === 0) return false;
+    var files = this.files;
+
+    client.onLoadProfilePhoto(files);
+
+    $('.uploadImageInput').val(null); " class="uploadImageInput" style="
+">
   <input type="submit" value="" class="buttonLoadFile" style="
 ">
 
@@ -917,10 +1102,19 @@ display: inline-block;
 $('.uploadFileInput').on('change', function(e){
  
 
+
+ if($('.uploadFileInput').get(0).files.length === 0) return false;
+
+
+
     var files = this.files;
 
     client.onLoadAttachment(files);
+
+    $('.uploadFileInput').val(null); 
 });
+
+
 
 
 

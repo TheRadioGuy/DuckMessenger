@@ -1,2 +1,4 @@
 node_modules/
 core/databases/users.json
+core/databases/attachments.json
+core/databases/users.json

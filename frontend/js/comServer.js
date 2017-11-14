@@ -98,6 +98,16 @@ this.getOnline = function(login){
 	});
 
 };
+
+this.setTyping = function(to){
+	return new Promise(function(r,rj){
+		
+
+			r(sendRequest({method:'messages.setTyping', to:to}));
+	});
+
+
+};
 this.authAccount = async function(login){
 
 	return new Promise(function(r,rj){
