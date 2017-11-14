@@ -131,10 +131,22 @@ setKeyForUser(key['from'], key['key']);
 
 socket.socketCopy.on('typing', function(msg){
 msg = JSON.parse(LZString.decompressFromUTF16(msg));
-
-console.log('call');
-
 console.log(msg);
+
+
+
+console.log($('#block'+msg['who']+' .animationDiv').show());
+
+
+if(msg['type'] ==1){
+	
+	$('#block'+msg['who']+' .topPanelLastonline').hide();
+
+	$('#block'+msg['who']+' .animationDiv').show();
+}
+else{
+	$('#block'+msg['who']+' .topPanelLastonline').show();
+} $('#block'+msg['who']+' .animationDiv').hide();
 });
 function setKey(to, key){
 socket.setKey(to, key);
@@ -311,6 +323,8 @@ else text = '<p class="topPanelLastonline online">в сети</p>';
 
 
 
+
+
 	$(`<div class="messagesBlock" id="block`+login+`">
   
   <div id="userInfoTopPanel" class="z-depth-2">
@@ -318,6 +332,11 @@ else text = '<p class="topPanelLastonline online">в сети</p>';
     <img src="`+$('#message'+login+' #profilePhoto').attr('src')+`" id="profilePhotoTopPanel" onclick="$('.photoWatcher').fadeIn(200);
 $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '`+$('#message'+login+' #profilePhoto').attr('src')+`');">
   <p id="topPanelName">`+$('#message'+login+' #userName').text()+`</p>
+  <div class='animationDiv'>
+ <div class="animationSpan"></div>
+ <div class="animationSpan"></div>
+ <div class="animationSpan"></div>
+  </div>
   `+text+`
   </div>
 
@@ -644,7 +663,7 @@ return decryptedText;
 
 
 
-var sendMessageProtected = async function(message,to, fileInfo){
+var sendMessageProtected = function(message,to, fileInfo){
 
 	$('#block'+to+' .messageSendBlock').text('');
 
@@ -1469,8 +1488,11 @@ $('#block'+login+' .topPanelLastonline').text(text);
 
 
 });
+if(!$('#block'+login+' .animationDiv').is(':hidden')) return false;
 
 
+
+$('#block'+login+' .topPanelLastonline').show();
 
 	}
 

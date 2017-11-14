@@ -1,12 +1,52 @@
 <html>
+<head> <style type="text/css">
+
+
+@keyframes typing{
+  0%{
+    opacity: 0.5;
+  }
+   25%{
+    opacity: 1;
+  }
+   50%{
+    opacity: 0.5;
+  }
+}
+
+@keyframes typingTwo{
+  25%{
+    opacity: 0.5;
+  }
+   50%{
+    opacity: 1;
+  }
+   75%{
+    opacity: 0.5;
+  }
+}
+.animationSpan{
+  width: 8px;
+  height: 8px;
+  background: #d8d8d8;
+  float: left;
+  position: relative;
+  margin-left: 3px;
+  border-radius: 50%;
+animation: typing 1s infinite linear;
+}
+.animationSpan:nth-child(2){
+animation: typingTwo 1s infinite linear;
+}
+
+
+
+ </style></head>
   <body>
-    <form ref='uploadForm' 
-      id='uploadForm' 
-      action='/uploadImage/BJA6Rf9C-BylRTCMcRbS1-RpRG90b/0' 
-      method='post' 
-      encType="multipart/form-data">
-        <input type="file" name="file" />
-        <input type='submit' value='Upload!' />
-    </form>     
+
+
+ <div class="animationSpan"></div>
+ <div class="animationSpan"></div>
+ <div class="animationSpan"></div>
   </body>
 </html>

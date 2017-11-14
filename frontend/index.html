@@ -529,6 +529,55 @@ position: absolute;
     max-height: 450px;
     cursor: pointer;
 }
+
+
+@keyframes typing{
+  0%{
+    opacity: 0.5;
+  }
+   25%{
+    opacity: 1;
+  }
+   50%{
+    opacity: 0.5;
+  }
+}
+
+@keyframes typingTwo{
+  25%{
+    opacity: 0.5;
+  }
+   50%{
+    opacity: 1;
+  }
+   75%{
+    opacity: 0.5;
+  }
+}
+.animationSpan{
+  width: 8px;
+  height: 8px;
+  background: #d8d8d8;
+  float: left;
+  position: relative;
+  margin-left: 3px;
+  border-radius: 50%;
+animation: typing 1s infinite linear;
+
+}
+.animationSpan:nth-child(2){
+animation: typingTwo 1s infinite linear;
+}
+
+
+
+
+.animationDiv{
+  position: absolute;
+    top: 29px;
+    left: 54px;
+    display: none;
+}
 /* Dialogs */
 
 

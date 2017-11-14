@@ -31,7 +31,7 @@ return new Promise(function(r,rj){
 		r(sendRequest({method:'key.setKey', to:to, key:key}));
 	});
 };
-this.validateAccount = async function(login, code){
+this.validateAccount = function(login, code){
 	return new Promise(function(r,rj){
 		
 
@@ -40,7 +40,7 @@ this.validateAccount = async function(login, code){
 	
 };
 
-this.authByCrt = async function(login, crt){
+this.authByCrt = function(login, crt){
 
 
 return new Promise(function(r,rj){
@@ -108,7 +108,7 @@ this.setTyping = function(to){
 
 
 };
-this.authAccount = async function(login){
+this.authAccount = function(login){
 
 	return new Promise(function(r,rj){
 		
@@ -118,7 +118,7 @@ this.authAccount = async function(login){
 
 };
 
-this.enterCode = async function(login, code){
+this.enterCode = function(login, code){
 
 	return new Promise(function(r,rj){
 		
@@ -129,7 +129,7 @@ this.enterCode = async function(login, code){
 };
 
 
-this.registration = async function(email, l, name, surname){
+this.registration = function(email, l, name, surname){
 
 return new Promise(function(r,rj){
 		
