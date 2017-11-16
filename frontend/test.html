@@ -1,52 +1,14 @@
-<html>
-<head> <style type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="js/circle-progress.min.js"></script>
 
+<div id="circle"></div>
 
-@keyframes typing{
-  0%{
-    opacity: 0.5;
-  }
-   25%{
-    opacity: 1;
-  }
-   50%{
-    opacity: 0.5;
-  }
-}
-
-@keyframes typingTwo{
-  25%{
-    opacity: 0.5;
-  }
-   50%{
-    opacity: 1;
-  }
-   75%{
-    opacity: 0.5;
-  }
-}
-.animationSpan{
-  width: 8px;
-  height: 8px;
-  background: #d8d8d8;
-  float: left;
-  position: relative;
-  margin-left: 3px;
-  border-radius: 50%;
-animation: typing 1s infinite linear;
-}
-.animationSpan:nth-child(2){
-animation: typingTwo 1s infinite linear;
-}
-
-
-
- </style></head>
-  <body>
-
-
- <div class="animationSpan"></div>
- <div class="animationSpan"></div>
- <div class="animationSpan"></div>
-  </body>
-</html>
+<script>
+  $('#circle').circleProgress({
+    value: 0.75,
+    size: 80,
+    fill: {
+      gradient: ["red", "orange"]
+    }
+  });
+</script>

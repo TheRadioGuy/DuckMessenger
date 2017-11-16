@@ -10,6 +10,7 @@
 
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="js/circle-progress.min.js"></script>
   <script language="javascript" src="js/lz-string.js"></script>
    <script language="javascript" src="js/async.js"></script>
 <!--  <script src="/js/recorder.js"></script> -->
@@ -423,7 +424,13 @@ div #userInfoTopPanel {
     position: fixed;
     top: 0px
 }
-
+.cirleLoadImage {
+    position: absolute;
+    left: 45px;
+    z-index: 1;
+    top: 28px;
+    display: none;
+}
 #topPanelName{
 
       font-size: 17px;
@@ -735,6 +742,7 @@ border-radius: 50%;
     position: relative;
     width: 64px;
     height: 64px;
+    transition: 300ms;
     margin-left: 33px;
     margin-top: 16px;
     display: inline-block;
@@ -755,7 +763,7 @@ border-radius: 50%;
 
 .mySettings #loginUser{
 position: absolute;
-    left: 103px;
+    left: 104px;
     top: 26px;
     /* float: left; */
     /* clear: left; */
@@ -803,7 +811,7 @@ position: absolute;
     max-width: 75%;
     max-height: 75%;
 }
-.photoWatcher .closeIcon{
+.closeIcon{
     position: absolute;
     right: 11px;
     top: 12px;
@@ -813,18 +821,153 @@ position: absolute;
     cursor: pointer;
     transform: rotate(-41deg);
 }
-.photoWatcher .closeIcon:hover{
+.closeIcon:hover{
   color: white;
 
 
 }
 
-@media screen and (max-width: 480px){
+.searchBlockTopPanel{
+  position: absolute;
+    left: 46px;
+    width: 81%;
+    height: 24px;
+    top: 10px;
+}
+.searchInputTopPanel::-webkit-input-placeholder {
+    color: #888888;
+}
 
+.searchInputTopPanel::-moz-placeholder          {color:#888888;}/* Firefox 19+ */
+.searchInputTopPanel:-moz-placeholder           {color:#888888;}/* Firefox 18- */
+.searchInputTopPanel:-ms-input-placeholder      {color:#888888;}
+
+
+.searchInputTopPanel::-webkit-input-placeholder       {text-indent: 0px;   transition: text-indent 335ms ease;}
+.searchInputTopPanel::-moz-placeholder                {text-indent: 0px;   transition: text-indent 335ms ease;}
+.searchInputTopPanel:-moz-placeholder                 {text-indent: 0px;   transition: text-indent 335ms ease;}
+.searchInputTopPanel:-ms-input-placeholder            {text-indent: 0px;   transition: text-indent 335ms ease;}
+.searchInputTopPanel:focus::-webkit-input-placeholder {text-indent: 500px; transition: text-indent 335ms ease;}
+.searchInputTopPanel:focus::-moz-placeholder          {text-indent: 500px; transition: text-indent 335ms ease;}
+.searchInputTopPanel:focus:-moz-placeholder           {text-indent: 500px; transition: text-indent 335ms ease;}
+.searchInputTopPanel:focus:-ms-input-placeholder      {text-indent: 500px; transition: text-indent 335ms ease;}
+
+
+.searchInputTopPanel {
+    position: absolute;
+    overflow: hidden;
+    outline: none;
+    border: 0;
+    border-radius: 4px;
+    padding: 7px 16px;
+    background: #f7f7f7;
+    top: -4px;
+    color: #212121;
+    width: 100%;
+}
+
+.myСontacts{
+z-index: 16;
+    margin: -245px 0 0 -160px;
+    width: 320px;
+        height: 490px;
+
+}
+.myСontacts #headerTitle{
+
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 40px;
+    background: #f1f1f1;
+        border-bottom: 1px solid #dedede;
+}
+.myСontacts #titleHeaderText{
+  font-family: Roboto;
+    font-size: 18px;
+    color: #4c4c4c;
+    font-weight: 500;
+    position: absolute;
+    left: 10px;
+    top: -11px;
+
+
+}
+.myСontacts .contentContacts{
+width: 100%;
+    height: calc(100% - 40px);
+    position: absolute;
+    top: 40px;
+    background: white;
+}
+.myСontacts .userImage{
+    width: 49px;
+    height: 49px;
+    border-radius: 53px;
+        margin-left: 8px;
+        margin-top: 8px;
+}
+.userBlock:first-child {
+    margin-top: 7px;
+}
+.myСontacts .userBlock{
+    display: inline-block;
+    width: 100%;
+    height: 64px;
+}
+.myСontacts .userName{
+    font-size: 15px;
+    color: #212121;
+    display: inline-block;
+    position: absolute;
+    margin-top: 9px;
+    margin-left: 8px;
+}
+.myСontacts .whenWasAdded {
+    font-size: 13px;
+    color: #777777;
+    display: inline-block;
+    position: absolute;
+    margin-top: 28px;
+    margin-left: 8px;
+}
+#backContacts{
+      top: 6px;
+    left: -20px;
+}
+#closeContacts{
+display: block;
+position: absolute;
+right: 5px;
+top: 1px;
+color: #757575;
+transform: rotate(0deg);
+}
+#closeContacts:hover{
+color: #615f5f;
+}
+
+.addContact{
+z-index: 17;
+    width: 235px;
+    height: 140px;
+    margin: -145px 0 0 -117.5px;
+    box-shadow: 12px 20px 20000px 2000px rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.3);
+}
+@media screen and (max-width: 480px){
+  .myСontacts #titleHeaderText{
+    left: 38px;
+  }
+  #closeContacts{
+    display: none;
+  }
   div #leftPanelMessages{
     width: 100%;
   }
-
+  .myСontacts{
+  margin: -75% 0 0 -160px;
+  height: 100%;
+  }
 
   #blockAuth .progressAuth{
     width: 291px;
@@ -854,16 +997,19 @@ position: absolute;
 </style>
 </head> 
 <body> 
-<div class="photoWatcher" onclick="$(this).fadeOut(100)">
-  <i class="material-icons closeIcon" onclick="$(this).parent().fadeOut(100); $(this).css('transform', 'rotate(-41deg)');">close</i>
+<div class="photoWatcher" onclick="$(this).fadeOut(100); $('#closePhoto').css('transform', 'rotate(-41deg)');">
+  <i class="material-icons closeIcon" id="closePhoto" onclick="$(this).parent().fadeOut(100); $(this).css('transform', 'rotate(-41deg)');">close</i>
 <img src="" class="imageView">
 </div>
+
+
 <div class="popUpDialog mySettings">
 
 
 
   <div id="headerBlock">
    <p id="loginUser" style="" class='truncate'>@DuckerMan</p>
+   <div class="cirleLoadImage"></div>
     <img src="" id="myProfilePhoto" style="cursor: pointer;" onclick="$('.photoWatcher').fadeIn(200);
 $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', $(this).attr('src'));">
     <p id="nameAndSurname" style="" class='truncate'>Sergey the Duck</p>
@@ -871,6 +1017,46 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
   </div>
 
 </div>
+
+
+<div class="popUpDialog myСontacts">
+
+
+
+  <div id="headerTitle">
+   <i class="waves-effect waves-circle material-icons mobileBackButton" id="backContacts" onclick="$('.myСontacts').fadeOut(150); $('#mask').fadeOut(25);">arrow_back</i>
+  <i class="material-icons closeIcon" id="closeContacts" onclick="$('.myСontacts').fadeOut(150); $('#mask').fadeOut(25);">close</i>
+  <p id="titleHeaderText">Контакты</p>
+  </div>
+
+  <div class="contentContacts">
+
+
+
+    
+  </div>
+<a class="btn-floating btn-large waves-effect waves-light red" style="    right: 10px;
+    position: absolute;
+    bottom: 10px;" onclick="
+$('.addContact').fadeIn(25);" ><i class="material-icons">add</i></a>
+</div>
+
+<div class="popUpDialog addContact z-depth-3">
+<center>
+
+          
+          <div class="input-field inline">
+            <input id="email" type="email" class="validate">
+            <label for="email" data-error="неверно" data-success="">Email</label>
+          </div>
+
+
+
+
+          </center>
+        </div>
+
+
 
 <div class="popUpDialog fileUploadingInfo"><img src="" class="filePreview" style="
   ">
@@ -906,7 +1092,15 @@ $('#loginUser').text($('#infoPanelLogin').text());
 
 $('#myProfilePhoto').attr('src', $('#infoPanelImage').attr('src'));
 "><a style="cursor: pointer;"><i class="material-icons">settings</i><span style="margin-left: -17px;">Настройки</span></a></li>
-    <li class="waves-effect" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons">contacts</i><span style="margin-left: -17px;">Контакты</span></a></li>
+    <li class="waves-effect" style="width: 100%;" onclick="$('#mask').show(50);
+$('.myСontacts').show(100);
+
+
+client.onClickContacts();
+
+
+
+"><a style="cursor: pointer;"><i class="material-icons">contacts</i><span style="margin-left: -17px;">Контакты</span></a></li>
 
     <li class="waves-effect" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons">&#xE8AF;</i><span style="margin-left: -17px;">Поддержка</span></a></li>
   
@@ -1045,9 +1239,16 @@ $('#myProfilePhoto').attr('src', $('#infoPanelImage').attr('src'));
     position: relative;
 }">menu</i></a>
 
+<div class="searchBlockTopPanel" style=""><input type="text" placeholder="Поиск" name="search" class="searchInputTopPanel browser-default ">
+
+
+</div>
+
   </div>
 
 <p id="noDialogsText"></p>
+
+
 <div class="preloader-wrapper active" id="prealoderDialogs" style="
     width: 48px;
     height: 48px;
@@ -1148,6 +1349,23 @@ $('#myProfilePhoto').attr('src', $('#infoPanelImage').attr('src'));
 <script>
 
 
+
+function init(){
+  var system = getMobileOperatingSystem();
+
+  if(system=='iOS') {
+    $('#titleHeaderText').css('left', '35%');
+  }
+}
+
+ $('.cirleLoadImage').circleProgress({
+    value: 0.0,
+    size: 40,
+    emptyFill: "rgba(0, 0, 0, 1.00)",
+    fill: {
+      color: "#000000"
+    }
+  });
 $('.uploadFileInput').on('change', function(e){
  
 
@@ -1164,7 +1382,22 @@ $('.uploadFileInput').on('change', function(e){
 });
 
 
+$('.searchInputTopPanel').on('input', function(){
+  var val = $(this).val();
 
+if(!isEmpty(val)){
+// search
+
+$('.dialog').animate({left:'-100%'}, 50);
+
+
+
+}
+else{
+$('.dialog').animate({left:'0pxpick'}, 50);
+
+}
+});
 
 
  $('.button-collapse').sideNav({
@@ -1484,7 +1717,25 @@ setInterval(function(){
 
 
 
+function getMobileOperatingSystem() {
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
+      // Windows Phone must come first because its UA also contains "Android"
+    if (/windows phone/i.test(userAgent)) {
+        return "Windows Phone";
+    }
+
+    if (/android/i.test(userAgent)) {
+        return "Android";
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        return "iOS";
+    }
+
+    return "unknown";
+}
 
 
 </script>

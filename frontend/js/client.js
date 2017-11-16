@@ -11,7 +11,7 @@ var socket = serverCommunitation;
 
 
 var audios = {};
-
+var tmpCache = {};
 var isMobile = $(window).width() <= 480;
 this.openSocket = socket;
 this.openWindow = win;
@@ -71,8 +71,20 @@ console.log('length null');
 						getFileSecter(z['msg']['image']).then(function(url){
 
 
+							tmpCache[z['msg']['image']] = url;
+						if(url == false) url = '/images/defaultprofileimage.jpg';
 
-							if(url == false) return false;
+
+						Notification.requestPermission();
+
+						
+
+var mailNotification = new Notification(z['msg']['name'] + " " + z['msg']['surname'], {
+    tag : "message",
+    body : messageInfo['template'],
+    icon : url
+});
+
 
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+msg['from']+`')" id="message`+msg['from']+`">
   <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
@@ -182,8 +194,9 @@ var getDialogs = function(){
 						if(typeof message.split('_')[2] != 'undefined') message = message.split('_')[0];
 
 						getFileSecter(value['image']).then(function(url){
-							if(url == false) return false;
+						if(url == false) url = '/images/defaultprofileimage.jpg';
 
+						tmpCache[value['image']] = url;
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+value['with']+`')" id="message`+value['with']+`">
   <p id="userName">`+value['name']+" " + value['surname'] +`</p>
    <p id="textMessage" class="truncate" style="
@@ -391,7 +404,7 @@ var messageClass = (value['to'] == whoIsWho) ? 'messageFromMe' : 'messageToMe';
 messageParser(text, messageClass, value['id'], '').then(function(messageInfo){
 
 
-$('#block' +whoIsWho+ ' .messagesList').append(messageInfo['template']); 
+$('#block' +whoIsWho+ ' .messagesList').prepend(messageInfo['template']); 
 
 console.log(messageClass);
 
@@ -701,10 +714,11 @@ if($('#message'+to).length==0){
 						
 						console.log(z);
 
-
+						
 						getFileSecter(z['msg']['image']).then(function(url){
-							if(url == false) return false;
 
+							if(url == false) url = '/images/defaultprofileimage.jpg';
+							tmpCache[z['msg']['image']] = url;
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+to+`')" id="message`+to+`">
   <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
    <p id="textMessage" class="truncate" style="
@@ -747,7 +761,9 @@ $('#block'+to).scrollTop(9999999999999999999999999999999999999);
 socket.sendMessage(message, to).then(function(r){
 	console.log(r);
 	$('#messageID'+randomID+' .statusSendMessage').text('check');
-	$('#messageID'+randomID).attr('id', r['msg']['id']);
+	$('#messageID'+randomID).attr('oldid', randomID);
+	$('#messageID'+randomID).attr('id', 'messageID' + r['msg']['id']);
+	console.log('set ID' + 'messageID' + r['msg']['id']);
 
 });
 
@@ -802,8 +818,8 @@ if($('#message'+to).length==0){
 
 
 						getFileSecter(z['msg']['image']).then(function(url){
-							if(url == false) return false;
-
+						if(url == false) url = '/images/defaultprofileimage.jpg';
+						tmpCache[z['msg']['image']] = url;
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+to+`')" id="message`+to+`">
   <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
    <p id="textMessage" class="truncate" style="
@@ -844,7 +860,9 @@ $('#block'+to).scrollTop(9999999999999999999999999999999999999);
 socket.sendMessage(message, to).then(function(r){
 	console.log(r);
 	$('#messageID'+randomID+' .statusSendMessage').text('check');
+	$('#messageID'+randomID).attr('oldID', randomID);
 	$('#messageID'+randomID).attr('id', r['msg']['id']);
+
 
 });
 
@@ -1165,20 +1183,24 @@ fd.append('file', file);
 
 var uploadImageProfile = function(file, token , cb){
 
+$('.cirleLoadImage').show();
 
 var fd = new FormData();
 fd.append('file', file);
   var xhr = new XMLHttpRequest();
 
+var blob = URL.createObjectURL(file);
+$('#myProfilePhoto').attr('src', blob);
 
-
+$('#myProfilePhoto').css('-webkit-filter', 'blur(1px) brightness(0.5)');
+$('#myProfilePhoto').css('-moz-filter', 'blur(1px) brightness(0.5)');
 
   // обработчик для закачки
   xhr.upload.onprogress = function(event) {
 
   	 var percentComplete = event.loaded / event.total;
 
-  	
+  		$('.cirleLoadImage').circleProgress('value', percentComplete);
     console.log(percentComplete);
   }
 
@@ -1190,7 +1212,7 @@ fd.append('file', file);
 
     	
 
-      cb(URL.createObjectURL(file)); 
+      cb(blob); 
     } else {
       console.log("error " + this.status);
     }
@@ -1201,7 +1223,42 @@ fd.append('file', file);
 
 
 };
+this.onClickContacts = function(){
+	
+$('.contentContacts').html(null);
+	socket.contactsGet().then((r)=>{
+forEach(r['msg'], function(key, value){
+	console.log(value);
+	var date = new Date(Math.floor(value['date']*1000));
 
+
+	if(!isEmpty(tmpCache[value['image']])){
+
+		console.log('from cache');
+		$(` <div class="userBlock waves-effect">
+    <img src="`+tmpCache[value['image']]+`" class="userImage">
+    <p class="userName truncate">`+value['name']+' ' + value['surname'] +`</p>
+    <p class="whenWasAdded truncate">Добавлен `+ date.getFullYear() + '.' + date.getMonth() + "." + date.getDate()+`</p>
+  </div>`).prependTo('.contentContacts');
+	}
+
+	else{
+		getFileSecter(value['image']).then(function(url){
+
+		$(` <div class="userBlock waves-effect">
+    <img src="`+url+`" class="userImage">
+    <p class="userName truncate">`+value['name']+' ' + value['surname'] +`</p>
+    <p class="whenWasAdded truncate">Добавлен `+ date.getFullYear() + '.' + date.getMonth() + "." + date.getDate()+`</p>
+  </div>`).prependTo('.contentContacts');
+
+	});
+
+	}
+	
+	
+});
+});
+}
 this.onLoadProfilePhoto = function(files){
 
 	console.log('call');
@@ -1214,7 +1271,10 @@ var file = files[0];
 
 
 	uploadImageProfile(file, link, function(blob){
-		console.log('Successful!');
+		$('.cirleLoadImage').hide();
+
+$('#myProfilePhoto').css('-webkit-filter', '');
+$('#myProfilePhoto').css('-moz-filter', '');
 	})
 
 	
@@ -1308,15 +1368,12 @@ var messageParser = function (text, messageClass, id, att){
 	}
 	else{
 
-		getFileSecter(infoText[1]).then(function(url){
-
-			console.log('Blob : ' + url);
 
 
-			switch(infoText[0]){
+
+		switch(infoText[0]){
 			case 'image':
-			template = `<li class='`+messageClass+`' id='messageID`+id+`'><img src='`+url+`' class='dialogsImageSend' onclick="$('.photoWatcher').fadeIn(200);
-$('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '`+url+`');">`+att+`</li>`;
+			template = `<li class='`+messageClass+`' id='messageID`+id+`'><img src='/images/photoPreview.png' width='320px' height='320px' class='dialogsImageSend'>`+att+`</li>`;
 			dialogsText = 'фотография';
 			break;
 			case 'video':
@@ -1327,7 +1384,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 			
 
-			window.audio = new AudioPlayer(url);
+			
 
 
 			template = `<li class='`+messageClass+`' id='messageID`+id+`'>			<div class="audioMessage" style="
@@ -1376,9 +1433,51 @@ $(this).children().text('play_arrow');
 
 		}
 
+
+		getFileSecter(infoText[1]).then(function(url){
+
+
+			console.log('LOAD!!!');
+
+			console.log(url);
+
+
+			/*"$('.photoWatcher').fadeIn(200);
+$('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '`+url+`');"*/
+
+
+var objectID = id;
+if($("li[oldid='"+id+"']").length!=0){
+console.log('&c OLD ID IS DELEETE');
+objectID = $("li[oldid='"+id+"']").attr('id');
+
+
+} 
+
+if(objectID.indexOf("messageID")==-1) objectID = '#messageID'+objectID;
+else objectID = '#'+objectID;
+
+console.log('objectID : ' + objectID);
+
+
+	if(infoText[0]=='image'){
+	
+	
+		
+		$(objectID+ ' img').attr('src', url);
+		$(objectID+ ' img').attr('width', undefined);
+		$(objectID+ ' img').attr('height', undefined);
+		$(objectID+ ' img').attr('onclick', "$('.photoWatcher').fadeIn(200); $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '"+url+"');");
+	}
+	else if(infoText[0]=='audio'){
+		window.audio = new AudioPlayer(url);
+	}
+	
+		});
+
 		resolve({template:template, dialogsText:dialogsText});
 
-		});
+
 
 		
 	}
@@ -1391,6 +1490,10 @@ $(this).children().text('play_arrow');
 
 }
 
+
+var generateRandomBackground = function(){
+return 'rgb('+Math.round(Math.random() * 255)+','+Math.round(Math.random() * 255)+', '+Math.round(Math.random() * 255)+')';
+}
 
 // Loops...
 

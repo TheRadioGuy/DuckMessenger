@@ -118,6 +118,24 @@ this.authAccount = function(login){
 
 };
 
+this.contactsAdd = function(mail, data){
+
+	return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'contacts.add', mail:mail, data:data}));
+	});
+
+};
+this.contactsGet = function(mail, data){
+
+	return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'contacts.get'}));
+	});
+
+};
 this.enterCode = function(login, code){
 
 	return new Promise(function(r,rj){
@@ -127,7 +145,6 @@ this.enterCode = function(login, code){
 	});
 
 };
-
 
 this.registration = function(email, l, name, surname){
 

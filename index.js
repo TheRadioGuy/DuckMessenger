@@ -6,6 +6,8 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var core = require('./core/core.js');
 var dialogs = require('./core/classes/dialogs.js');
+var contacts = require('./core/classes/contacts.js');
+
 var LZString = require('lz-string');
 var port = process.env.PORT || 443;
 var fs = require('fs');
@@ -406,7 +408,98 @@ r = LZString.compressToUTF16(JSON.stringify(r));
   fn(r);
 });
 break;
+case 'contacts.add':
+fn(contacts.addToContacts(login, data['mail'], data['data']));
+break;
+case 'contacts.get':
+var resp = contacts.getMyContacts(login);
 
+var resp = JSON.parse(LZString.decompressFromUTF16(resp));
+
+if(resp['code']==404){
+
+  var response ={code:resp['code'], error:0, msg:[]};
+
+
+
+
+
+
+
+
+var i =0, length=resp['msg'].length;
+
+ if(length == 0){
+    resp = LZString.compressToUTF16(JSON.stringify(resp));
+
+    console.log('end loop');
+
+
+  fn(resp);
+
+  return false;
+  }
+
+
+
+  async.forEachOf(resp['msg'], function (value, key, callback) {
+
+
+
+core.getFastInfo(value['loginUser']).then(function(z){
+i++;
+  z = JSON.parse(LZString.decompressFromUTF16(z));
+
+
+  var msgsInfo = value;
+  msgsInfo['image'] = z['msg']['image'];
+  msgsInfo['lastOnline'] = z['msg']['lastOnline'];
+  msgsInfo['name'] = z['msg']['name'];
+  msgsInfo['online'] = z['msg']['online'];
+  msgsInfo['surname'] = z['msg']['surname'];
+  msgsInfo['userid'] = z['msg']['userid'];
+
+  response['msg'].push(msgsInfo);
+
+
+
+  if(length == i){
+response = LZString.compressToUTF16(JSON.stringify(response));
+
+
+
+
+  fn(response);
+  }
+
+
+
+});
+
+
+
+  callback();
+}, function (err) {
+    if (err) console.error(err.message);
+   
+
+   
+
+});
+
+
+
+
+}
+
+else{
+      resp = LZString.compressToUTF16(JSON.stringify(resp));
+  fn(resp)
+}
+
+
+
+break;
 case 'auth.authCrt':
 var r = core.authAccountByCrt(data['login'], data['crt']);
 
