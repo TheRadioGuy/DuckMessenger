@@ -408,6 +408,10 @@ r = LZString.compressToUTF16(JSON.stringify(r));
   fn(r);
 });
 break;
+
+case 'users.search':
+core.searchUsers(data['login']).then((r)=>{fn(r)});
+break;
 case 'contacts.add':
 fn(contacts.addToContacts(login, data['mail'], data['data']));
 break;

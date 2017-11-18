@@ -118,6 +118,17 @@ this.authAccount = function(login){
 
 };
 
+
+this.searchUser = function(login){
+
+	return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'users.search', login:login}));
+	});
+
+};
+
 this.contactsAdd = function(mail, data){
 
 	return new Promise(function(r,rj){

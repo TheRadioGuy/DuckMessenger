@@ -6,7 +6,7 @@ var shortid = require('shortid');
 
 var crts = require('./classes/crts.js');
 var attachments = require('./classes/attachments.js');
-
+var async = require('async');
 
 low(adapter)
   .then(db => {
@@ -50,8 +50,18 @@ var registerAccountPartOne = function(login, email, name, surname){
 			return false;
 		}
 
+			try{
+			loginLow = login.toString().toLowerCase();
+		}
+		catch(e){
+			// log
+
+			resolve(666, 'Internal server error', true);
+		}
 		
 		login = login.replace(/[^a-z ^1-9]/ig, '');
+
+
 
 
  if(getDB.find({login:login, email:email}).value()!=undefined){
@@ -63,7 +73,7 @@ return false;
  }
 
 
-  getDB.push({ userid: shortid.generate()+shortid.generate(), login: login, email:email, name:name, surname:surname, image:'defaultImage', rights:0, online:0, is_validate:0, lastOnline:0})
+  getDB.push({ userid: shortid.generate()+shortid.generate(), login: login, loginLow:loginLow , email:email, name:name, surname:surname, image:'defaultImage', rights:0, online:0, is_validate:0, lastOnline:0})
 
   .write();
 
@@ -359,6 +369,64 @@ return new Promise(function(resolve, reject){
 }
 
 
+var searchUsers = function(userLogin){
+
+	return new Promise(function(resolve,reject){
+		try{
+			userLogin = userLogin.toString();
+		}
+		catch(e){
+			// log
+
+			resolve(666, 'Internal server error', true);
+		}
+
+		var tmpUsersArr = getDB.filter({login:userLogin}).sortBy('lastOnline')
+  .take(99999999999999999999999999999999999999)
+  .value();
+
+
+
+
+
+
+
+  if(typeof tmpUsersArr[0]=='undefined'){
+  	resolve(u(0, [], false));
+  	return false;
+  } 
+
+
+var usersArr = [];
+
+
+  async.forEachOf(tmpUsersArr, function (value, key, callback) {
+  	var tmpValue = {name:value['name'], surname:value['surname'], online:value['online'], lastOnline:value['lastOnline'], image:value['image'], login:value['login'], userid:value['userid']};
+
+  	usersArr.push(tmpValue);
+
+
+  callback();
+}, function (err) {
+    if (err) console.error(err.message);
+   
+
+   resolve(u(0, usersArr, false));
+
+});
+
+
+
+	});
+
+
+}
+
+
+
+
+
+
 module.exports.changeProfilePhoto=changeProfilePhoto;
 
 module.exports.registerAccountPartOne = registerAccountPartOne;
@@ -369,7 +437,7 @@ module.exports.authCodeEnter=authCodeEnter;
 module.exports.authAccountByCrt=authAccountByCrt;
 module.exports.generateToken=generateToken;
 module.exports.getFastInfo=getFastInfo;
-
+module.exports.searchUsers=searchUsers;
 module.exports.setOnline=setOnline;
 module.exports.getOnline=getOnline;
 module.exports.attachments=attachments;

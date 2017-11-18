@@ -233,6 +233,10 @@ $('.dialog #textMessage').removeClass('selectedText');
 
 
 $('#message'+login).addClass('selectedDialog');
+
+$('#message'+login).attr('data-issearch', 'false');
+
+
 $('#message'+login+' #userName').addClass('selectedName');
 $('#message'+login+' #textMessage').addClass('selectedText');
 
@@ -433,14 +437,62 @@ else $('#spinnerMessages').hide();
 
 
 
-function forEach(data, callback){
-  for(var key in data){
-    if(data.hasOwnProperty(key)){
-      callback(key, data[key]);
-    }
-  }
-}
+this.onUserSearch = function(val){
+$('.dialog[data-issearch="true"]').remove();
+$('#prealoderDialogs').show();
 
+socket.searchUser(val).then(function(r){
+  var resp = r['msg'];
+$('#prealoderDialogs').hide();
+  forEach(resp, function(key, value){
+
+
+    if(!isEmpty(tmpCache[value['image']])){
+
+       $(`<div data-issearch='true' class="dialog dialogFake waves-effect waves-light" onclick="client.selectDialog('`+value['login']+`')" id="message`+value['login']+`">
+  <p id="userName">`+value['name']+" " + value['surname'] +`</p>
+  <img style="    top: -48px;
+" src="`+tmpCache[value['image']]+`" id="profilePhoto"></img>
+</div>`).appendTo('#leftPanelMessages');
+
+
+
+    }
+    else{
+
+      getFileSecter(value['image']).then(function(url){
+
+
+         tmpCache[value['image']] = url;
+
+
+              $(`<div data-issearch='true' class="dialog dialogFake waves-effect waves-light" onclick="client.selectDialog('`+value['login']+`')" id="message`+value['login']+`">
+  <p id="userName">`+value['name']+" " + value['surname'] +`</p>
+  <img style="    top: -48px;
+" src="`+url+`" id="profilePhoto"></img>
+</div>`).appendTo('#leftPanelMessages');
+
+      });
+    }
+
+
+/*    tmpCache[value['image']] = url;
+              $(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+value['with']+`')" id="message`+value['with']+`">
+  <p id="userName">`+value['name']+" " + value['surname'] +`</p>
+   <p id="textMessage" class="truncate" style="
+">`+message+`</p>
+  <img src="`+url+`" id="profilePhoto"></img>
+</div>`).appendTo('#leftPanelMessages');*/
+
+
+
+  });
+
+});
+
+
+
+}
 
 
 
@@ -718,6 +770,10 @@ socket.contactsAdd(mail, howWrite).then(function(r){
 
 	else{
 		getFileSecter(value['image']).then(function(url){
+
+			if(url == false) url = '/images/defaultprofileimage.jpg';
+
+
 $(` <div class="userBlock waves-effect" data-login="`+r['msg']['login']+`">
     <img src="`+url+`" class="userImage">
     <p class="userName truncate">`+howWrite+`</p>
@@ -1025,6 +1081,7 @@ else if(r['code']==6){
   			
 
   			getFileSecter(info['msg']['image']).then(function(photo){ // load photo
+  				if(photo == false) url = '/images/defaultprofileimage.jpg';
   				$('#infoPanelImage').attr('src', photo);
 
   			});
@@ -1303,7 +1360,7 @@ forEach(r['msg'], function(key, value){
 
 	else{
 		getFileSecter(value['image']).then(function(url){
-
+			if(url == false) url = '/images/defaultprofileimage.jpg';
 		$(` <div class="userBlock waves-effect" data-login="`+value['loginUser']+`">
     <img src="`+url+`" class="userImage">
     <p class="userName truncate">`+value['name']+' ' + value['surname'] +`</p>

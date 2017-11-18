@@ -291,6 +291,11 @@ div #leftPanelMessages .dialog:first-child {
     margin-top: -3px;
 }
 
+.dialogFake:first-child {
+    /* top: 28px; */
+    margin-top: -3px;
+}
+
 
 div#topPanelWithMenu {
   position: absolute;
@@ -1453,19 +1458,30 @@ $('.uploadFileInput').on('change', function(e){
 $('.searchInputTopPanel').on('input', function(){
   var val = $(this).val();
 
-if(!isEmpty(val)){
+if(!isEmpty(val) || val != ""){
 // search
 
-$('.dialog').animate({left:'-100%'}, 50);
-
-
+$('.dialog[data-issearch!="true"]').animate({left:'-100%'}, 50);
+$('.dialog[data-issearch!="true"]').hide();
+client.onUserSearch(val);
 
 }
 else{
-$('.dialog').animate({left:'0pxpick'}, 50);
 
+$('.dialog[data-issearch!="true"]').animate({left:'0px'}, 50);
+$('.dialog[data-issearch!="true"]').show();
+$('.dialog[data-issearch="true"]').remove();
 }
 });
+
+function forEach(data, callback){
+  for(var key in data){
+    if(data.hasOwnProperty(key)){
+      callback(key, data[key]);
+    }
+  }
+}
+
 
 
  $('.button-collapse').sideNav({
