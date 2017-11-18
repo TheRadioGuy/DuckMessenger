@@ -674,8 +674,65 @@ return decryptedText;
 
 
 
+this.onContactsAdding = function(mail, howWrite){
+
+	if(isEmpty(howWrite)){
+		
+		$('#nameContacts').addClass('invalid');
+		return false;
+	}
+	else if(isEmpty(mail)){
+		$('#emailContacts').addClass('invalid');
+
+		return false;
+	}
 
 
+socket.contactsAdd(mail, howWrite).then(function(r){
+	console.log(r);
+	if(r['error_code']==401){
+		win.openWindowText('infoPopup', {title:'Ошибка', text:'Данный пользователь еще не зарегестрирован или почта неверна.'});
+	}
+		else if(r['error_code']==400){
+		win.openWindowText('infoPopup', {title:'Ошибка', text:'Контакт уже в вашем контакт-листе'});
+	}
+		else if(r['error_code']==403){
+		win.openWindowText('infoPopup', {title:'Ошибка', text:'Вы не можете добавить самого себя в конакты'});
+	}
+	else{
+
+		$('.addContact').fadeOut(25); $('#mask').css('z-index', '');
+			$('#emailContacts').addClass('valid');
+			$('#nameContacts').addClass('valid');
+
+			var date = new Date(Math.floor(Date.now()/10000));
+			if(!isEmpty(tmpCache[r['msg']['image']])){
+
+		console.log('from cache');
+		$(` <div class="userBlock waves-effect" data-login="`+r['msg']['login']+`">
+    <img src="`+tmpCache[r['msg']['image']]+`" class="userImage">
+    <p class="userName truncate">`+howWrite+`</p>
+    <p class="whenWasAdded truncate">Добавлен `+ date.getFullYear() + '.' + date.getMonth() + "." + date.getDate()+`</p>
+  </div>`).prependTo('.contentContacts');
+	}
+
+	else{
+		getFileSecter(value['image']).then(function(url){
+$(` <div class="userBlock waves-effect" data-login="`+r['msg']['login']+`">
+    <img src="`+url+`" class="userImage">
+    <p class="userName truncate">`+howWrite+`</p>
+    <p class="whenWasAdded truncate">Добавлен `+ date.getFullYear() + '.' + date.getMonth() + "." + date.getDate()+`</p>
+  </div>`).prependTo('.contentContacts');
+
+	});
+
+	}
+
+
+	}
+
+});
+};
 var sendMessageProtected = function(message,to, fileInfo){
 
 	$('#block'+to+' .messageSendBlock').text('');
@@ -1227,6 +1284,8 @@ this.onClickContacts = function(){
 	
 $('.contentContacts').html(null);
 	socket.contactsGet().then((r)=>{
+
+		$('#prealoderContacts').hide();
 forEach(r['msg'], function(key, value){
 	console.log(value);
 	var date = new Date(Math.floor(value['date']*1000));
@@ -1235,7 +1294,7 @@ forEach(r['msg'], function(key, value){
 	if(!isEmpty(tmpCache[value['image']])){
 
 		console.log('from cache');
-		$(` <div class="userBlock waves-effect">
+		$(` <div class="userBlock waves-effect" data-login="`+value['loginUser']+`">
     <img src="`+tmpCache[value['image']]+`" class="userImage">
     <p class="userName truncate">`+value['name']+' ' + value['surname'] +`</p>
     <p class="whenWasAdded truncate">Добавлен `+ date.getFullYear() + '.' + date.getMonth() + "." + date.getDate()+`</p>
@@ -1245,7 +1304,7 @@ forEach(r['msg'], function(key, value){
 	else{
 		getFileSecter(value['image']).then(function(url){
 
-		$(` <div class="userBlock waves-effect">
+		$(` <div class="userBlock waves-effect" data-login="`+value['loginUser']+`">
     <img src="`+url+`" class="userImage">
     <p class="userName truncate">`+value['name']+' ' + value['surname'] +`</p>
     <p class="whenWasAdded truncate">Добавлен `+ date.getFullYear() + '.' + date.getMonth() + "." + date.getDate()+`</p>

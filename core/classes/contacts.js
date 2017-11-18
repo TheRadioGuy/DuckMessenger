@@ -9,7 +9,7 @@ var LZString = require('lz-string');
 
 const low = require('lowdb')
 
-
+const ERROR_PARAMS_EMPTY_CODE = 0;
 
 
 
@@ -65,7 +65,9 @@ if(userInfo['login']==login) return u(403, 'WTF?!', true);
 
 
 contacts.push({mail:userMail, addedBy:login, loginUser:userInfo['login'], howWrite:howWrite, date:Math.floor(Date.now()/1000)}).write();
-return u(402, 'Successful contacts adding', false);
+
+
+return u(402, {hw:howWrite, image:userInfo['image'], date:Math.floor(Date.now()/1000), login:userInfo['login']}, false);
 };
 
 

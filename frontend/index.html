@@ -872,6 +872,7 @@ z-index: 16;
     width: 320px;
         height: 490px;
 
+
 }
 .myСontacts #headerTitle{
 
@@ -950,9 +951,9 @@ color: #615f5f;
 .addContact{
 z-index: 17;
     width: 235px;
-    height: 140px;
+    height: 170px;
     margin: -145px 0 0 -117.5px;
-    box-shadow: 12px 20px 20000px 2000px rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.3);
+
 }
 @media screen and (max-width: 480px){
   .myСontacts #titleHeaderText{
@@ -1019,7 +1020,26 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 </div>
 
 
-<div class="popUpDialog myСontacts">
+<div class="popUpDialog myСontacts z-depth-3">
+
+
+<div class="preloader-wrapper active" id="prealoderContacts" style="z-index: 1; width: 48px;height: 48px;position: absolute;left: 42%;top: 41%;/* display: none; */">
+    <div class="spinner-layer spinner-red-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
 
 
 
@@ -1038,19 +1058,49 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 <a class="btn-floating btn-large waves-effect waves-light red" style="    right: 10px;
     position: absolute;
     bottom: 10px;" onclick="
-$('.addContact').fadeIn(25);" ><i class="material-icons">add</i></a>
+$('.addContact').fadeIn(25); $('#mask').css('z-index', '16');" ><i class="material-icons">add</i></a>
 </div>
 
 <div class="popUpDialog addContact z-depth-3">
 <center>
 
           
-          <div class="input-field inline">
-            <input id="email" type="email" class="validate">
-            <label for="email" data-error="неверно" data-success="">Email</label>
+          <div class="input-field inline" style="    width: 184px;
+    position: relative;
+    top: 7px;
+}">
+            <input id="emailContacts" type="email" class="validate">
+            <label for="emailContacts" data-error="неверно" data-success="">Email</label>
+          </div>
+
+           <div class="input-field inline" style="    width: 184px;
+    position: relative;
+    top: -5px;
+}">
+            <input id="nameContacts" type="text">
+            <label for="nameContacts">Имя</label>
           </div>
 
 
+
+<div class="divider" style="
+    position: relative;
+    top: -8px;
+"></div>
+
+ <a class="btn-flat waves-effect waves-teal" style="
+    float: left;
+    position: absolute;
+    left: 0px;
+    bottom: -2px;
+    color: #2525ff;
+" onclick="$('.addContact').fadeOut(25); $('#mask').css('z-index', '')">ОТМЕНА</a>
+ <a class="btn-flat waves-effect waves-teal" style="
+    float: right;
+    position: absolute;
+    bottom: -2px;
+    color: #2525ff;
+" onclick="client.onContactsAdding($('#emailContacts').val(), $('#nameContacts').val());">ДОБАВИТЬ</a>
 
 
           </center>
@@ -1112,9 +1162,23 @@ client.onClickContacts();
 
 
 
+ <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4 id="textModalHeader">Modal Header</h4>
+      <p id="textModal">A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">ОК</a>
+    </div>
+  </div>
+          
+
+
+
 <div id="mask"></div>
 <div id="firstLoadingAnimation"></div>
-<div class="popUpDialogInfo" id="infoPopup">
+<div class="popUpDialogInfo" id="infoPopup" style="z-index: 17;">
   
   <p id="title">Are you love Duck?</p>
   <br>
@@ -1348,7 +1412,11 @@ client.onClickContacts();
 
 <script>
 
-
+ $(document).ready(function(){
+    // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+    $('.modal').modal();
+  });
+      
 
 function init(){
   var system = getMobileOperatingSystem();
@@ -1502,6 +1570,7 @@ if(e.keyCode==13){
 
 $('#mask').on('click', function(){
   $('.popUpDialog').hide();
+  $('#mask').css('z-index', '')
   $('#mask').hide();
     $('.popUpDialogInfo').hide();
 });
@@ -1537,11 +1606,9 @@ function modulesWindow(){
    this.openWindowText = function(win, data){
      // data = {onAgree:function(){}, onCancel:function(){}, text:'Duck', title:'Quack'}
     $('#mask').show();
-    $('#'+win).show();
-    $('#'+win+' #title').text(data['title']);
-    $('#'+win+' #text').text(data['text']);
-    $('#'+win+' #agreeButton').attr('onclick', data['onAgree']);
-    $('#'+win+' #cancelButton').attr('onclick', data['onCancel']);
+     $('#modal1').modal('open');
+     $('#textModalHeader').text(data['title']);
+     $('#textModal').text(data['text']);
 
 
   };
