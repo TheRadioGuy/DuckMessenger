@@ -291,11 +291,6 @@ div #leftPanelMessages .dialog:first-child {
     margin-top: -3px;
 }
 
-.dialogFake:first-child {
-    /* top: 28px; */
-    margin-top: -3px;
-}
-
 
 div#topPanelWithMenu {
   position: absolute;
@@ -1019,7 +1014,7 @@ z-index: 17;
     <img src="" id="myProfilePhoto" style="cursor: pointer;" onclick="$('.photoWatcher').fadeIn(200);
 $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', $(this).attr('src'));">
     <p id="nameAndSurname" style="" class='truncate'>Sergey the Duck</p>
- <a class="btn-floating btn-large waves-effect waves-light waves-effect waves-circle" id="buttonChangeProfilePhoto" onclick="console.log('trugger'); $('.uploadImageInput').trigger('click');"><i class="material-icons">add_a_photo</i></a>
+ <a class="btn-floating btn-large waves-effect waves-light waves-effect waves-circle scale-transition scale-out" id="buttonChangeProfilePhoto" onclick="console.log('trugger'); $('.uploadImageInput').trigger('click');"><i class="material-icons">add_a_photo</i></a>
   </div>
 
 </div>
@@ -1141,6 +1136,12 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
     
     <li class="waves-effect" style="width: 100%;" onclick="$('#mask').show(50);
 $('.mySettings').show(25);
+
+ $('.btn-floating').removeClass('scale-out');
+  $('.btn-floating').removeClass('scale-in');
+ $('.btn-floating').addClass('scale-in');
+
+
 $('#nameAndSurname').text($('#infoPanelName').text());
 
 $('#loginUser').text($('#infoPanelLogin').text());
@@ -1588,6 +1589,8 @@ $('#mask').on('click', function(){
   $('.popUpDialog').hide();
   $('#mask').css('z-index', '')
   $('#mask').hide();
+   $('.btn-floating').removeClass('scale-in');
+  $('.btn-floating').addClass('scale-out');
     $('.popUpDialogInfo').hide();
 });
 function modulesWindow(){
