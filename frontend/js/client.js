@@ -68,10 +68,10 @@ console.log('length null');
 						console.log(z);
 
 
-						getFileSecter(z['msg']['image']).then(function(url){
+						getFileSecter(z['msg']['image'], 'photo_128').then(function(url){
 
 
-							tmpCache[z['msg']['image']] = url;
+							tmpCache['s' + z['msg']['image']] = url;
 						if(url == false) url = '/images/defaultprofileimage.jpg';
 
 
@@ -193,10 +193,10 @@ var getDialogs = function(){
 						
 						if(typeof message.split('_')[2] != 'undefined') message = message.split('_')[0];
 
-						getFileSecter(value['image']).then(function(url){
+						getFileSecter(value['image'], 'photo_128').then(function(url){
 						if(url == false) url = '/images/defaultprofileimage.jpg';
 
-						tmpCache[value['image']] = url;
+						tmpCache['s'+value['image']] = url;
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+value['with']+`')" id="message`+value['with']+`">
   <p id="userName">`+value['name']+" " + value['surname'] +`</p>
    <p id="textMessage" class="truncate" style="
@@ -447,12 +447,12 @@ $('#prealoderDialogs').hide();
   forEach(resp, function(key, value){
 
 
-    if(!isEmpty(tmpCache[value['image']])){
+    if(!isEmpty(tmpCache['s'+value['image']])){
 
        $(`<div data-issearch='true' class="dialog dialogFake waves-effect waves-light" onclick="client.selectDialog('`+value['login']+`')" id="message`+value['login']+`">
   <p id="userName">`+value['name']+" " + value['surname'] +`</p>
   <img style="    top: -48px;
-" src="`+tmpCache[value['image']]+`" id="profilePhoto"></img>
+" src="`+tmpCache['s'+value['image']]+`" id="profilePhoto"></img>
 </div>`).appendTo('#leftPanelMessages');
 
 
@@ -460,10 +460,10 @@ $('#prealoderDialogs').hide();
     }
     else{
 
-      getFileSecter(value['image']).then(function(url){
+      getFileSecter(value['image'], 'photo_128').then(function(url){
 
 
-         tmpCache[value['image']] = url;
+         tmpCache['s'+value['image']] = url;
 
 
               $(`<div data-issearch='true' class="dialog dialogFake waves-effect waves-light" onclick="client.selectDialog('`+value['login']+`')" id="message`+value['login']+`">
@@ -574,7 +574,7 @@ this.enterCode = function(login, code){
   			$('#infoPanelName').text(info['msg']['name']+' ' + info['msg']['surname']);
   			
 
-  			getFileSecter(info['msg']['image']).then(function(photo){ // load photo
+  			getFileSecter(info['msg']['image'], 'photo_128').then(function(photo){ // load photo
   				$('#infoPanelImage').attr('src', photo);
 
   			});
@@ -660,7 +660,7 @@ console.log(r);
   			$('#infoPanelName').text(info['msg']['name']+' ' + info['msg']['surname']);
   			
 
-  			getFileSecter(info['msg']['image']).then(function(photo){ // load photo
+  			getFileSecter(info['msg']['image'], 'photo_128').then(function(photo){ // load photo
   				$('#infoPanelImage').attr('src', photo);
 
   			});
@@ -758,18 +758,18 @@ socket.contactsAdd(mail, howWrite).then(function(r){
 			$('#nameContacts').addClass('valid');
 
 			var date = new Date(Math.floor(Date.now()/10000));
-			if(!isEmpty(tmpCache[r['msg']['image']])){
+			if(!isEmpty(tmpCache['s'+r['msg']['image']])){
 
 		console.log('from cache');
 		$(` <div class="userBlock waves-effect" data-login="`+r['msg']['login']+`">
-    <img src="`+tmpCache[r['msg']['image']]+`" class="userImage">
+    <img src="`+tmpCache['s'+r['msg']['image']]+`" class="userImage">
     <p class="userName truncate">`+howWrite+`</p>
     <p class="whenWasAdded truncate">Добавлен `+ date.getFullYear() + '.' + date.getMonth() + "." + date.getDate()+`</p>
   </div>`).prependTo('.contentContacts');
 	}
 
 	else{
-		getFileSecter(value['image']).then(function(url){
+		getFileSecter(value['image'], 'photo_128').then(function(url){
 
 			if(url == false) url = '/images/defaultprofileimage.jpg';
 
@@ -828,10 +828,10 @@ if($('#message'+to).length==0){
 						console.log(z);
 
 						
-						getFileSecter(z['msg']['image']).then(function(url){
+						getFileSecter(z['msg']['image'], 'photo_128').then(function(url){
 
 							if(url == false) url = '/images/defaultprofileimage.jpg';
-							tmpCache[z['msg']['image']] = url;
+							tmpCache['s'+z['msg']['image']] = url;
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+to+`')" id="message`+to+`">
   <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
    <p id="textMessage" class="truncate" style="
@@ -930,9 +930,9 @@ if($('#message'+to).length==0){
 						console.log(z);
 
 
-						getFileSecter(z['msg']['image']).then(function(url){
+						getFileSecter(z['msg']['image'], 'photo_128').then(function(url){
 						if(url == false) url = '/images/defaultprofileimage.jpg';
-						tmpCache[z['msg']['image']] = url;
+						tmpCache['s'+z['msg']['image']] = url;
 							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('`+to+`')" id="message`+to+`">
   <p id="userName">`+z['msg']['name']+" " + z['msg']['surname'] +`</p>
    <p id="textMessage" class="truncate" style="
@@ -1080,7 +1080,7 @@ else if(r['code']==6){
   			$('#infoPanelName').text(info['msg']['name']+' ' + info['msg']['surname']);
   			
 
-  			getFileSecter(info['msg']['image']).then(function(photo){ // load photo
+  			getFileSecter(info['msg']['image'], 'photo_128').then(function(photo){ // load photo
   				if(photo == false) url = '/images/defaultprofileimage.jpg';
   				$('#infoPanelImage').attr('src', photo);
 
@@ -1153,11 +1153,11 @@ return blobUrl;
 
 
 
-var getFileSecter = function(id){
+var getFileSecter = function(id, field){
 	return new Promise(function(resolve,reject){
 
 
-			$.get('/getAttachment/'+id, {}, function(r){
+			$.get('/getAttachment/'+id+'/'+field, {}, function(r){
 
 
 
@@ -1199,11 +1199,11 @@ resolve(blob);
 }
 
 
-this.getFile = function(id){
+this.getFile = function(id, field){
 	return new Promise(function(resolve,reject){
 
 
-			$.get('/getAttachment/'+id, {}, function(r){
+			$.get('/getAttachment/'+id+'/'+field, {}, function(r){
 
 
 
@@ -1348,18 +1348,18 @@ forEach(r['msg'], function(key, value){
 	var date = new Date(Math.floor(value['date']*1000));
 
 
-	if(!isEmpty(tmpCache[value['image']])){
+	if(!isEmpty(tmpCache['s'+value['image']])){
 
 		console.log('from cache');
 		$(` <div class="userBlock waves-effect" data-login="`+value['loginUser']+`">
-    <img src="`+tmpCache[value['image']]+`" class="userImage">
+    <img src="`+tmpCache['s'+value['image']]+`" class="userImage">
     <p class="userName truncate">`+value['name']+' ' + value['surname'] +`</p>
     <p class="whenWasAdded truncate">Добавлен `+ date.getFullYear() + '.' + date.getMonth() + "." + date.getDate()+`</p>
   </div>`).prependTo('.contentContacts');
 	}
 
 	else{
-		getFileSecter(value['image']).then(function(url){
+		getFileSecter(value['image'], 'photo_128').then(function(url){
 			if(url == false) url = '/images/defaultprofileimage.jpg';
 		$(` <div class="userBlock waves-effect" data-login="`+value['loginUser']+`">
     <img src="`+url+`" class="userImage">
@@ -1550,7 +1550,7 @@ $(this).children().text('play_arrow');
 		}
 
 
-		getFileSecter(infoText[1]).then(function(url){
+		getFileSecter(infoText[1], 'photo_450').then(function(url){
 
 
 			console.log('LOAD!!!');
@@ -1583,7 +1583,7 @@ console.log('objectID : ' + objectID);
 		$(objectID+ ' img').attr('src', url);
 		$(objectID+ ' img').attr('width', undefined);
 		$(objectID+ ' img').attr('height', undefined);
-		$(objectID+ ' img').attr('onclick', "$('.photoWatcher').fadeIn(200); $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '"+url+"');");
+		$(objectID+ ' img').attr('onclick', "client.openPhotoShower('"+infoText[1]+"')");
 	}
 	else if(infoText[0]=='audio'){
 		window.audio = new AudioPlayer(url);
@@ -1609,6 +1609,44 @@ console.log('objectID : ' + objectID);
 
 var generateRandomBackground = function(){
 return 'rgb('+Math.round(Math.random() * 255)+','+Math.round(Math.random() * 255)+', '+Math.round(Math.random() * 255)+')';
+}
+
+
+ this.openPhotoShower = function(id){
+
+ 	$('.photoWatcher').fadeIn(50);
+ 	$('.photoWatcher .imageView').hide();
+ 	$('.photoWatcher .imageView').attr('src', '');
+ 	$('.photoWatcher .progress').show();
+
+ 	 $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)');
+
+ 	 if(!isEmpty(tmpCache['b' + id])){
+ 	 	$('.photoWatcher .imageView').fadeIn(400);
+ 	 	$('.photoWatcher .progress').hide();
+ 	 	$('.photoWatcher .imageView').attr('src', tmpCache['b' + id]);
+ 	 }
+
+ 	 else{
+
+ 	 	 getFileSecter(id, 'photo_original').then(function(url){
+
+
+
+ 	 	tmpCache['b' + id] = url;
+
+
+ 	 	$('.photoWatcher .imageView').fadeIn(400);
+ 	 	$('.photoWatcher .progress').hide();
+ 	 	$('.photoWatcher .imageView').attr('src', url);
+ 	 });
+
+
+ 	 	 
+ 	 }
+ 	
+ 	  
+
 }
 
 // Loops...

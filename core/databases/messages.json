@@ -4,8 +4,8 @@
       "dialogWith": "Tester",
       "dialogAuthor": "DuckerMan",
       "dialogId": "S1zgV86NAZSkmlNUaN0-BkVlV8TNAZ",
-      "message": "47ff1a560d4a",
-      "time": 1510845720
+      "message": "f610afbfb39ad5ba5eed78d865cb1b37b314362c0da504a33cfa8baea8768c08fdc51b",
+      "time": 1511443645
     },
     {
       "dialogWith": "DuckerMan",
@@ -1129,6 +1129,102 @@
       "to": "Zuck",
       "from": "DuckerMan",
       "date": 1511024248
+    },
+    {
+      "id": "S1_MEz7efrke_zVGmxGrJZdfEMXgz",
+      "is_read": 0,
+      "message": "fe08aab1b99aceba00fb07c57ede3b02b11a4d052e9915ec1ddfe4acf9228912f2d74e14610505f23962ddb058f5387c8230c0192a222220197176f9b019b02701bc41aafc659deb60d830d90e1307d83ef74064649c018762c652df81b81fbc0c9c53",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511363599
+    },
+    {
+      "id": "Hk-ZgIMXezr1fWe8fQgMrJXbeLzmef",
+      "is_read": 0,
+      "message": "fe08aab1b99ad5a831c106cc5ecb1b26800918352fb103b736fa8bfdfd768c44f2d34946315552f53b65ddb25aaa657e8533c64420282c244e2470fbb41fb37554bf5cbfa666c4fe79da658e175f54dc3def5e3237cb56d46492558dd7ea57e21295",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511364073
+    },
+    {
+      "id": "ByUPUfXeGrklIwIzXlzHkZIPLMQxM",
+      "is_read": 0,
+      "message": "fe08aab1b99ac4ba1cf13cc27ee2301eaa08220533ef34b616e8e4aea8768f0ba08605407f4b07af773683fb0fab2f729436",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511364189
+    },
+    {
+      "id": "rkNXPwzmefrkBmvwGXefSkIXDwGQez",
+      "is_read": 0,
+      "message": "fe08aab1b99ad5ba2b8e3dcf49de3b02aa404d151487288a16dfe4aea8768f0ba08605407f4b07af773683fb0fab2f729436",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511364442
+    },
+    {
+      "id": "rkVRFPMQgMBJSRKwM7xzrJLCYwf7gM",
+      "is_read": 0,
+      "message": "fe08aab1b99aceba00f813cf49eb24028b1a4d0c17a01fec16c3e4aea8768f0ba08605407f4b07af773683fb0fab2f729436",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511364486
+    },
+    {
+      "id": "r1ciwMQeMryxqswz7eMBy-9jPfXxM",
+      "is_read": 0,
+      "message": "fe08aab1b99acee02bcd20cf55e2391e8b4022390ca11f8a1de8e4aea8768f0ba08605407f4b07af773683fb0fab2f729436",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511364513
+    },
+    {
+      "id": "rJ6RDfmlzHygpRDz7lMrJ-aAvz7ef",
+      "is_read": 0,
+      "message": "fe08aab1b99aceba218a7afd74843b23aa402b2322871fb609dfe4aea8768f0ba08605407f4b07af773683fb0fab2f729436",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511364564
+    },
+    {
+      "id": "H17Zdz7xGrJl7buf7xGHyZmZ_Gmgz",
+      "is_read": 0,
+      "message": "fe08aab1b99ac49b00fe67a67e84241e8b40222b34b3158a16c3e4aea8768f0ba08605407f4b07af773683fb0fab2f729436",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511364602
+    },
+    {
+      "id": "S1N0lKBEefSJSRlFBElfS1LAetBExG",
+      "is_read": 0,
+      "message": "fe08aab1b99ad5a81cfa2fff7b87241eaa402b7d1ba3209509e2e4aea8768f0ba08605407f4b07af773683fb0fab2f729436",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511442678
+    },
+    {
+      "id": "HyLCqBEeGS1l805HNxfryZL05r4xf",
+      "is_read": 0,
+      "message": "fe08aab1b99ac4a82bf17ab260f63b238b3b4d3f53e21aef16e8e4aea8768f0ba08605407f4b07af773683fb0fab2f729436",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511443149
+    },
+    {
+      "id": "Hk-WjBNlzS1lZWoH4eMHkZZZorNlM",
+      "is_read": 0,
+      "message": "fe08aab1b99ac49b0aee23d865df262cc8161f2f0a8466b73cfa8bfdfd768c44f2d34946315552f53b65ddb25aaa657e8533c64420282c244e2470fbb41fb37554bf5cbfa666c4fe79da658e175f54dc3def5e3237cb56d46492558dd7ea57e21295",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511443192
+    },
+    {
+      "id": "BJZ8ThrEgzryfLphrElzH17Ua2rNxf",
+      "is_read": 0,
+      "message": "f610afbfb39ad5ba5eed78d865cb1b37b314362c0da504a33cfa8baea8768c08fdc51b",
+      "to": "Tester",
+      "from": "DuckerMan",
+      "date": 1511443645
     }
   ]
 }

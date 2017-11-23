@@ -999,6 +999,14 @@ z-index: 17;
 </head> 
 <body> 
 <div class="photoWatcher" onclick="$(this).fadeOut(100); $('#closePhoto').css('transform', 'rotate(-41deg)');">
+<div class="progress" style="
+    position: absolute;
+    bottom: 25%;
+    width: 75%;
+    left: 15%;
+">
+      <div class="indeterminate"></div>
+  </div>
   <i class="material-icons closeIcon" id="closePhoto" onclick="$(this).parent().fadeOut(100); $(this).css('transform', 'rotate(-41deg)');">close</i>
 <img src="" class="imageView">
 </div>

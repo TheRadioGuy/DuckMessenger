@@ -34,10 +34,11 @@ app.use(fileUpload({
   limits: { fileSize: 50 * 1024 * 1024 },
 }));
 
-app.get('/getAttachment/:id', function(req, res){
+app.get('/getAttachment/:id/:field', function(req, res){
 var id = req.params.id;
+var field = req.params.field;
 console.log(id);
-var response = core.attachments.getAttachment(id);
+var response = core.attachments.getAttachment(id, field);
 res.send(JSON.stringify(response));
 });
 
@@ -90,11 +91,14 @@ delete tokens[req.params.token];
     }
 
 
-    var response = core.attachments.addAttachments(Attachment);
+    core.attachments.addAttachments(Attachment, sampleFile.data, function(response){
 
-
-    res.send(response);
+          res.send(response);
     if(Attachment['is_profile']==1) core.changeProfilePhoto(login, JSON.parse(response)['id']);
+    });
+
+
+
     
 
   

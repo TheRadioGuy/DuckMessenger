@@ -1,7 +1,7 @@
 
 
 
-
+var sharp = require('sharp');
 
 
 
@@ -36,26 +36,127 @@ low(adapter)
 var getDB = db.get('attachments');
 
 
-var getAttachment = function(id){
+var getAttachment = function(id, field){
 	var data = getDB.find({id:id}).value();
 
 	if(data == undefined){
 		return null;
 	}
-else return {data:data['data'], mime:data['mime']};
+
+else{
+    if(isEmpty(field)) field = 'photo_450';
+
+    
+    if(data['type'] == 'image') return {mime:data['mime'], data:data[field]};
+    else return {mime:data['mime'], data:data['data']};
+} 
 
 }
-var addAttachments = function(Attachment){
+var addAttachments = function(Attachment, buff, cb){
 	Attachment['id'] = (shortid.generate() + shortid.generate()).replace('_', '-');
 
     Attachment['type'] = whatTheType(Attachment['mime']);
 
 
+    var image = sharp(buff);
+var imageOriginal, imageResizeMedium, size, imageProfile;
 
 
-getDB.push(Attachment).write();
+if(Attachment['type']=='image'){
+delete Attachment['data'];
 
-return JSON.stringify({id: Attachment['id'], type:Attachment['type'], name:Attachment['name']});
+
+
+image.metadata()
+  .then(function(metadata) {
+    size = {w:metadata.width, h:metadata.height};
+
+    return image
+      .resize(Math.round(metadata.width / 1.3), Math.round(metadata.height / 1.3))
+      .resize(Math.round(metadata.width), Math.round(metadata.height))
+      .webp()
+      .toColourspace('lab');
+      
+  })
+  .then(function(dataImage) {
+    
+    if(Attachment['is_profile']==1){
+    
+        dataImage.resize(128, 128).toBuffer({resolveWithObject:true}, function(err, data){
+            imageProfile = data.toString('base64');
+
+                Attachment['photo_128'] = imageProfile;
+        Attachment['photo_450'] = imageProfile;
+        Attachment['photo_original'] = imageProfile;
+        getDB.push(Attachment).write();
+         cb({id: Attachment['id'], type:Attachment['type'], name:Attachment['name']});
+
+
+
+        });
+    }
+    else{
+          dataImage.toBuffer({resolveWithObject:true}, function(err,data){
+            imageOriginal = data.toString('base64');
+
+
+                if(size['w'] >= 450 || size['h'] >= 450){
+
+         dataImage.resize(450, 450).toBuffer({resolveWithObject:true}, function(err,data){
+            imageResizeMedium = data.toString('base64');
+            Attachment['photo_128'] = imageOriginal;
+        Attachment['photo_450'] = imageResizeMedium;
+        Attachment['photo_original'] = imageOriginal;
+        getDB.push(Attachment).write();
+        cb({id: Attachment['id'], type:Attachment['type'], name:Attachment['name']});
+         });
+
+
+    }
+    else{
+        imageResizeMedium =  imageOriginal;
+        Attachment['photo_128'] = imageOriginal;
+        Attachment['photo_450'] = imageResizeMedium;
+        Attachment['photo_original'] = imageOriginal;
+        getDB.push(Attachment).write();
+        cb({id: Attachment['id'], type:Attachment['type'], name:Attachment['name']});
+    } 
+
+
+     
+
+
+
+
+         });
+
+
+     
+
+    }
+   
+    
+    
+
+    
+
+  });
+
+}
+else{
+
+     getDB.push(Attachment).write();
+        cb({id: Attachment['id'], type:Attachment['type'], name:Attachment['name']});
+
+}
+
+
+
+
+
+
+
+
 
 }
 
