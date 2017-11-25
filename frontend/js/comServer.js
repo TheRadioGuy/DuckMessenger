@@ -119,6 +119,16 @@ this.authAccount = function(login){
 };
 
 
+this.deleteAccount = function(user){
+	
+	return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'admin.deleteAccount', user:user}));
+	});
+
+}
+
 this.searchUser = function(login){
 
 	return new Promise(function(r,rj){

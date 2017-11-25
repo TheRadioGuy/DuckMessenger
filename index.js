@@ -3,6 +3,7 @@ var express = require('express');
 var compression = require('compression');
 var app = express();
 var server = require('http').createServer(app);
+
 var io = require('socket.io')(server);
 var core = require('./core/core.js');
 var dialogs = require('./core/classes/dialogs.js');
@@ -16,10 +17,11 @@ var parseUrl = require('url');
 const fileUpload = require('express-fileupload');
 var sanitizer = require('sanitizer');
 var bodyParser = require('body-parser'); // include module
+var cookieParser = require('cookie-parser');
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
-
+const cheerio = require('cheerio')
 var async = require('async');
 
 const accessFilesForImages = ['png', 'jpg', 'jpeg'];
@@ -28,7 +30,9 @@ const accessFilesForImages = ['png', 'jpg', 'jpeg'];
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
+
 app.use(compression());
+app.use(cookieParser())
 app.use(express.static(__dirname + '/frontend' ));
 app.use(fileUpload({
   limits: { fileSize: 50 * 1024 * 1024 },
@@ -105,6 +109,35 @@ delete tokens[req.params.token];
 
 
   
+});
+
+
+app.get('/admin.html', function(req, res){
+// req.cookies
+var r = core.authAccountByCrt(req.cookies.lastLogin, req.cookies.lastCrt);
+r = JSON.parse(LZString.decompressFromUTF16(r));
+
+if(r['code']!=10){
+  res.redirect('/');
+  return false;
+}
+
+
+
+fs.readFile(__dirname + '/frontend/admin.html', function(err, data) {
+
+  const $ = cheerio.load(data);
+
+
+$('body').append(`<h1>Hello world</h1>`);
+
+
+res.send($.html());
+})
+
+
+
+
 });
 
 var clients = {}, waitingSend = {}, tokens = {};
@@ -466,6 +499,8 @@ i++;
   msgsInfo['online'] = z['msg']['online'];
   msgsInfo['surname'] = z['msg']['surname'];
   msgsInfo['userid'] = z['msg']['userid'];
+  msgsInfo['is_offical'] = z['msg']['is_offical'];
+
 
   response['msg'].push(msgsInfo);
 
@@ -617,6 +652,8 @@ i++;
   msgsInfo['online'] = z['msg']['online'];
   msgsInfo['surname'] = z['msg']['surname'];
   msgsInfo['userid'] = z['msg']['userid'];
+  msgsInfo['is_offical'] = z['msg']['is_offical'];
+
 
   response['msg'].push(msgsInfo);
 
@@ -661,6 +698,10 @@ r = LZString.compressToUTF16(JSON.stringify(r));
 });
 break;
 
+
+case 'admin.deleteAccount':
+core.deleteUser(login, data['user']).then((r)=>{fn(r)});
+break;
 
 case 'messages.get':
 dialogs.getMessages(data['login'], login).then(function(r){

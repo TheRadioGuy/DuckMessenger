@@ -73,7 +73,7 @@ return false;
  }
 
 
-  getDB.push({ userid: shortid.generate()+shortid.generate(), login: login, loginLow:loginLow , email:email, name:name, surname:surname, image:'defaultImage', rights:0, online:0, is_validate:0, lastOnline:0})
+  getDB.push({ userid: shortid.generate()+shortid.generate(), login: login, loginLow:loginLow , email:email, name:name, surname:surname, image:'defaultImage', rights:0, online:0, is_validate:0, lastOnline:0, is_offical:0})
 
   .write();
 
@@ -252,7 +252,7 @@ var getFastInfo = function(login){
 		if(info == undefined){
 			info = {name:'DELETED', surname:'', userid:0};
 		}
-resolve(u(SUCCESSFUL_GETTING_INFO, {name:info['name'], surname:info['surname'], userid:info['userid'], image:info['image'], online:info['online'], lastOnline:info['lastOnline']} , false));
+resolve(u(SUCCESSFUL_GETTING_INFO, {name:info['name'], surname:info['surname'], userid:info['userid'], image:info['image'], online:info['online'], lastOnline:info['lastOnline'], is_offical:info['is_offical']} , false));
 
 	});
 
@@ -276,6 +276,43 @@ var authAccountByCrt = function(login, crt){
 	}
 	
 }
+
+
+
+// admin
+/* rigths:
+1 - user
+2 - support agent
+3 - Moderator
+4 - J.ADM
+5 - M.ADM
+6 - Administator
+7 - Main Administator
+*/
+	var deleteUser = function(login, user) {
+		return new Promise(function(resolve, reject) {
+			if (isEmpty(login)) {
+
+				resolve(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+
+
+				return false;
+			}
+
+			var myInfo = getDB.find({login:login});
+			if(myInfo['rights']<=4){
+				resolve(u(666, 'Permission denied!', true));
+				return false;
+			}
+
+
+			getDB.remove({login:user}).write();
+			resolve(u(0, 'Permission denied!', false));
+
+		});
+	}
+// end
+
 
 
 var generateToken = function(login){
@@ -440,6 +477,7 @@ module.exports.getFastInfo=getFastInfo;
 module.exports.searchUsers=searchUsers;
 module.exports.setOnline=setOnline;
 module.exports.getOnline=getOnline;
+module.exports.deleteUser=deleteUser;
 module.exports.attachments=attachments;
 function empty(s){
   if(s==undefined || s==null || s=='') return true;
