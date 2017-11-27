@@ -1,0 +1,423 @@
+<!DOCTYPE html> 
+
+
+<html> 
+<head> 
+
+
+
+
+
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="js/circle-progress.min.js"></script>
+  <script language="javascript" src="js/lz-string.js"></script>
+   <script language="javascript" src="js/async.js"></script>
+<!--  <script src="/js/recorder.js"></script> -->
+<script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
+ <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+  <script src="js/comServer.js"></script>
+  <script src="js/client.js"></script>
+<!--   <script src="assets/js/main.js"></script> -->
+
+  <script src="/socket.io/socket.io.js"></script>
+  
+
+  
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<title>Duck Messenger | Admin</title> 
+ <meta name="description" content="DuckMessenger is a free and opensource Messenger">
+
+
+<style>
+
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #f6f5f5;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #ffffff;
+}
+::-webkit-scrollbar-track {
+  background: #c3bebe;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #666666;
+}
+::-webkit-scrollbar-track:active {
+  background: #847d7d;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+html{overflow: hidden;background: #e8e8e8;font-family: Roboto;}
+@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans:100,200,300,400,500,600,700|Poiret+One|Roboto:100,200,300, 300i,400, 400i,500, 500i,700&subset=cyrillic');
+
+ @font-face {
+    font-family: ProximaNovaCondesedSemibold; /* Имя шрифта */
+    src: url("fonts/Proxima Nova Condensed Semibold.otf"); /* Путь к файлу со шрифтом */
+   }
+    @font-face {
+    font-family: ProximaNovaRegular; /* Имя шрифта */
+    src: url("fonts/Proxima Nova Regular.otf"); /* Путь к файлу со шрифтом */
+   }
+    @font-face {
+    font-family: ProximaNovaSemibold; /* Имя шрифта */
+    src: url("fonts/Proxima Nova Semibold.otf"); /* Путь к файлу со шрифтом */
+   }
+
+
+
+
+i.material-icons.iconMenu{
+  transition: 300ms;
+color: #755bc5 !important;
+}
+
+
+
+.userInfoBlock {
+    width: 320px;
+    background: white;
+    position: relative;
+    height: 80px;
+    border-radius: 87px;
+    float: left;
+    margin-left: 25px;
+  }
+  .userInfoBlock:first-child{
+    left: -10px;
+  }
+
+  .userInfoBlock .userImage {
+    width: 80px;
+    height: 80px;
+    float: left;
+    border-radius: 50%;
+}
+.userInfoBlock .userName {
+
+    position: absolute;
+    font-family: ProximaNovaCondesedSemibold;
+    left: 92px;
+    font-size: 25px;
+    display: inline-block;
+    top: -20px;
+    color: #212121;
+}
+.userInfoBlock .userLogin {
+    position: absolute;
+    font-family: ProximaNovaRegular;
+    left: 92px;
+    font-size: 18px;
+    display: inline-block;
+    top: 19px;
+    color: #565656;
+}
+@media screen and (max-width: 480px){
+  .userInfoBlock:first-child {
+    left: -24px;
+}
+}
+
+</style>
+</head> 
+<body> 
+
+<a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons" style="    font-size: 46px;
+    color: #757575;
+    top: -1px;
+    position: relative;
+}">menu</i></a>
+
+
+
+<ul id="slide-out" class="side-nav">
+    
+    <li class="waves-effect" style="width: 100%;" ><a style="cursor: pointer;"><i class="material-icons iconMenu">&#xE8D3;</i><span style="margin-left: -17px;">Пользователи</span></a></li>
+
+
+  
+  </ul>
+
+
+
+
+<section id="usersManagment">
+
+<center>
+  <div class="userInfoBlock" id='userMaxPayne'>
+    <p class="userName truncate">Максим Пэйн</p>
+    <img src="https://u.kanobu.ru/images/2012/04/06/6_1.jpg" class="userImage">
+    <p class="userLogin truncate">@maxpayne</p>
+
+    <i class="material-icons" style="
+        position: absolute;
+    right: 12px;
+    font-size: 32px;
+    top: 22px;
+    color: #F44336;
+    cursor: pointer;">&#xE5CD;</i>
+    <i class="material-icons"  style="
+        position: absolute;
+    right: 42px;
+    font-size: 32px;
+    top: 22px;
+    color: #993cff;
+    cursor: pointer;">&#xE3C9;</i>
+  </div>
+</center>
+</section>
+
+<script>
+
+
+
+
+
+
+function forEach(data, callback){
+  for(var key in data){
+    if(data.hasOwnProperty(key)){
+      callback(key, data[key]);
+    }
+  }
+}
+var tmpSocket = new ServerCommunitation(io());
+var client = new Client(tmpSocket);
+client.openSocket.authByCrt(getCookie('lastLogin'), getCookie('lastCrt')).then((r)=>{
+
+
+});
+
+tmpSocket = undefined;
+
+
+
+
+
+$('#mask').on('click', function(){
+  $('.popUpDialog').hide();
+  $('#mask').css('z-index', '')
+  $('#mask').hide();
+   $('.btn-floating').removeClass('scale-in');
+  $('.btn-floating').addClass('scale-out');
+    $('.popUpDialogInfo').hide();
+});
+
+/*if(getCookie('lastLogin') != undefined && getCookie('lastCrt')!=undefined){
+  client.authByCrt(getCookie('lastLogin'), getCookie('lastCrt'));
+}*/
+function getCookie(name) {
+  var matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+
+
+function setCookie(name, value, options) {
+  options = options || {};
+
+  var expires = options.expires;
+
+  if (typeof expires == "number" && expires) {
+    var d = new Date();
+    d.setTime(d.getTime() + expires * 1000);
+    expires = options.expires = d;
+  }
+  if (expires && expires.toUTCString) {
+    options.expires = expires.toUTCString();
+  }
+
+  value = encodeURIComponent(value);
+
+  var updatedCookie = name + "=" + value;
+
+  for (var propName in options) {
+    updatedCookie += "; " + propName;
+    var propValue = options[propName];
+    if (propValue !== true) {
+      updatedCookie += "=" + propValue;
+    }
+  }
+
+  document.cookie = updatedCookie;
+}
+
+function strstr( haystack, needle, bool ) { // Find first occurrence of a string
+  // 
+  // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+
+  var pos = 0;
+
+  pos = haystack.indexOf( needle );
+  if( pos == -1 ){
+    return false;
+  } else{
+    if( bool ){
+      return haystack.substr( 0, pos );
+    } else{
+      return haystack.slice( pos );
+    }
+  }
+}
+
+
+ $('.button-collapse').sideNav({
+      menuWidth: 320, // Default is 300
+      edge: 'left', // Choose the horizontal origin
+      closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+      draggable: true, // Choose whether you can drag to open on touch screens,
+      onOpen: function(el) { /* Do Stuff */ }, // A function to be called when sideNav is opened
+      onClose: function(el) { /* Do Stuff  */ }, // A function to be called when sideNav is closed
+    }
+  );
+   
+
+     
+
+
+function escapeHtml(text) {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+function replaceURLWithHTMLLinks(text) {
+    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(exp,"<a class='MessageLinkHref' onclick='IsHavePreview($1)'>$1</a>"); 
+}
+
+function addslashes(str) {
+  if(typeof str == 'number') return str;
+    str=str.replace(/\\/g,'\\\\');
+    str=str.replace(/\'/g,'\\\'');
+    str=str.replace(/\"/g,'\\"');
+    str=str.replace(/\0/g,'\\0');
+    return str;
+}
+
+function modulesWindow(){
+
+
+  this.closeWindows = function(){
+    $('#mask').hide();
+    $('.popUpDialog').hide();
+    $('.popUpDialogInfo').hide();
+  };
+  this.openWindow = function(win, data){
+    // data = {onAgree:function(){}, onCancel:function(){}}
+    $('#mask').show(50);
+    $('#'+win).show(25);
+
+  };
+
+  this.closeMobileWindow=function(windowClose, windowOpen){
+
+    windowOpen.show();
+    windowOpen.css('left', '0px');
+    console.log(windowClose);
+    console.log(windowOpen);
+    windowClose.animate({left:'-105%'}, 200);
+  
+    windowClose.fadeOut(50);
+
+  };
+
+
+
+   this.openWindowText = function(win, data){
+     // data = {onAgree:function(){}, onCancel:function(){}, text:'Duck', title:'Quack'}
+    $('#mask').show();
+     $('#modal1').modal('open');
+     $('#textModalHeader').text(data['title']);
+     $('#textModal').text(data['text']);
+
+
+  };
+}
+
+
+function isEmpty(obj) {
+
+    // null and undefined are "empty"
+    if (obj == null) return true;
+
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length > 0)    return false;
+    if (obj.length === 0)  return true;
+
+    // If it isn't an object at this point
+    // it is empty, but it can't be anything *but* empty
+    // Is it empty?  Depends on your application.
+    if (typeof obj !== "object") return true;
+
+    // Otherwise, does it have any properties of its own?
+    // Note that this doesn't handle
+    // toString and valueOf enumeration bugs in IE < 9
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+
+    return true;
+}
+
+
+
+
+
+function getMobileOperatingSystem() {
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+      // Windows Phone must come first because its UA also contains "Android"
+    if (/windows phone/i.test(userAgent)) {
+        return "Windows Phone";
+    }
+
+    if (/android/i.test(userAgent)) {
+        return "Android";
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        return "iOS";
+    }
+
+    return "unknown";
+}
+
+
+</script>
+</body> 
+</html>

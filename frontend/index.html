@@ -73,7 +73,10 @@
   background: transparent;
 }
 
-html{overflow: hidden;background: #5682a3;font-family: Roboto;}
+html{  width: 100%;
+  height: 100%;background: #5682a3;font-family: Roboto;}
+
+
 @import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans:100,200,300,400,500,600,700|Poiret+One|Roboto:100,200,300, 300i,400, 400i,500, 500i,700&subset=cyrillic');
 
  @font-face {
@@ -106,6 +109,21 @@ html{overflow: hidden;background: #5682a3;font-family: Roboto;}
      top: 37%;
   }
 }
+
+@keyframes shake{
+  from{
+    left: 40.7%;
+        bottom: 13.5px;
+  }
+  50%{
+    left: 41.3%;
+     bottom: 14.5px;
+  }
+  to{
+    left: 40.7%;
+    bottom: 13.5px;
+  }
+}
 #firstLoadingAnimation{
   width: 128px;
   height:128px;
@@ -126,7 +144,7 @@ height: 290px;
 position: absolute;
 background:white;
 border-radius: 2px;
-    z-index: 10;
+    z-index: 17;
 
 position:absolute;
 left:50%;
@@ -201,7 +219,7 @@ position: relative;
 }
 
 .popUpDialogInfo{
-   z-index: 15;
+   z-index: 17;
    width: 400px;
     height: 140px;
     position: absolute;
@@ -416,7 +434,7 @@ div #leftPanelMessages .dialog #textMessage{
 }
 
 
-div #userInfoTopPanel {
+div .userInfoTopPanel {
  width: 100%;
     height: 45px;
     background: white;
@@ -963,9 +981,126 @@ z-index: 17;
     margin: -145px 0 0 -117.5px;
 
 }
+
+.cirleLoadImageMsg{
+  position: relative;
+    margin-top: -51px;
+
+    height: 47px;
+    top: -146px;
+    display: none;
+    left: 42%;
+}
+
+
+.dragAndDrop{
+width: 400px;
+    background: white;
+    height: 300px;
+    position: fixed;
+    display: none;
+    margin: -150px 0 0 -200px;
+}
+.unactiveDragAndDrop{
+background: #ececec;
+}
+.unactiveDragAndDrop #dragText{
+color: #6b6b6b !important;
+}
+.dragAndDrop #dragText{
+  font-size: 16px;
+  font-family: Roboto;
+  position: relative;
+  color: #212121;
+}
+
+.callToUser {
+    position: absolute;
+    right: 14px;
+    color: #656565;
+    top: 7px;
+    cursor: pointer;
+    font-size: 32px;
+
+}
+
+.callingProcessBlock{
+    display: block;
+    width: 270px;
+    margin: -200px 0 0 -135px;
+
+    background: #4a4949;
+    border-radius: 15px;
+    height: 400px;
+    transition: 400ms;
+}
+.callingProcessBlock #userImageCalling{
+ width: 270px;
+    height: 270px;
+    position: absolute;
+    float: left;
+}
+.callingProcessBlock #userInfoCall{
+display: inline-block;
+    font-size: 17px;
+    color: white;
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    left: 0;
+    margin: auto;
+    bottom: 96px;
+
+}
+.callingProcessBlock #callingEnd{
+position: absolute;
+    bottom: 14px;
+    left: 41%;
+}
+.animationCalling{
+      position: absolute;
+    bottom: 81px;
+    left: 45%;
+}
+
+  .callReturnButton{
+
+    position: absolute;
+    z-index: 20;
+    left: 1px;
+        top: -8px;
+        display: none;
+  }
 @media screen and (max-width: 480px){
+  .callingProcessBlock{
+      width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin: 0px;
+    height: 100%;
+    border-radius: 0px;
+  }
+  .callingProcessBlock #userInfoCall{
+        margin: auto;
+    top: 16px;
+    bottom: 0px;
+  }
+  .callingProcessBlock #userImageCalling{
+        width: 100%;
+    height: 100%;
+    position: relative;
+
+    -webkit-filter: brightness(0.3);
+
+    -moz-filter: brightness(0.3);
+  }
   .myСontacts #titleHeaderText{
     left: 38px;
+  }
+  .dragAndDrop{
+    /* если это сработает на проде, дайте знать мне, t.me/DuckerMan */
+    background: red;
   }
   #closeContacts{
     display: none;
@@ -1006,6 +1141,30 @@ z-index: 17;
 </style>
 </head> 
 <body> 
+
+<div class="callingProcessBlock scale-transition scale-out popUpDialog z-depth-5">
+  <img src="" id="userImageCalling">
+   <center>
+   <p id="userInfoCall" class="truncate">Hello Man!</p>
+   <div class="animationCalling" style="
+    position: absolute;
+    bottom: 81px;
+    left: 44%;
+">
+ <div class="animationSpan"></div>
+ <div class="animationSpan"></div>
+ <div class="animationSpan"></div>
+  </div>
+     <a class="btn-floating btn-large waves-effect waves-light red scale-transition scale-out" id="callingEnd"><i class="material-icons">phone</i></a>
+
+   </center>
+</div>
+<div class="z-depth-3 popUpDialog dragAndDrop">
+
+  <center><p id="dragText">Перетащите файл сюда</p></center>
+
+</div>
+
 <div class="photoWatcher" onclick="$(this).fadeOut(100); $('#closePhoto').css('transform', 'rotate(-41deg)');">
 <div class="progress" style="
     position: absolute;
@@ -1370,7 +1529,7 @@ client.onClickContacts();
 
 
 <div class="rightBlock">
-  
+  <a class="btn-floating btn-large waves-effect waves-light red callReturnButton"><i class="material-icons">phone</i></a>
 <div class="preloader-wrapper big active " id="spinnerMessages" style="
     width: 48px;
     height: 48px;
@@ -1449,14 +1608,17 @@ function init(){
   }
 }
 
- $('.cirleLoadImage').circleProgress({
+$('.cirleLoadImage').circleProgress({
     value: 0.0,
     size: 40,
-    emptyFill: "rgba(0, 0, 0, 1.00)",
+    emptyFill: "rgba(0, 0, 0, 0)",
     fill: {
-      color: "#000000"
+      color: "#bbbbbb"
     }
   });
+
+
+
 $('.uploadFileInput').on('change', function(e){
  
 
@@ -1535,7 +1697,9 @@ tmpSocket = undefined;
 }
 
 
-client.onResize();
+
+  client.onResize();
+
 
 
 
@@ -1555,6 +1719,38 @@ $('#firstLoadingAnimation').show();
 }
 
 });
+
+
+
+$('html')[0].ondragover = function() {
+
+if(isEmpty($('.selectedDialog').attr('id'))) return false;
+
+
+    $('.dragAndDrop').show();
+$('#mask').show();
+    return false;
+};
+$('html')[0].ondragleave = function() {
+
+ 
+    return false;
+};
+
+
+$('.dragAndDrop')[0].ondrop = function(event) {
+    event.preventDefault();
+    console.log('drop');
+
+    client.onLoadAttachment(event.dataTransfer.files);
+    $('.dragAndDrop').hide();
+
+
+
+};
+
+
+
 $(document).ready(function(){
 
 
@@ -1583,6 +1779,9 @@ $(document).ready(function(){
 
 
 $(window).on('keyup', function(e){
+  if(e.keyCode==27){
+    $('.photoWatcher').fadeOut(100); $('#closePhoto').css('transform', 'rotate(-41deg)');
+  }
 if(e.keyCode==13){
   if($('.selectedDialog').attr('id')==undefined) return false;
 
@@ -1602,14 +1801,6 @@ if(e.keyCode==13){
 
 
 
-$('#mask').on('click', function(){
-  $('.popUpDialog').hide();
-  $('#mask').css('z-index', '')
-  $('#mask').hide();
-   $('.btn-floating').removeClass('scale-in');
-  $('.btn-floating').addClass('scale-out');
-    $('.popUpDialogInfo').hide();
-});
 function modulesWindow(){
 
 

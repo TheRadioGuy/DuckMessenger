@@ -73,7 +73,7 @@ return false;
  }
 
 
-  getDB.push({ userid: shortid.generate()+shortid.generate(), login: login, loginLow:loginLow , email:email, name:name, surname:surname, image:'defaultImage', rights:0, online:0, is_validate:0, lastOnline:0, is_offical:0})
+  getDB.push({ userid: shortid.generate()+shortid.generate(), login: login, loginLow:loginLow , email:email, name:name, surname:surname, settings:{}, image:'defaultImage', rights:0, online:0, is_validate:0, lastOnline:0, is_offical:0})
 
   .write();
 

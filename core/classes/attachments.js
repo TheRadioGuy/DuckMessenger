@@ -1,4 +1,9 @@
-var sharp = require('sharp');
+
+const withoutCompress = false; // Disable photo compress?
+
+
+if(!withoutCompress) var sharp = require('sharp');
+
 
 
 
@@ -10,6 +15,10 @@ const FileAsync = require('lowdb/adapters/FileAsync')
 
 const adapter = new FileAsync('./core/databases/attachments.json');
 var shortid = require('shortid');
+
+
+
+
 low(adapter)
     .then(db => {
 
@@ -53,11 +62,14 @@ low(adapter)
             Attachment['type'] = whatTheType(Attachment['mime']);
 
 
-            var image = sharp(buff);
+           
             var imageOriginal, imageResizeMedium, size, imageProfile;
+            console.log('compress : ' + withoutCompress);
 
+            if(!withoutCompress){
+                 var image = sharp(buff);
 
-            if (Attachment['type'] == 'image') {
+                  if (Attachment['type'] == 'image') {
                 delete Attachment['data'];
 
 
@@ -83,18 +95,36 @@ low(adapter)
                             dataImage.resize(128, 128).toBuffer({
                                 resolveWithObject: true
                             }, function(err, data) {
+
+
+
                                 imageProfile = data.toString('base64');
 
                                 Attachment['photo_128'] = imageProfile;
                                 Attachment['photo_450'] = imageProfile;
                                 Attachment['photo_original'] = imageProfile;
+
+
+                                dataImage.resize(270, 270).toBuffer({
+                                resolveWithObject: true
+                            }, function(err,data){
+
+                                Attachment['photo_450'] = data.toString('base64');
+
                                 getDB.push(Attachment).write();
+
+
+                                
                                 cb({
                                     id: Attachment['id'],
                                     type: Attachment['type'],
                                     name: Attachment['name']
                                 });
 
+
+                            });
+                                
+                            
 
 
                             });
@@ -159,6 +189,25 @@ low(adapter)
 
             }
 
+            }
+
+            else{
+
+                console.log("NO COMPRESS");
+                Attachment['photo_128'] = buff;
+                                    Attachment['photo_450'] = buff;
+                                    Attachment['photo_original'] = buff;
+                getDB.push(Attachment).write();
+                cb({
+                    id: Attachment['id'],
+                    type: Attachment['type'],
+                    name: Attachment['name']
+                });
+
+            }
+
+          
+
 
 
         }
@@ -173,7 +222,7 @@ low(adapter)
         module.exports.addAttachments = addAttachments;
         module.exports.isTokenValide = isTokenValide;
 
-        
+
         function whatTheType(mime) {
 
             console.log(mime);

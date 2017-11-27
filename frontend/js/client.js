@@ -5,7 +5,7 @@ function Client(serverCommunitation) {
 	var blobsCaches = {};
 	var win = new modulesWindow();
 	var socket = serverCommunitation;
-
+	var isCalling = false;
 
 
 	var audios = {};
@@ -75,16 +75,25 @@ function Client(serverCommunitation) {
 						tmpCache['s' + z['msg']['image']] = url;
 						if (url == false) url = '/images/defaultprofileimage.jpg';
 
-
-						Notification.requestPermission();
-
-
-
-						var mailNotification = new Notification(z['msg']['name'] + " " + z['msg']['surname'], {
+						if(document.hidden){
+									Notification.requestPermission(function(){
+							var mailNotification = new Notification(z['msg']['name'] + " " + z['msg']['surname'], {
 							tag: "message",
-							body: messageInfo['template'],
+							body: messageInfo['dialogsText'],
 							icon: url
 						});
+
+
+							mailNotification.onclick = function(){
+								window.focus();
+							};
+						});
+						}
+				
+
+
+
+						
 
 
 						$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('` + msg['from'] + `')" id="message` + msg['from'] + `">
@@ -307,7 +316,7 @@ function Client(serverCommunitation) {
 
 				$(`<div class="messagesBlock" id="block` + login + `">
   
-  <div id="userInfoTopPanel" class="z-depth-2">
+  <div class="userInfoTopPanel z-depth-2">
   	<i class="waves-effect waves-circle material-icons mobileBackButton backDialogs" onclick="client.openWindow.closeMobileWindow($('.rightBlock'), $('#leftPanelMessages'));">arrow_back</i>
     <img src="` + $('#message' + login + ' #profilePhoto').attr('src') + `" id="profilePhotoTopPanel" onclick="$('.photoWatcher').fadeIn(200);
 $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '` + $('#message' + login + ' #profilePhoto').attr('src') + `');">
@@ -318,6 +327,8 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
  <div class="animationSpan"></div>
   </div>
   ` + text + `
+
+  <i class="material-icons callToUser" onclick='client.callToUser("`+login+`")'>&#xE0CD;</i>
   </div>
 
 
@@ -532,6 +543,10 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 					getFileSecter(info['msg']['image'], 'photo_128').then(function(photo) { // load photo
+						if (photo == false) photo = '/images/defaultprofileimage.jpg';
+
+
+
 						$('#infoPanelImage').attr('src', photo);
 
 					});
@@ -614,6 +629,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 					getFileSecter(info['msg']['image'], 'photo_128').then(function(photo) { // load photo
+						if (photo == false) photo = '/images/defaultprofileimage.jpg';
 						$('#infoPanelImage').attr('src', photo);
 
 					});
@@ -643,12 +659,33 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 			$('.rightBlock').width(widthBlock);
 			$('.rightBlock').css('left', '265px');
+		
 		} else {
 			$('.rightBlock').width($(window).width());
+			
 			$('.rightBlock').css('left', '0px');
 
 		}
 	};
+
+
+	this.callToUser = function(login){
+		$('#mask').show();
+		isCalling=true;
+		$('.callingProcessBlock').removeClass('scale-out');
+		$('.callingProcessBlock').addClass('scale-in');
+		$('.callingProcessBlock #userImageCalling').attr('src', $('#message' + login + ' #profilePhoto').attr('src'));
+		$('#userImageCalling').attr('src', $('#message' + login + ' #profilePhoto').attr('src'));
+		$('.callingProcessBlock #userInfoCall').text($('#message' + login + ' #userName').text());
+
+		setTimeout(function() {
+			$('.callingProcessBlock #callingEnd').removeClass('scale-out');
+			$('.callingProcessBlock #callingEnd').addClass('scale-in');
+			$('.callingProcessBlock #callingEnd').css('animation', 'shake 300ms infinite');
+		}, 300);
+		
+		
+	}
 
 	var encryptMessage = function(text, key) {
 		var textBytes = aesjs.utils.utf8.toBytes(text);
@@ -1086,15 +1123,33 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 
-	var getFileSecter = function(id, field) {
+	var getFileSecter = function(id, field, cb) {
 		return new Promise(function(resolve, reject) {
 
 
-			$.get('/getAttachment/' + id + '/' + field, {}, function(r) {
+
+			var xhr = new XMLHttpRequest();
+		xhr.open("get", '/getAttachment/' + id + '/' + field, true);
+		xhr.send();
 
 
 
-				try {
+		xhr.upload.onprogress = function(event) {
+
+			var percentComplete = event.loaded / event.total;
+
+		
+			cb(percentComplete);
+		}
+
+
+
+			xhr.onload = xhr.onerror = function() {
+			if (this.status == 200) {
+				// this.responseText
+				var r = this.responseText;
+
+					try {
 					r = JSON.parse(r);
 
 
@@ -1112,10 +1167,19 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 					return false;
 				}
 				resolve(blob);
+				
+			} else {
+				console.log("error " + this.status);
+			}
+		};
 
 
 
-			});
+
+
+
+
+
 
 
 
@@ -1126,15 +1190,33 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 	}
 
 
-	this.getFile = function(id, field) {
+	this.getFile = function(id, field, cb) {
 		return new Promise(function(resolve, reject) {
 
 
-			$.get('/getAttachment/' + id + '/' + field, {}, function(r) {
+
+			var xhr = new XMLHttpRequest();
+		xhr.open("get", '/getAttachment/' + id + '/' + field, true);
+		xhr.send();
 
 
 
-				try {
+		xhr.upload.onprogress = function(event) {
+
+			var percentComplete = event.loaded / event.total;
+
+		
+			cb(percentComplete);
+		}
+
+
+
+			xhr.onload = xhr.onerror = function() {
+			if (this.status == 200) {
+				// this.responseText
+				var r = this.responseText;
+
+					try {
 					r = JSON.parse(r);
 
 
@@ -1152,10 +1234,19 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 					return false;
 				}
 				resolve(blob);
+				
+			} else {
+				console.log("error " + this.status);
+			}
+		};
 
 
 
-			});
+
+
+
+
+
 
 
 
@@ -1174,6 +1265,8 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 		var xhr = new XMLHttpRequest();
 		$('#mask').show(50);
 		$('.fileUploadingInfo').show();
+
+
 		$('.fileUploadingInfo .filePreview').attr('src', fileInfo['blob']);
 		$('.fileUploadingInfo .fileName').text(fileInfo['name']);
 
@@ -1224,6 +1317,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 		var xhr = new XMLHttpRequest();
 
 		var blob = URL.createObjectURL(file);
+		$('#infoPanelImage').attr('src', blob);
 		$('#myProfilePhoto').attr('src', blob);
 
 		$('#myProfilePhoto').css('-webkit-filter', 'blur(1px) brightness(0.5)');
@@ -1317,7 +1411,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 	};
 	this.onLoadAttachment = function(files) {
-
+		if(isEmpty($('.selectedDialog').attr('id'))) return false;
 		var to = $('.selectedDialog').attr('id').replace('message', '');
 
 
@@ -1350,6 +1444,8 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 				uploadFile(value, 0, link, to, fileInfo, function(info, to, fileInfo) {
+					tmpCache['b'+info['id']] = fileInfo['blob'];
+					tmpCache[info['id']] = fileInfo['blob'];
 					sendMessageProtected(info['type'] + '_' + info['id'] + '_' + info['name'], to, fileInfo);
 				});
 
@@ -1391,7 +1487,20 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 				switch (infoText[0]) {
 					case 'image':
-						template = `<li class='` + messageClass + `' id='messageID` + id + `'><img src='/images/photoPreview.png' width='320px' height='320px' class='dialogsImageSend'>` + att + `</li>`;
+						template = `<li class='` + messageClass + `' id='messageID` + id + `'><div class="cirleLoadImageMsg"></div> <img src='/images/photoPreview.png' width='320px' height='320px' class='dialogsImageSend'>` + att + `</li>`;
+						
+						$('#messageID' +id+ ' .cirleLoadImageMsg').circleProgress({
+    value: 0.0,
+    size: 60,
+    emptyFill: "rgba(0, 0, 0, 0)",
+    fill: {
+      color: "#b7b7b7"
+    }
+  });
+
+						$('#messageID' +id+ ' .cirleLoadImageMsg').show();
+
+
 						dialogsText = 'фотография';
 						break;
 					case 'video':
@@ -1428,7 +1537,7 @@ $(this).children().text('play_arrow');
 ">play_arrow</i>
 </div>
 
-    <p class="audioName truncate">DJ LIVE - Работай!</p>
+    <p class="audioName truncate">`+infoText[2]+`</p>
 <div class="audioTime">
     <div class="audioFullTime" style="
     width: 50%;
@@ -1449,18 +1558,6 @@ $(this).children().text('play_arrow');
 				}
 
 
-				getFileSecter(infoText[1], 'photo_450').then(function(url) {
-
-
-					console.log('LOAD!!!');
-
-					console.log(url);
-
-
-					/*"$('.photoWatcher').fadeIn(200);
-$('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '`+url+`');"*/
-
-
 					var objectID = id;
 					if ($("li[oldid='" + id + "']").length != 0) {
 						console.log('&c OLD ID IS DELEETE');
@@ -1475,7 +1572,35 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 					console.log('objectID : ' + objectID);
 
 
+
+
+				getFileSecter(infoText[1], 'photo_450', function(percent){
+					console.log('PERCENT : ' + percent);
+					if(infoText[0] == 'image'){
+
+						$(objectID + ' .cirleLoadImageMsg').circleProgress('value', percent);
+
+					}
+
+				}).then(function(url) {
+
+
+					console.log('LOAD!!!');
+					tmpCache['m'+infoText[1]] = url;
+					tmpCache[infoText[1]] = url;
+					console.log(url);
+
+
+					/*"$('.photoWatcher').fadeIn(200);
+$('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '`+url+`');"*/
+
+
+				
+
+
 					if (infoText[0] == 'image') {
+
+						$( objectID + ' .cirleLoadImageMsg').hide();
 
 
 
@@ -1506,6 +1631,47 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 	}
 
+$('.callReturnButton').on('click', function(){
+	$('.callingProcessBlock').show();
+	$('#mask').show();
+	$('.callingProcessBlock').removeClass('scale-out');
+		$('.callingProcessBlock').addClass('scale-in');
+
+
+	$('.callReturnButton').hide();
+$('.callingProcessBlock').animate({width:'270px', height:'400px', borderRadius:'15px', margin:'-200px 0 0 -135px'});
+});
+
+$('#mask').on('click', function(){
+		if (isCalling) {
+			console.log('call');
+			$('.callingProcessBlock').animate({
+				width: '56px',
+				height: '56px',
+				borderRadius: '50%',
+				margin:'-50%'
+			}, 400, function() {
+				
+				$('.callingProcessBlock').hide();
+				$('.callReturnButton').show();
+				$('.callReturnButton').animate({left:'83%', top:'89%'}, function(){
+					$('.callReturnButton').addClass('pulse');
+				});
+				
+			});
+
+		} else $('.popUpDialog').hide();
+
+ 
+  $('#mask').css('z-index', '')
+  $('#mask').hide();
+   $('.btn-floating').removeClass('scale-in');
+  $('.btn-floating').addClass('scale-out');
+    $('.popUpDialogInfo').hide();
+
+
+    
+});
 
 	var generateRandomBackground = function() {
 		return 'rgb(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ', ' + Math.round(Math.random() * 255) + ')';

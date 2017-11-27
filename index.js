@@ -96,7 +96,7 @@ delete tokens[req.params.token];
 
 
     core.attachments.addAttachments(Attachment, sampleFile.data, function(response){
-
+      var response = JSON.stringify(response);
           res.send(response);
     if(Attachment['is_profile']==1) core.changeProfilePhoto(login, JSON.parse(response)['id']);
     });
