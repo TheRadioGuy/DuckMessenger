@@ -194,9 +194,9 @@ low(adapter)
             else{
 
                 console.log("NO COMPRESS");
-                Attachment['photo_128'] = buff;
-                                    Attachment['photo_450'] = buff;
-                                    Attachment['photo_original'] = buff;
+                Attachment['photo_128'] = buff.toString('base64');
+                                    Attachment['photo_450'] = buff.toString('base64');
+                                    Attachment['photo_original'] = buff.toString('base64');
                 getDB.push(Attachment).write();
                 cb({
                     id: Attachment['id'],

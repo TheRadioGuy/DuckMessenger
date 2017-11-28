@@ -1638,8 +1638,12 @@ $('.callReturnButton').on('click', function(){
 		$('.callingProcessBlock').addClass('scale-in');
 
 
+
+
 	$('.callReturnButton').hide();
-$('.callingProcessBlock').animate({width:'270px', height:'400px', borderRadius:'15px', margin:'-200px 0 0 -135px'});
+$('.callingProcessBlock').animate({width:'270px', height:'400px', borderRadius:'15px', margin:'-200px 0 0 -135px'}, function(){
+
+});
 });
 
 $('#mask').on('click', function(){
@@ -1667,6 +1671,12 @@ $('#mask').on('click', function(){
   $('#mask').hide();
    $('.btn-floating').removeClass('scale-in');
   $('.btn-floating').addClass('scale-out');
+
+  $('.callingProcessBlock #callingEnd').removeClass('scale-out');
+			$('.callingProcessBlock #callingEnd').addClass('scale-in');
+
+
+			
     $('.popUpDialogInfo').hide();
 
 
