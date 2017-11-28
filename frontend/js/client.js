@@ -142,6 +142,64 @@ function Client(serverCommunitation) {
 		setKeyForUser(key['from'], key['key']);
 	});
 
+	socket.socketCopy.on('callEnd', function(msg) {
+		$('#mask').hide();
+		$('.callingProcessBlock').removeClass('scale-in');
+		$('.callingProcessBlock').addClass('scale-out');
+	});
+
+	
+	socket.socketCopy.on('call', function(msg) {
+		msg = JSON.parse(LZString.decompressFromUTF16(msg));
+
+
+
+		console.log(msg);
+		$('#mask').show();
+		$('.callingProcessBlock').removeClass('scale-out');
+		$('.callingProcessBlock').addClass('scale-in');
+
+		$('#meCallToFriend').hide();
+		$('#friendCallToMe').show();
+
+		$('.callingProcessBlock .userInfoCall').text(msg['name']);
+		$('.cirleLoadUserImageCall').show();
+
+
+		getFileSecter(msg['image'], 'photo_450').then(function(photo) { // load photo
+
+					$('.cirleLoadUserImageCall').hide();
+
+					$('.cirleLoadUserImageCall').circleProgress('value', 50);
+
+
+						if (photo == false) photo = '/images/defaultprofileimage.jpg';
+						if(photo=='defaultImage') photo = '/images/defaultprofileimage.jpg'; 
+
+
+				
+						$('.callingProcessBlock #userImageCalling').attr('src', photo);
+
+						tmpCache['m' + msg['image']] = photo;
+
+					});
+
+
+		$('.callingProcessBlock #callingDisline').removeClass('scale-out');
+			$('.callingProcessBlock #callingDisline').addClass('scale-in');
+
+			$('.callingProcessBlock #callingAccept').removeClass('scale-out');
+			$('.callingProcessBlock #callingAccept').addClass('scale-in');
+
+/*
+			$('#callingAccept').attr('onclick', "client.callEnd('"+msg['from']+"', true);");*/
+			$('#callingDisline').attr('onclick', "client.callEnd('"+msg['from']+"', true);");
+
+
+
+
+	
+	});
 
 	socket.socketCopy.on('typing', function(msg) {
 		msg = JSON.parse(LZString.decompressFromUTF16(msg));
@@ -670,22 +728,114 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 	this.callToUser = function(login){
+
+
 		$('#mask').show();
 		isCalling=true;
+		$('#meCallToFriend').show();
+		$('#friendCallToMe').hide();
 		$('.callingProcessBlock').removeClass('scale-out');
+
 		$('.callingProcessBlock').addClass('scale-in');
-		$('.callingProcessBlock #userImageCalling').attr('src', $('#message' + login + ' #profilePhoto').attr('src'));
+
+
+		$('#callingEnd').attr('onclick', "client.callEnd('"+login+"', true);");
+		
+
+		if(!isEmpty($('#message' + login + ' #userName').text())) $('.callingProcessBlock .userInfoCall').text($('#message' + login + ' #userName').text());
+
+
+
+
+		if(!isEmpty($('#message' + login + ' #profilePhoto').attr('src'))) $('.callingProcessBlock #userImageCalling').attr('src', $('#message' + login + ' #profilePhoto').attr('src'));
+		else{
+
+			$('.cirleLoadUserImageCall').show();
+
+			socket.fastInfo(login).then(function(z){
+
+				$('.callingProcessBlock .userInfoCall').text(z['msg']['name'] + ' ' + z['msg']['surname']);
+
+				getFileSecter(z['msg']['image'], 'photo_450').then(function(photo) { // load photo
+
+					$('.cirleLoadUserImageCall').hide();
+
+					$('.cirleLoadUserImageCall').circleProgress('value', 50);
+
+
+						if (photo == false) photo = '/images/defaultprofileimage.jpg';
+						if(photo=='defaultImage') photo = '/images/defaultprofileimage.jpg'; 
+
+
+				
+						$('.callingProcessBlock #userImageCalling').attr('src', photo);
+
+						tmpCache['m' + z['msg']['image']] = photo;
+
+					});
+
+
+
+				
+			});
+			/**/
+		}
+		
 		$('#userImageCalling').attr('src', $('#message' + login + ' #profilePhoto').attr('src'));
-		$('.callingProcessBlock #userInfoCall').text($('#message' + login + ' #userName').text());
+		$('.callingProcessBlock .userInfoCall').text($('#message' + login + ' #userName').text());
+
+
+			socket.callUser(login).then(function(r){
+			
+				if(r['error_code']==502){
+					win.openWindowText('infoPopup', {
+					title: login + ' не в сети',
+					text: "Пользователь " + login + ' сейчас не в сети'
+				});
+					endCall(login);
+				}
+				if(r['error_code']==500){
+					win.openWindowText('infoPopup', {
+					title: login + ' сейчас разговаривает',
+					text: "Пользователь " + login + ' сейчас разговаривает с другим'
+				});
+					endCall(login);
+				}
+			});
+
 
 		setTimeout(function() {
 			$('.callingProcessBlock #callingEnd').removeClass('scale-out');
 			$('.callingProcessBlock #callingEnd').addClass('scale-in');
 			$('.callingProcessBlock #callingEnd').css('animation', 'shake 300ms infinite');
+
+
+
 		}, 300);
 		
 		
 	}
+
+
+	var endCall = function(login, sendRequest){
+		$('.callingProcessBlock #callingEnd').removeClass('scale-in');
+			$('.callingProcessBlock #callingEnd').addClass('scale-out');
+				$('.callingProcessBlock').show();
+	$('#mask').hide();
+	$('.callingProcessBlock').removeClass('scale-in');
+		$('.callingProcessBlock').addClass('scale-out');
+
+		if(sendRequest){
+			// send reqeust
+			// 
+			socket.callEnd(login);
+		}
+
+
+	}
+
+	this.callEnd = endCall;
+
 
 	var encryptMessage = function(text, key) {
 		var textBytes = aesjs.utils.utf8.toBytes(text);
@@ -1464,7 +1614,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 		/*	var obj = {text:text, is_attachment:0, attachment:['document', 'ducks.jpg', 'id']};
 			return obj;*/
 
-		text = escapeHtml(text);
+		text = replaceURLWithHTMLLinks(escapeHtml(text));
 
 		return new Promise(function(resolve, reject) {
 
@@ -1676,7 +1826,7 @@ $('#mask').on('click', function(){
 			$('.callingProcessBlock #callingEnd').addClass('scale-in');
 
 
-			
+
     $('.popUpDialogInfo').hide();
 
 

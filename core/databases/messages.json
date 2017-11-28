@@ -4,8 +4,8 @@
       "dialogWith": "DuckerMan",
       "dialogAuthor": "DuckerMan",
       "dialogId": "rJM_bS0E0bS1XdWr0V0bByV_bBRNAb",
-      "message": "c2b813ad43bab0a603ce1db33d195bef9ae454c3674f1cd6b0bfe8d0a63958622d6572faf5137e4b192833539a",
-      "time": 1511708370
+      "message": "c3a106ba1ccad7883beb37c87708",
+      "time": 1511886731
     },
     {
       "dialogWith": "Tester",
@@ -1623,6 +1623,14 @@
       "to": "DuckerMan",
       "from": "DuckerMan",
       "date": 1511708370
+    },
+    {
+      "id": "BJX9JzseGHJgX9JziefH1-Q51MsgG",
+      "is_read": 0,
+      "message": "c3a106ba1ccad7883beb37c87708",
+      "to": "DuckerMan",
+      "from": "DuckerMan",
+      "date": 1511886731
     }
   ]
 }

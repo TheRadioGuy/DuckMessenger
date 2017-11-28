@@ -383,6 +383,39 @@ core.setOnline(login).then(function(r){
 });
 break;
 
+case 'calls.call':
+
+if(isEmpty(clients[data['login']])){
+  fn(u(502, 'user is offline', true));
+  return false;
+} 
+var resp = JSON.parse(LZString.decompressFromUTF16(core.calls.callUser(login, data['login'])));
+
+
+if(resp['code']==503){
+
+
+  io.to(clients[data['login']]).emit('call', LZString.compressToUTF16(JSON.stringify(resp['msg'])));
+  resp['msg'] = 'sucessful calling';
+  console.log('call user');
+}
+
+
+
+
+
+fn(LZString.compressToUTF16(JSON.stringify(resp)));
+  // 
+break;
+case 'calls.end':
+var resp = JSON.parse(LZString.decompressFromUTF16(core.calls.endUserCall(login, data['login'])));
+if(resp['code']==504){
+  io.to(clients[data['login']]).emit('callEnd', LZString.compressToUTF16(JSON.stringify({from:login})));
+}
+fn(LZString.compressToUTF16(JSON.stringify(resp)));
+break;
+
+
 case 'account.getOnline':
 core.getOnline(data['login']).then(function(r){
   fn(r);
@@ -848,3 +881,20 @@ console.log(decryptedText);
 return decryptedText;
 
 };
+
+function u(code, data, isError){
+ var varData = {};
+  if(isError==true){
+    varData['error_code'] = code;
+    varData['error'] = 1;
+  }
+  else{
+    varData['code'] = code;
+    varData['error'] = 0;
+  }
+
+
+
+  varData['msg'] = data;
+  return LZString.compressToUTF16(JSON.stringify(varData));
+}

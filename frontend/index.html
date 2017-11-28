@@ -113,15 +113,15 @@ html{  width: 100%;
 @keyframes shake{
   from{
     left: 40.7%;
-        bottom: 13.5px;
+        
   }
   50%{
     left: 41.3%;
-     bottom: 14.5px;
+    
   }
   to{
     left: 40.7%;
-    bottom: 13.5px;
+
   }
 }
 #firstLoadingAnimation{
@@ -992,6 +992,13 @@ z-index: 17;
     left: 42%;
 }
 
+.cirleLoadUserImageCall{
+    position: absolute;
+    top: 95px;
+    left: 40%;
+    display: none;
+    z-index: 3;
+}
 
 .dragAndDrop{
 width: 400px;
@@ -1040,7 +1047,7 @@ color: #6b6b6b !important;
     position: absolute;
     float: left;
 }
-.callingProcessBlock #userInfoCall{
+.callingProcessBlock .userInfoCall{
 display: inline-block;
     font-size: 17px;
     color: white;
@@ -1057,10 +1064,22 @@ position: absolute;
     bottom: 14px;
     left: 41%;
 }
+
+.callingProcessBlock #callingDisline{
+position: absolute;
+    bottom: 14px;
+    left: 59%;
+  }
+  .callingProcessBlock #callingAccept{
+position: absolute;
+    bottom: 14px;
+    left: 20%;
+  }
 .animationCalling{
-      position: absolute;
+       position: absolute;
     bottom: 81px;
-    left: 45%;
+    left: 44%;
+
 }
 
   .callReturnButton{
@@ -1070,6 +1089,12 @@ position: absolute;
     left: 1px;
         top: -8px;
         display: none;
+  }
+
+  .messageLinkText{
+        color: white;
+    font-weight: 500;
+    cursor: pointer;
   }
 @media screen and (max-width: 480px){
   .callingProcessBlock{
@@ -1081,11 +1106,33 @@ position: absolute;
     height: 100%;
     border-radius: 0px;
   }
-  .callingProcessBlock #userInfoCall{
+
+  .cirleLoadUserImageCall{
+    -webkit-filter: brightness(0.3);
+    -moz-filter: brightness(0.3);
+
+  }
+  .callingProcessBlock #callingEnd{
+bottom: 32px;
+  }
+
+   .callingProcessBlock #callingDisline{
+bottom: 32px;
+  }
+  .callingProcessBlock #callingAccept{
+bottom: 32px;
+  }
+  .animationCalling{
+    bottom: 114px;
+  }
+  .callingProcessBlock .userInfoCall{
         margin: auto;
-    top: 16px;
+    top: -85%;
     bottom: 0px;
-        font-size: 20px;
+    height: 29px;
+    display: inline-block;
+    font-size: 18px;
+
   }
   .callingProcessBlock #userImageCalling{
         width: 100%;
@@ -1144,19 +1191,29 @@ position: absolute;
 <body> 
 
 <div class="callingProcessBlock scale-transition scale-out popUpDialog z-depth-5">
+<div class="cirleLoadUserImageCall"></div>
   <img src="" id="userImageCalling">
+
    <center>
-   <p id="userInfoCall" class="truncate">Hello Man!</p>
-   <div class="animationCalling" style="
-    position: absolute;
-    bottom: 81px;
-    left: 44%;
-">
+
+   <section id="meCallToFriend">
+   <p class="userInfoCall" class="truncate">Hello Man!</p>
+   <div class="animationCalling">
  <div class="animationSpan"></div>
  <div class="animationSpan"></div>
  <div class="animationSpan"></div>
   </div>
-     <a class="btn-floating btn-large waves-effect waves-light red scale-transition scale-out" id="callingEnd"><i class="material-icons">phone</i></a>
+     <a class="btn-floating btn-large waves-effect waves-light red scale-transition scale-out" id="callingEnd" onclick="
+
+     "><i class="material-icons">phone</i></a>
+     </section>
+
+      <section id="friendCallToMe" style="display: none;">
+   <p class="userInfoCall" class="truncate">Hello Man!</p>
+
+     <a class="btn-floating btn-large waves-effect waves-light red scale-transition scale-out" id="callingDisline"><i class="material-icons">phone</i></a>
+     <a class="btn-floating btn-large waves-effect waves-light green scale-transition scale-out" id="callingAccept"><i class="material-icons">phone</i></a>
+     </section>
 
    </center>
 </div>
@@ -1664,6 +1721,15 @@ function forEach(data, callback){
 }
 
 
+$('.cirleLoadUserImageCall').circleProgress({
+    value: 0.0,
+    size: 60,
+    emptyFill: "rgba(0, 0, 0, 0)",
+    fill: {
+      color: "#b7b7b7"
+    }
+  });
+
 
  $('.button-collapse').sideNav({
       menuWidth: 320, // Default is 300
@@ -1928,7 +1994,7 @@ function escapeHtml(text) {
 }
 function replaceURLWithHTMLLinks(text) {
     var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-    return text.replace(exp,"<a class='MessageLinkHref' onclick='IsHavePreview($1)'>$1</a>"); 
+    return text.replace(exp,"<a class='messageLinkText' href='$1'>$1</a>"); 
 }
 
 function addslashes(str) {

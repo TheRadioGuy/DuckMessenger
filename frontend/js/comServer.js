@@ -139,6 +139,25 @@ this.searchUser = function(login){
 
 };
 
+this.callUser = function(login){
+
+	return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'calls.call', login:login}));
+	});
+
+};
+this.callEnd = function(login){
+
+	return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'calls.end', login:login}));
+	});
+
+};
+
 this.contactsAdd = function(mail, data){
 
 	return new Promise(function(r,rj){

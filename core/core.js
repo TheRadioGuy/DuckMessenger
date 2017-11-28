@@ -6,6 +6,7 @@ var shortid = require('shortid');
 
 var crts = require('./classes/crts.js');
 var attachments = require('./classes/attachments.js');
+var calls = require('./classes/calls.js');
 var async = require('async');
 
 low(adapter)
@@ -479,6 +480,7 @@ module.exports.setOnline=setOnline;
 module.exports.getOnline=getOnline;
 module.exports.deleteUser=deleteUser;
 module.exports.attachments=attachments;
+module.exports.calls=calls;
 function empty(s){
   if(s==undefined || s==null || s=='') return true;
   else return false;
