@@ -39,6 +39,69 @@ var messagesDB = db.get('messages');
 
 
 
+var editMessage = function(login, id, newMessage){
+if(isEmpty(login) || isEmpty(id) || isEmpty(newMessage)){
+
+    return(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+      
+
+
+}
+
+var message = messagesDB.find({id:id}).value();
+
+if(typeof message == 'undefined'){
+  return(u(700, 'Message not found', true));
+
+}
+if(message['from']!=login || (Math.floor(Date.now()/1000) - message['date']) > 172800){ // 172800seconds = 48 hours
+  
+  return(u(701, 'You cannot edit this message', true));
+
+}
+
+messagesDB.find({id:id}).assign({is_edited:1, message:newMessage}).write();
+
+return(u(702, message['to'], false));
+
+
+
+};
+
+var deleteMessage = function(login, id){
+
+if(isEmpty(login) || isEmpty(id)){
+
+    return(u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true));
+      
+
+
+}
+
+var message = messagesDB.find({id:id}).value();
+
+if(typeof message == 'undefined'){
+  return(u(700, 'Message not found', true));
+  
+}
+
+
+
+
+if(message['from']!=login || (Math.floor(Date.now()/1000) - message['date']) > 172800){ // 172800seconds = 48 hours
+
+  return(u(701, 'You cannot delete this message', true));
+
+}
+
+messagesDB.remove({id:id}).write();
+
+return(u(702, message['to'], false));
+
+
+
+};
+
 
 var getMessages = function(login, loginMy){
 return new Promise(function(resolve,reject){
@@ -195,7 +258,7 @@ return new Promise(function(resolve,reject){
     }
 
     var messageid = shortid.generate()+shortid.generate()+shortid.generate();
-    var message = {id: messageid, is_read:0, message:msg, to:to, from:login, date:Math.floor(Date.now()/1000)};
+    var message = {id: messageid, is_read:0, message:msg, to:to, from:login, date:Math.floor(Date.now()/1000), is_edited:0};
 
 
 
@@ -262,6 +325,8 @@ return new Promise(function(resolve,reject){
 module.exports.sendMessage=sendMessage;
 module.exports.getDialogs=getDialogs;
 module.exports.getMessages=getMessages;
+module.exports.editMessage=editMessage;
+module.exports.deleteMessage=deleteMessage;
 function forEach(data, callback){
   for(var key in data){
     if(data.hasOwnProperty(key)){

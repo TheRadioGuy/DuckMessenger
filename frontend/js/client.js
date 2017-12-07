@@ -1,15 +1,28 @@
 function Client(serverCommunitation) {
 
 
+	window.AudioContext = window.AudioContext || window.webkitAudioContext; // copypaste from socket.io-p2p, TODO
+	
 
 	var blobsCaches = {};
 	var win = new modulesWindow();
 	var socket = serverCommunitation;
+
+	var P2P = window.P2P;
+	var p2p = new P2P(socket.socketCopy);
+
+	p2p.usePeerConnection = true;
+
+
+
 	var isCalling = false;
-
-
+	var callingInterval;
+	var callingStartTimestamp;
+	var blobsCalling = [];
 	var audios = {};
+	var callingMs = 0;
 	var tmpCache = {};
+	var isMessageSelected=false;
 	var isMobile = $(window).width() <= 480;
 	this.openSocket = socket;
 	this.openWindow = win;
@@ -142,11 +155,132 @@ function Client(serverCommunitation) {
 		setKeyForUser(key['from'], key['key']);
 	});
 
+	socket.socketCopy.on('callAccept', function(msg) {
+
+		msg = JSON.parse(LZString.decompressFromUTF16(msg));
+
+
+		startRecord(function(result){
+				socket.callSay(msg['from'], result);
+			});
+
+
+		// say
+		$('#meCallToFriend').show();
+			$('#friendCallToMe').hide();
+			$('.callingProcessBlock #callingEnd').removeClass('scale-out');
+			$('.callingProcessBlock #callingEnd').addClass('scale-in');
+			$('.callingProcessBlock #callingEnd').css('animation', 'duck');
+
+
+
+
+			callingStartTimestamp = Math.floor(Date.now()/1000);
+
+			clearInterval(callingInterval);
+
+		callingInterval = setInterval(function() {
+			var callingTime = new Date(Math.floor(Date.now()/1000)-callingStartTimestamp);
+			
+			$('.callingTime').text(callingTime.getMinutes() + ':' + callingTime.getSeconds());
+
+		}, 1000);
+
+
+			$('.callingTime').removeClass('scale-out');
+			$('.callingTime').addClass('scale-in');
+			$('.animationCalling').hide();
+	});
+
+
+
+	socket.socketCopy.on('callData', function(msg) {
+
+		var data = JSON.parse(LZString.decompressFromUTF16(msg))['data'];
+
+		console.log(data);
+
+		  var binary= convertDataURIToBinary(data);
+
+
+  var blob=new Blob([binary], {type : 'audio/webm'});
+
+  blobsCalling.push(blob);
+
+
+
+  var blobUrl = URL.createObjectURL(new Blob(blobsCalling, {type : 'audio/webm'}));
+  console.log('URL : ' + blobUrl);
+
+
+
+
+
+	});
+
+	socket.socketCopy.on('deleteMessage', function(msg) {
+		console.log('deleteMessage');
+
+
+		console.log(msg);
+
+		$('#messageID'+msg['id']).remove();
+
+
+
+
+
+	});
+
+		socket.socketCopy.on('editMessage', function(msg) {
+		console.log('editMessage');
+
+
+		console.log(msg);
+		var editMessage = decryptMessage(msg['msg'], getKeyForUser(msg['from']));
+		console.log(editMessage);
+		$('#messageID'+msg['id']).text(editMessage);
+
+
+
+
+
+	});
+
+	
+
+
+
+
+	
+
+function convertDataURIToBinary(dataURI) {
+	var BASE64_MARKER = ';base64,';
+  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  var base64 = dataURI.substring(base64Index);
+  var raw = window.atob(base64);
+  var rawLength = raw.length;
+  var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+  for(i = 0; i < rawLength; i++) {
+    array[i] = raw.charCodeAt(i);
+  }
+  return array;
+}
+
+
+	
 	socket.socketCopy.on('callEnd', function(msg) {
+		blobsCalling = [];
+		callingMs=0;
 		$('#mask').hide();
 		$('.callingProcessBlock').removeClass('scale-in');
 		$('.callingProcessBlock').addClass('scale-out');
+
+		if(typeof voice=='object') voice.stop();
 	});
+
+
 
 	
 	socket.socketCopy.on('call', function(msg) {
@@ -191,8 +325,8 @@ function Client(serverCommunitation) {
 			$('.callingProcessBlock #callingAccept').removeClass('scale-out');
 			$('.callingProcessBlock #callingAccept').addClass('scale-in');
 
-/*
-			$('#callingAccept').attr('onclick', "client.callEnd('"+msg['from']+"', true);");*/
+
+			$('#callingAccept').attr('onclick', "client.acceptCall('"+msg['from']+"', true);");
 			$('#callingDisline').attr('onclick', "client.callEnd('"+msg['from']+"', true);");
 
 
@@ -375,6 +509,10 @@ function Client(serverCommunitation) {
 				$(`<div class="messagesBlock" id="block` + login + `">
   
   <div class="userInfoTopPanel z-depth-2">
+  <div class='back z-depth-2'>
+<a class="waves-effect waves-light btn whatDoWithMsgButton deleteMessageButton">УДАЛИТЬ</a>
+<a class="waves-effect waves-light btn whatDoWithMsgButton editMessageButton" onclick="alert('Сейчас бы нативный алерт юзать =(')">КРЯКАТЬ</a>
+  </div>
   	<i class="waves-effect waves-circle material-icons mobileBackButton backDialogs" onclick="client.openWindow.closeMobileWindow($('.rightBlock'), $('#leftPanelMessages'));">arrow_back</i>
     <img src="` + $('#message' + login + ' #profilePhoto').attr('src') + `" id="profilePhotoTopPanel" onclick="$('.photoWatcher').fadeIn(200);
 $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '` + $('#message' + login + ' #profilePhoto').attr('src') + `');">
@@ -520,7 +658,47 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 	}
 
+	
+	this.hideMessagesParams = function(){
+		setTimeout(function() {
+			$('div .userInfoTopPanel .back').hide();
+		}, 250);
+		$('div .userInfoTopPanel').css('transform', 'rotateX(0deg)');
+	}
 
+
+
+	this.showMessagesParams = function(id){
+		if(isMessageSelected==true){
+			isMessageSelected = false;
+					setTimeout(function() {
+			$('div .userInfoTopPanel .back').hide();
+		}, 250);
+		$('div .userInfoTopPanel').css('transform', 'rotateX(0deg)');
+			return false;
+		}
+		isMessageSelected = true;
+		setTimeout(function() {
+			$('div .userInfoTopPanel .back').show();
+		}, 250);
+		$('div .userInfoTopPanel').css('transform', 'rotateX(180deg)');
+
+
+		var object = getObjectMessageID(id);
+
+		if(object.hasClass('messageFromMe')){
+			$('.deleteMessageButton').show();
+			$('.editMessageButton').show();
+		}
+		else{
+			$('.deleteMessageButton').hide();
+			$('.editMessageButton').hide();
+		}
+		$('.deleteMessageButton').attr('onclick', 'client.deleteMessage("'+id+'")');
+	}
+
+		
+	
 
 	this.registration = function(email, login, name, surname) {
 
@@ -729,7 +907,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 	this.callToUser = function(login){
 
-
+		$('.animationCalling').show();
 		$('#mask').show();
 		isCalling=true;
 		$('#meCallToFriend').show();
@@ -794,6 +972,13 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 				});
 					endCall(login);
 				}
+				if(r['error_code']==403){
+					win.openWindowText('infoPopup', {
+					title: 'Вы не можете позвонить самому себе',
+					text: "К сожалению, вы не можете позвонить себе."
+				});
+					endCall(login);
+				}
 				if(r['error_code']==500){
 					win.openWindowText('infoPopup', {
 					title: login + ' сейчас разговаривает',
@@ -804,26 +989,38 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 			});
 
 
-		setTimeout(function() {
+	
 			$('.callingProcessBlock #callingEnd').removeClass('scale-out');
 			$('.callingProcessBlock #callingEnd').addClass('scale-in');
 			$('.callingProcessBlock #callingEnd').css('animation', 'shake 300ms infinite');
 
 
 
-		}, 300);
+	
 		
 		
 	}
 
 
 	var endCall = function(login, sendRequest){
+
+		blobsCalling = [];
+		callingMs=0;
+		if(typeof voice=='object') voice.stop();
+
+		$('.animationCalling').hide();
+
 		$('.callingProcessBlock #callingEnd').removeClass('scale-in');
 			$('.callingProcessBlock #callingEnd').addClass('scale-out');
 				$('.callingProcessBlock').show();
 	$('#mask').hide();
 	$('.callingProcessBlock').removeClass('scale-in');
 		$('.callingProcessBlock').addClass('scale-out');
+
+
+		$('.callingTime').removeClass('scale-in');
+			$('.callingTime').addClass('scale-out');
+
 
 		if(sendRequest){
 			// send reqeust
@@ -836,7 +1033,44 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 	this.callEnd = endCall;
 
+	this.acceptCall = function(login){
+		console.log('accept call');
 
+		socket.callAccept(login).then(function(r){
+
+			startRecord(function(result){
+				socket.callSay(login, result);
+			});
+
+			// for callAccept
+			$('#meCallToFriend').show();
+			$('#friendCallToMe').hide();
+			$('.callingProcessBlock #callingEnd').removeClass('scale-out');
+			$('.callingProcessBlock #callingEnd').addClass('scale-in');
+			$('.callingProcessBlock #callingEnd').css('animation', null);
+			$('.animationCalling').hide();
+
+
+
+			callingStartTimestamp = Math.floor(Date.now()/1000);
+
+			
+			clearInterval(callingInterval);
+
+		callingInterval = setInterval(function() {
+
+			console.log(Math.floor(Date.now()/1000)-callingStartTimestamp);
+
+			var callingTime = new Date(Math.floor(Date.now()/1000)-callingStartTimestamp);
+			
+			$('.callingTime').text(callingTime.getMinutes() + ':' + callingTime.getSeconds());
+
+		}, 1000);
+			$('.callingTime').removeClass('scale-out');
+			$('.callingTime').addClass('scale-in');
+			console.log(r);
+		});
+	}
 	var encryptMessage = function(text, key) {
 		var textBytes = aesjs.utils.utf8.toBytes(text);
 		key = aesjs.utils.hex.toBytes(key);
@@ -863,6 +1097,39 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 	};
 
 
+
+
+	var startRecord = function(cb){
+navigator.mediaDevices.getUserMedia({
+    audio: true,
+    video: false
+  }).then(function(stream) {
+     var audioContext = new window.AudioContext()
+    var mediaStreamSource = audioContext.createMediaStreamSource(stream)
+    var mediaStreamDestination = audioContext.createMediaStreamDestination()
+    mediaStreamSource.connect(mediaStreamDestination)
+
+ 
+    
+   	    var p2p = new P2P(socket.socketCopy, {peerOpts: {stream: mediaStreamDestination.stream}});
+
+  
+
+   
+      p2p.usePeerConnection = true;
+
+    p2p.emit('ready', { peerId: p2p.peerId });
+
+
+
+
+
+
+  });
+
+	}
+
+	this.startRecordP=startRecord;
 
 	this.onContactsAdding = function(mail, howWrite) {
 
@@ -1242,6 +1509,22 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 
+	var getObjectMessageID = function(id){
+		var objectID = id;
+					if ($("li[oldid='" + id + "']").length != 0) {
+						console.log('&c OLD ID IS DELEETE');
+						objectID = $("li[oldid='" + id + "']").attr('id');
+
+
+					}
+
+					if (objectID.indexOf("messageID") == -1) objectID = '#messageID' + objectID;
+					else objectID = '#' + objectID;
+					return $(objectID);
+	};
+
+
+
 	function createBlobFromSource(b64Data, contentType, sliceSize) {
 		contentType = contentType || '';
 		sliceSize = sliceSize || 512;
@@ -1610,6 +1893,32 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 	}
 
+	this.deleteMessage = function(id){
+
+
+	var objectID = getObjectMessageID(id);
+
+
+
+	objectID.hide();
+		socket.deleteMessage(id).then(function(r){
+			if(r['code']!=702){
+					objectID.show();
+					win.openWindowText('infoPopup', {
+					title: 'Срок удаления истек',
+					text: 'Вы не можете удалить сообщение, так как его срок удаления истек'
+				});
+			}
+			else objectID.remove();
+
+		});
+		
+		$('div .userInfoTopPanel .back').hide();
+		isMessageSelected=false;
+		$('div .userInfoTopPanel').css('transform', 'rotateX(0deg)');
+	};
+
+
 	var messageParser = function(text, messageClass, id, att) {
 		/*	var obj = {text:text, is_attachment:0, attachment:['document', 'ducks.jpg', 'id']};
 			return obj;*/
@@ -1624,7 +1933,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 			if (typeof infoText[2] == 'undefined') {
-				template = `<li class='` + messageClass + `' id='messageID` + id + `'>` + text + att + `</li>`;
+				template = `<li class='` + messageClass + `' ondblclick='client.showMessagesParams("`+id+`");' id='messageID` + id + `'>` + text + att + `</li>`;
 				dialogsText = text;
 
 				resolve({
@@ -1637,7 +1946,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 				switch (infoText[0]) {
 					case 'image':
-						template = `<li class='` + messageClass + `' id='messageID` + id + `'><div class="cirleLoadImageMsg"></div> <img src='/images/photoPreview.png' width='320px' height='320px' class='dialogsImageSend'>` + att + `</li>`;
+						template = `<li ondblclick='client.showMessagesParams("`+id+`");' class='` + messageClass + `' id='messageID` + id + `'><div class="cirleLoadImageMsg"></div> <img src='/images/photoPreview.png' width='320px' height='320px' class='dialogsImageSend'>` + att + `</li>`;
 						
 						$('#messageID' +id+ ' .cirleLoadImageMsg').circleProgress({
     value: 0.0,
@@ -1661,7 +1970,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 
-						template = `<li class='` + messageClass + `' id='messageID` + id + `'>			<div class="audioMessage" style="
+						template = `<li ondblclick='client.showMessagesParams("`+id+`");' class='` + messageClass + `' id='messageID` + id + `'>			<div class="audioMessage" style="
     width: 280px;
     height: 42px;
 ">
@@ -1787,32 +2096,29 @@ $('.callReturnButton').on('click', function(){
 	$('.callingProcessBlock').removeClass('scale-out');
 		$('.callingProcessBlock').addClass('scale-in');
 
+		$('.callReturnButton').addClass('scale-out');
+		$('.callReturnButton').removeClass('scale-in');
 
 
 
-	$('.callReturnButton').hide();
 $('.callingProcessBlock').animate({width:'270px', height:'400px', borderRadius:'15px', margin:'-200px 0 0 -135px'}, function(){
 
 });
 });
 
 $('#mask').on('click', function(){
-		if (isCalling) {
+	console.log('has class : ' + $('.callingProcessBlock').hasClass('scale-in'));
+		if ($('.callingProcessBlock').hasClass('scale-in')) {
 			console.log('call');
-			$('.callingProcessBlock').animate({
-				width: '56px',
-				height: '56px',
-				borderRadius: '50%',
-				margin:'-50%'
-			}, 400, function() {
-				
+			$('.callingProcessBlock').addClass('scale-out');
+			$('.callingProcessBlock').removeClass('scale-in');
 				$('.callingProcessBlock').hide();
-				$('.callReturnButton').show();
-				$('.callReturnButton').animate({left:'83%', top:'89%'}, function(){
-					$('.callReturnButton').addClass('pulse');
-				});
-				
-			});
+					console.log(" SHOW BLOCK?!");
+				$('.callReturnButton').removeClass('scale-out');
+		$('.callReturnButton').addClass('scale-in');
+
+		$('.callReturnButton').addClass('pulse');
+
 
 		} else $('.popUpDialog').hide();
 
@@ -1822,7 +2128,11 @@ $('#mask').on('click', function(){
    $('.btn-floating').removeClass('scale-in');
   $('.btn-floating').addClass('scale-out');
 
-  $('.callingProcessBlock #callingEnd').removeClass('scale-out');
+
+
+
+
+  			$('.callingProcessBlock #callingEnd').removeClass('scale-out');
 			$('.callingProcessBlock #callingEnd').addClass('scale-in');
 
 
