@@ -5,6 +5,11 @@ var app = express();
 var server = require('http').createServer(app);
 
 var io = require('socket.io')(server);
+
+var p2p = require('socket.io-p2p-server').Server;
+io.use(p2p);
+
+
 var core = require('./core/core.js');
 var dialogs = require('./core/classes/dialogs.js');
 var contacts = require('./core/classes/contacts.js');
@@ -145,7 +150,7 @@ io.on('connection', function (socket) {
 
 
 
-
+console.log('CONNECT');
 
 var login, authcode, key;
 
@@ -228,8 +233,8 @@ if(value != undefined && value != null && value != ''){
   }
   try{
     console.log('type: ' + typeof value);
-    if(typeof value == 'number') data[key] = value;
-    else data[key] = sanitizer.escape(addslashes(value));
+    if(typeof value == 'number' || key=='dataCalling') data[key] = value;
+    else data[key] = sanitizer.escape(value);
   }
   catch(e){
     // nothing
@@ -407,6 +412,20 @@ if(resp['code']==503){
 fn(LZString.compressToUTF16(JSON.stringify(resp)));
   // 
 break;
+case 'calls.say':
+var response = core.calls.canSay(login, data['user']);
+console.log('Data : ' + response);
+if(response==false){
+  fn(u(505, 'You can not say!', true));
+  return false;
+} 
+
+io.to(clients[data['user']]).emit('callData', LZString.compressToUTF16(JSON.stringify({data:data['dataCalling']})));
+
+fn(u(507, 'Successful say', false));
+
+
+break;
 case 'calls.end':
 var resp = JSON.parse(LZString.decompressFromUTF16(core.calls.endUserCall(login, data['login'])));
 if(resp['code']==504){
@@ -414,6 +433,15 @@ if(resp['code']==504){
 }
 fn(LZString.compressToUTF16(JSON.stringify(resp)));
 break;
+
+case 'calls.accept':
+var resp = JSON.parse(LZString.decompressFromUTF16(core.calls.acceptCall(login, data['login'])));
+if(resp['code']==508){
+  io.to(clients[data['login']]).emit('callAccept', LZString.compressToUTF16(JSON.stringify({from:login})));
+}
+fn(LZString.compressToUTF16(JSON.stringify(resp)));
+break;
+
 
 
 case 'account.getOnline':
@@ -627,6 +655,45 @@ if(JSON.parse(LZString.decompressFromUTF16(r))['code']==12){
 });
 break;
 
+
+case 'messages.delete':
+
+// io.to(clients[data['to']]).emit('new message', r);
+var r = JSON.parse(LZString.decompressFromUTF16(dialogs.deleteMessage(login, data['id'])));
+
+
+if(r['code']==702){
+  console.log('Successful delete message');
+
+  io.to(clients[r['msg']]).emit('deleteMessage', {id:data['id']});
+  r['msg'] = 'Successful delete message';
+
+}
+r = LZString.compressToUTF16(JSON.stringify(r));
+
+fn(r);
+
+break;
+
+case 'messages.edit':
+
+// io.to(clients[data['to']]).emit('new message', r);
+var r = JSON.parse(LZString.decompressFromUTF16(dialogs.editMessage(login, data['id'], data['msg'])));
+
+
+if(r['code']==702){
+
+
+  io.to(clients[r['msg']]).emit('editMessage', {id:data['id'], msg:data['msg'], from:login});
+  r['msg'] = 'Successful edit message';
+
+}
+r = LZString.compressToUTF16(JSON.stringify(r));
+
+fn(r);
+
+break;
+
 case 'messages.setTyping':
 io.to(clients[data['to']]).emit('typing', LZString.compressToUTF16(JSON.stringify({type:1, who:login}))) ;
 
@@ -778,6 +845,10 @@ break;
 socket.on('disconnect', function(){
 console.log('Disconnect!');
 
+var userWith = core.calls.adminEndCall(login);
+console.log('End call with' + userWith);
+
+io.to(clients[userWith]).emit('callEnd', LZString.compressToUTF16(JSON.stringify({from:login})));
 
 delete clients[login];
 });

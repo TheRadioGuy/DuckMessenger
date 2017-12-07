@@ -60,6 +60,19 @@ return new Promise(function(r,rj){
 };
 
 
+this.deleteMessage = function(id){
+return new Promise(function(r,rj){
+		r(sendRequest({method:'messages.delete', id:id}));
+	});
+
+};
+
+this.editMessage = function(id, msg){
+return new Promise(function(r,rj){
+		r(sendRequest({method:'messages.edit', id:id, msg:msg}));
+	});
+
+};
 
 this.getMessages=function(login){
 return new Promise(function(r,rj){
@@ -148,6 +161,18 @@ this.callUser = function(login){
 	});
 
 };
+
+this.callAccept = function(login){
+
+	return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'calls.accept', login:login}));
+	});
+
+};
+
+
 this.callEnd = function(login){
 
 	return new Promise(function(r,rj){
@@ -158,6 +183,13 @@ this.callEnd = function(login){
 
 };
 
+this.callSay = function(user, data){
+return new Promise(function(r,rj){
+		
+
+		r(sendRequest({method:'calls.say', user:user, dataCalling:data}));
+	});
+}
 this.contactsAdd = function(mail, data){
 
 	return new Promise(function(r,rj){

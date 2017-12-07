@@ -1,14 +1,88 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="js/circle-progress.min.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+<button onclick="startRecord(function(r){
 
-<div id="circle"></div>
+  console.log(JSON.stringify(r)); 
+  document.getElementById('data').append(JSON.stringify(r) + `
 
+    `);
+   })">Exec</button>
+
+   <div id="data">
+     
+   </div>
 <script>
-  $('#circle').circleProgress({
-    value: 0.75,
-    size: 80,
-    fill: {
-      gradient: ["red", "orange"]
-    }
-  });
+
+    var startRecord = function(cb){
+    var int;
+      navigator.mediaDevices.getUserMedia({ audio: true , video:false}).then(function(stream){
+       var options = {
+        audioBitsPerSecond : 128000,
+        videoBitsPerSecond : 2500000,
+        mimeType : 'audio/webm'
+      }
+
+      if(!MediaRecorder.isTypeSupported(options['mimeType'])) options['mimeType'] =  "audio/webm";
+
+
+window.voice = new MediaRecorder(stream, options);
+
+var chunks = [];
+
+voice.ignoreMutedMedia = true;
+console.log(voice.stream)
+voice.start(500);
+voice.ondataavailable = function(data){
+
+
+   var reader = new FileReader();
+  var blob = data.data;
+ 
+   reader.readAsDataURL(blob);
+    reader.onloadend = function () {
+    var result = reader.result;
+
+
+    chunks.push(result);
+    
+
+    cb(result);
+
+  }
+
+
+};
+
+voice.onstop = function(){
+console.log('stop audio call');
+}
+
+
+
+
+
+});
+
+  }
+
+  function convertDataURIToBinary(dataURI) {
+  var BASE64_MARKER = ';base64,';
+  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  var base64 = dataURI.substring(base64Index);
+  var raw = window.atob(base64);
+  var rawLength = raw.length;
+  var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+  for(i = 0; i < rawLength; i++) {
+    array[i] = raw.charCodeAt(i);
+  }
+  return array;
+}
+
 </script>
+</body>
+</html>

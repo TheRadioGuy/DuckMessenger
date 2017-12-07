@@ -4,7 +4,7 @@ var LZString = require('lz-string');
 
 
 var callsList = {};
-
+const ERROR_PARAMS_EMPTY_CODE=0;
 
 const low = require('lowdb')
 
@@ -69,6 +69,32 @@ low(adapter)
 
         }
 
+        var acceptCall = function(login, user){
+            if(isEmpty(user) || isEmpty(login)) return u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true);
+             if(typeof callsList[user] == 'undefined' || callsList[user]['with']!=login) return u(507, 'you cannt accept call', true)
+
+                if(callsList[user]['state']==0){
+                    callsList[user]['state']=1;
+                    callsList[login]['state']=1;
+                    return u(508, 'you accept call', false);
+                }
+                else return u(507, 'you cannt accept call', true);
+        }
+        var canSay = function(login, user){
+        
+
+            if(isEmpty(login) || isEmpty(user)){
+                 return false;
+            }
+            if(typeof callsList[user] == 'undefined' || callsList[user]['with']!=login) return false;
+
+            if(typeof callsList[user] != 'undefined' && callsList[user]['with']==login && callsList[user]['state']==1) return true;
+
+            else return false;
+
+                
+
+        }
 
         var endUserCall = function(login, user){
             if(isEmpty(login) || isEmpty(user)) return u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true);
@@ -76,8 +102,11 @@ low(adapter)
 
 
                     if(isEmpty(callsList[login]) || isEmpty(callsList[user])){
-                       return u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true); 
+                       return u(0, 'Some params is empty', true); 
                     }
+                    if(typeof callsList[user] != 'undefined' && callsList[user]['with']!=login) return u(403, 'WTF?!', true);
+
+
                 delete callsList[login];
                 delete callsList[user];
 
@@ -87,8 +116,20 @@ low(adapter)
         }
 
 
+        var adminEndCall = function(user){
+            if(typeof callsList[user]=="undefined") return false;
+            var who = callsList[user]['with'];
+             delete callsList[who];
+            delete callsList[user];
+
+            return who;
+        }
+
         module.exports.callUser = callUser;
+        module.exports.canSay=canSay;
         module.exports.endUserCall=endUserCall;
+        module.exports.acceptCall=acceptCall;
+        module.exports.adminEndCall = adminEndCall;
 
         function u(code, data, isError){
  var varData = {};

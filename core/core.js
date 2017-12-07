@@ -251,7 +251,7 @@ var getFastInfo = function(login){
 
 
 		if(info == undefined){
-			info = {name:'DELETED', surname:'', userid:0};
+			info = {name:'DELETED', surname:'ACCOUNT', userid:0, is_deleted:1};
 		}
 resolve(u(SUCCESSFUL_GETTING_INFO, {name:info['name'], surname:info['surname'], userid:info['userid'], image:info['image'], online:info['online'], lastOnline:info['lastOnline'], is_offical:info['is_offical']} , false));
 
