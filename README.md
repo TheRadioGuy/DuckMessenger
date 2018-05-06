@@ -25,7 +25,7 @@ Stay turned!
 
 
 <center><h1>Documentation will be edit</h1></center>
-#
+
 
 DuckMessenger-это open-source мессенджер, с быстрой доставкой Сообщений.
 
