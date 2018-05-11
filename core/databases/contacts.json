@@ -1,25 +1,3 @@
 {
-  "contacts": [
-    {
-      "mail": "tester@Mail.sru",
-      "addedBy": "DuckerMan",
-      "loginUser": "Tester",
-      "howWrite": "тЕстироващик",
-      "date": 1510767661
-    },
-    {
-      "mail": "barannik.toni90@gmail.com",
-      "addedBy": "DuckerMan",
-      "loginUser": "TheToxa",
-      "howWrite": "Долбаеб",
-      "date": 1511017605
-    },
-    {
-      "mail": "Zuck",
-      "addedBy": "DuckerMan",
-      "loginUser": "Zuck",
-      "howWrite": "Zuck",
-      "date": 1511017653
-    }
-  ]
+  "contacts": []
 }

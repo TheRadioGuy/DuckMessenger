@@ -1,88 +1,44 @@
-<!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+<script type="text/javascript" src='/js/simplepeer.min.js'></script>
 </head>
-<body>
-<button onclick="startRecord(function(r){
-
-  console.log(JSON.stringify(r)); 
-  document.getElementById('data').append(JSON.stringify(r) + `
-
-    `);
-   })">Exec</button>
-
-   <div id="data">
-     
-   </div>
-<script>
-
-    var startRecord = function(cb){
-    var int;
-      navigator.mediaDevices.getUserMedia({ audio: true , video:false}).then(function(stream){
-       var options = {
-        audioBitsPerSecond : 128000,
-        videoBitsPerSecond : 2500000,
-        mimeType : 'audio/webm'
+  <body>
+    <style>
+      #outgoing {
+        width: 600px;
+        word-wrap: break-word;
       }
-
-      if(!MediaRecorder.isTypeSupported(options['mimeType'])) options['mimeType'] =  "audio/webm";
-
-
-window.voice = new MediaRecorder(stream, options);
-
-var chunks = [];
-
-voice.ignoreMutedMedia = true;
-console.log(voice.stream)
-voice.start(500);
-voice.ondataavailable = function(data){
-
-
-   var reader = new FileReader();
-  var blob = data.data;
+    </style> 
+    <form>
+      <textarea id="incoming"></textarea>
+      <button type="submit">submit</button>
+    </form>
+    <pre id="outgoing"></pre>
+    <script type="text/javascript">
+var peer1 = new SimplePeer({ initiator: true })
+var peer2 = new SimplePeer()
  
-   reader.readAsDataURL(blob);
-    reader.onloadend = function () {
-    var result = reader.result;
+peer1.on('signal', function (data) {
+  // when peer1 has signaling data, give it to peer2 somehow
+  console.log(data);
+  peer2.signal(data)
+})
+ 
+peer2.on('signal', function (data) {
 
-
-    chunks.push(result);
-    
-
-    cb(result);
-
-  }
-
-
-};
-
-voice.onstop = function(){
-console.log('stop audio call');
-}
-
-
-
-
-
-});
-
-  }
-
-  function convertDataURIToBinary(dataURI) {
-  var BASE64_MARKER = ';base64,';
-  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
-  var base64 = dataURI.substring(base64Index);
-  var raw = window.atob(base64);
-  var rawLength = raw.length;
-  var array = new Uint8Array(new ArrayBuffer(rawLength));
-
-  for(i = 0; i < rawLength; i++) {
-    array[i] = raw.charCodeAt(i);
-  }
-  return array;
-}
-
-</script>
-</body>
+  // when peer2 has signaling data, give it to peer1 somehow
+  peer1.signal(data)
+})
+ 
+peer1.on('connect', function () {
+  // wait for 'connect' event before using the data channel
+  peer1.send('hey peer2, how is it going?')
+})
+ 
+peer2.on('data', function (data) {
+  // got a data channel message
+  console.log('got a message from peer1: ' + data)
+})
+    </script>
+  </body>
 </html>

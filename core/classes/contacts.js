@@ -2,6 +2,15 @@
 
 
 
+var connection, es;
+var setConnection = function(c){
+connection=c;
+};
+var setEscape = function(e){
+es = e;
+};
+module.exports.setConnection=setConnection;
+module.exports.setEscape=setEscape;
 
 
 var LZString = require('lz-string');
@@ -42,46 +51,45 @@ low(adapter)
 var contacts = db.get('contacts');
 
 
-var addToContacts = function(login, userMail, howWrite){
+
+var addToContacts = async function(login, userMail, howWrite){
 
 
 
-if(isEmpty(login) || isEmpty(userMail)){
+if(isEmpty(login) || isEmpty(userMail) || isEmpty(howWrite)){
     return u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true);
 }
 
+var hasContact = await connection.query(`SELECT mail FROM contacts WHERE mail = '${userMail}' AND addedBy = '${login}'`);
 
-if(contacts.find({mail:userMail}).value()!= undefined) return u(400, 'Contacts is already in your contact list', true);
-
-
-var userInfo = users.find({email:userMail}).value();
+if(hasContact.length!=0) return u(400, 'Contacts is already in your contact list', true);
 
 
-if(userInfo== undefined) return u(401, 'User mail isnt exists', true);
+var userInfo = await connection.query(`SELECT login, image, email FROM users WHERE email = '${userMail}' `);
+userInfo = userInfo[0];
+
+if(typeof userInfo == 'undefined') return u(401, 'User mail isnt exists', true);
 
 
 
 if(userInfo['login']==login) return u(403, 'WTF?!', true);
 
+connection.query(`INSERT INTO contacts VALUES('${userMail}', '${login}', '`+userInfo['login']+`', '${howWrite}', `+Math.floor(Date.now()/1000)+`)`);
 
-contacts.push({mail:userMail, addedBy:login, loginUser:userInfo['login'], howWrite:howWrite, date:Math.floor(Date.now()/1000)}).write();
 
-
-return u(402, {hw:howWrite, image:userInfo['image'], date:Math.floor(Date.now()/1000), login:userInfo['login']}, false);
+return u(402, {hw:howWrite, image:userInfo['image'], date:Math.floor(Date.now()/1000), login:userInfo['login'], mail:userInfo['email']}, false);
 };
 
 
-var getMyContacts = function(login){
+var getMyContacts = async function(login){
     if(isEmpty(login)){
     return u(ERROR_PARAMS_EMPTY_CODE, 'Some params is empty', true);
 }
-var value = contacts.filter({addedBy:login}).sortBy('date')
-  .take(99999999999999999999999999999999999999)
-  .value();
 
 
-  console.log('val : ');
-  console.log(value);
+var value = await connection.query(`SELECT mail, loginUser, name, surname, image FROM contacts INNER JOIN users ON loginUser = login WHERE addedBy = '${login}'`);
+
+
 
 
 return u(404, value, false);

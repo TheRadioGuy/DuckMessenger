@@ -1,26 +1,23 @@
-<!DOCTYPE html> 
-
-
-<html> 
-<head> 
+<html><head> 
 
 
 
 
 
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-   <script src="js/socketiop2p.min.js"></script>
+  <script src="/js/jquery.min.js"></script>
   <script src="js/circle-progress.min.js"></script>
   <script language="javascript" src="js/lz-string.js"></script>
    <script language="javascript" src="js/async.js"></script>
 <!--  <script src="/js/recorder.js"></script> -->
-<script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
- <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+<script type="text/javascript" src="/js/aes.js"></script>
+<script type="text/javascript" src="/js/simplepeer.min.js"></script>
 
-  <!-- Compiled and minified JavaScript -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
 
   <script src="js/comServer.js"></script>
   <script src="js/client.js"></script>
@@ -34,7 +31,7 @@
 
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <title>Duck Messenger</title> 
- <meta name="description" content="DuckMessenger is a free and opensource Messenger">
+ <meta name="description" content="DuckMessenger is a free and open-source Messenger">
 
 
 <style>
@@ -295,6 +292,7 @@ div #leftPanelMessages{
   z-index: 11;
   background: white;
   overflow: auto;
+      padding: 0;
 }
 div #leftPanelMessages .dialog{
   width: 100%;
@@ -388,7 +386,7 @@ position: relative;
 }
 .messagesBlock {
     overflow: auto;
-    height: 93%;
+       height: 91.3%;
 }
 .statusSendMessage{
       font-size: 16px;
@@ -418,9 +416,10 @@ position: relative;
     
 
 .rightBlock{
-  background: #ececec;
+  background: #F2F3F4;
   position: absolute;
   height: 100%;
+  padding: 0 !important;
   left: 265px;
   z-index: 1;
 }
@@ -438,7 +437,7 @@ div #leftPanelMessages .dialog #textMessage{
 
 div .userInfoTopPanel {
  width: 100%;
-    height: 45px;
+    height: 48px;
     background: white;
     z-index: 15;
         transform-style: preserve-3d;
@@ -504,6 +503,7 @@ div .userInfoTopPanel .back{
     float: left;
         margin-left: 6px;
             top: 4px;
+                left: 7px;
             cursor: pointer;
 }
 p.topPanelLastonline.online{
@@ -521,46 +521,50 @@ p.topPanelLastonline.offline{
     display: none;
     top: 39%;
 }
-
-.messageSendBlock{
-position: absolute;
-    bottom: 0px;
-    width: 90%;
-  
-    height: 47px;
-    border-radius: 4px;
-    color: #212121;
-    padding-left: 35px;
-    padding-top: 10px;
-    padding-right: 40px;
-    overflow: auto;
-    background: white;
-    border-bottom: 1px solid #dedede;
+#noDialogs{
+  display: none;
+  position: absolute;
+  font-size: 14px;
 }
-
-.sendMsgButton{
-      position: absolute;
-    right: 3px;
-    font-size: 35px;
-    color: #757575;
-    cursor: pointer;
-    transition: 300ms;
-    top: 6px;
-
-}
-
-.sendMsgButton:hover{
-color: #5a5a5a;
-}
-
-.messagesSendSection{
-position: absolute;
+.messageSendBlock {
+    position: absolute;
     bottom: 0px;
     width: 100%;
-  background: white;
     height: 47px;
+    border-radius: 50px;
+    color: #212121;
+    padding-left: 33px;
+    padding-top: 10px;
+    padding-right: 1px;
+    overflow: auto;
+    background: white;
+    outline: none;
 }
 
+.sendMsgButton {
+    position: absolute;
+    right: -53px;
+    line-height: 49px;
+    /* top: 8px; */
+    font-size: 29px;
+    color: #7557bd;
+    cursor: pointer;
+    transition: 300ms;
+    top: 0px;
+    background: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50px;
+}
+.messagesSendSection {
+    position: absolute;
+    bottom: 8px;
+    left: 2%;
+    width: 78%;
+    background: white;
+    height: 47px;
+    border-radius: 50px;
+}
 .sendAttachmentButton{
       transform: rotate(90deg);
     position: absolute;
@@ -639,7 +643,7 @@ animation: typingTwo 1s infinite linear;
 .messagesList{
   list-style: none;
   margin: 0;
-  padding: 0;
+    padding: 4px;
       position: relative;
     top: 54px;
 }
@@ -975,7 +979,7 @@ width: 100%;
     color: #777777;
     display: inline-block;
     position: absolute;
-    margin-top: 28px;
+    margin-top: 31px;
     margin-left: 8px;
 }
 #backContacts{
@@ -1001,11 +1005,13 @@ color: #615f5f;
 
 }
 
+#leftBlockVerify{
 
+}
 .addContact{
 z-index: 17;
     width: 235px;
-    height: 170px;
+    height: 180px;
     margin: -145px 0 0 -117.5px;
 
 }
@@ -1058,7 +1064,35 @@ color: #6b6b6b !important;
     font-size: 32px;
 
 }
-
+#modalUserInfo{
+    padding-top: 0px;
+    padding-left: 23px;
+    font-size: 19px;
+    top: 30%;
+    width: 470px;
+    height: 570px;
+    margin: -145px 0 0 -235px;
+}
+.bottomGrayColor{
+  background: #e7ebf0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  position: absolute;
+  top:41%;
+}
+.whatIsThisIcon{
+    float: right !important;
+    position: absolute;
+    right: 2px;
+    top: 8px;
+    cursor: pointer;
+    border-radius: 50px;
+    width: 24px !important;
+    lineheight: -9px;
+    line-height: 24px !important;
+    height: 24px !important;
+}
 .callingProcessBlock{
     display: block;
     width: 270px;
@@ -1127,7 +1161,29 @@ position: absolute;
   }
 
 
+  .selectUserForPrivateChat{
+    width: 332px;
+    height: 126px;
+    margin: -175px 0 0 -166px;
+  }
+  .selectUserForPrivateChat #userNameAndSurnamePChat::-webkit-input-placeholder {
+    color: #888888;
+}
 
+  .selectUserForPrivateChat #userNameAndSurnamePChat{
+        position: absolute;
+    width: 60%;
+    left: 124px;
+    top: 15px;
+  }
+  .selectUserForPrivateChat #profilePhotoPChat{
+    width: 93px;
+    height: 93px;
+    position: absolute;
+    top:14px;
+    left: 19px;
+    border-radius: 50px;
+  }
   .simpleInformation{
         z-index: 3;
     color: #f9f8f8;
@@ -1143,7 +1199,41 @@ position: absolute;
     top: 3px;
     display: block;
   }
+  #contactsEmpty{
+    
+      display: block;
+    top: 43%;
+    left: 18%;
+    font-weight: 500;
+    color: #ffffff;
+  }
+
+  .popActionMenu{
+    width: 210px;
+    height: 220px;
+    position: absolute;
+    z-index: 4;
+    background: rgba(60, 60, 60, 0.91);
+    left: 300px;
+    border-radius: 5px;
+    overflow: hidden;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    display: none;
+    /*transition: 150ms;*/
+}
+
+  
+  #actionMenuMessages{
+
+  }
+
 @media screen and (max-width: 480px){
+
+  .photoWatcher .imageView{
+    max-width: 91%;
+    max-height: 100%;
+}
   .callingProcessBlock{
       width: 100%;
     position: absolute;
@@ -1208,8 +1298,6 @@ margin: -76% 0 0 -160px;
     height: 101%;
     width: 101%;
 }
-  }
-
   #blockAuth .progressAuth{
     width: 291px;
   }
@@ -1232,7 +1320,11 @@ margin: -76% 0 0 -160px;
     margin: -110px 0 0 -0px;
     left: 0px;
   }
-}
+
+
+  }
+
+
 
 
 </style>
@@ -1240,13 +1332,13 @@ margin: -76% 0 0 -160px;
 <body> 
 
 <div class="callingProcessBlock scale-transition scale-out popUpDialog z-depth-5">
-<div class="cirleLoadUserImageCall"></div>
+<div class="cirleLoadUserImageCall"><canvas width="60" height="60"></canvas></div>
   <img src="" id="userImageCalling">
   <p class="callingTime scale-transition scale-out simpleInformation">00:12</p>
    <center>
 
    <section id="meCallToFriend">
-   <p class="userInfoCall" class="truncate">Hello Man!</p>
+   <p class="userInfoCall">Hello Man!</p>
    <div class="animationCalling">
  <div class="animationSpan"></div>
  <div class="animationSpan"></div>
@@ -1258,7 +1350,7 @@ margin: -76% 0 0 -160px;
      </section>
 
       <section id="friendCallToMe" style="display: none;">
-   <p class="userInfoCall" class="truncate">Hello Man!</p>
+   <p class="userInfoCall">Hello Man!</p>
 
      <a class="btn-floating btn-large waves-effect waves-light red scale-transition scale-out" id="callingDisline"><i class="material-icons">phone</i></a>
      <a class="btn-floating btn-large waves-effect waves-light green scale-transition scale-out" id="callingAccept"><i class="material-icons">phone</i></a>
@@ -1292,15 +1384,29 @@ margin: -76% 0 0 -160px;
 
 
   <div id="headerBlock">
-   <p id="loginUser" style="" class='truncate'>@DuckerMan</p>
-   <div class="cirleLoadImage"></div>
+   <p id="loginUser" style="" class="truncate">@DuckerMan</p>
+   <div class="cirleLoadImage"><canvas width="40" height="40"></canvas></div>
     <img src="" id="myProfilePhoto" style="cursor: pointer;" onclick="$('.photoWatcher').fadeIn(200);
 $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', $(this).attr('src'));">
-    <p id="nameAndSurname" style="" class='truncate'>Sergey the Duck</p>
+    <p id="nameAndSurname" style="" class="truncate">Sergey the Duck</p>
  <a class="btn-floating btn-large waves-effect waves-light waves-effect waves-circle scale-transition scale-out" id="buttonChangeProfilePhoto" onclick="console.log('trugger'); $('.uploadImageInput').trigger('click');"><i class="material-icons">add_a_photo</i></a>
   </div>
 
 </div>
+
+
+<div class="popUpDialog selectUserForPrivateChat">
+<img src="/images/defaultprofileimage.jpg" id="profilePhotoPChat">
+<input type="text" placeholder="Логин" id="userNameAndSurnamePChat">
+<a class="waves-effect waves-teal btn-flat" style="text-transform: uppercase;position: absolute;right: 9px;bottom: 10px;padding: 12px 17px;line-height: 13px;">Создать<i class="material-icons" style="
+    font-size: 17px;
+    position: relative;
+    float: right;
+    width: 24px;
+    /* padding: 7px 14px; */
+">navigate_next</i></a>
+</div>
+
 
 
 <div class="popUpDialog myСontacts z-depth-3">
@@ -1331,7 +1437,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
   <i class="material-icons closeIcon" id="closeContacts" onclick="$('.myСontacts').fadeOut(150); $('#mask').fadeOut(25);">close</i>
   <p id="titleHeaderText">Контакты</p>
   </div>
-
+  <p class="simpleInformation" id="contactsEmpty">У вас пока-что нет контактов</p>
   <div class="contentContacts">
 
 
@@ -1341,7 +1447,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 <a class="btn-floating btn-large waves-effect waves-light red" style="    right: 10px;
     position: absolute;
     bottom: 10px;" onclick="
-$('.addContact').fadeIn(25); $('#mask').css('z-index', '16');" ><i class="material-icons">add</i></a>
+$('.addContact').fadeIn(25); $('#mask').css('z-index', '16');"><i class="material-icons">add</i></a>
 </div>
 
 <div class="popUpDialog addContact z-depth-3">
@@ -1375,13 +1481,13 @@ $('.addContact').fadeIn(25); $('#mask').css('z-index', '16');" ><i class="materi
     float: left;
     position: absolute;
     left: 0px;
-    bottom: -2px;
+    bottom: 3px;
     color: #2525ff;
 " onclick="$('.addContact').fadeOut(25); $('#mask').css('z-index', '')">ОТМЕНА</a>
  <a class="btn-flat waves-effect waves-teal" style="
     float: right;
     position: absolute;
-    bottom: -2px;
+    bottom: 3px;
     color: #2525ff;
 " onclick="client.onContactsAdding($('#emailContacts').val(), $('#nameContacts').val());">ДОБАВИТЬ</a>
 
@@ -1404,7 +1510,7 @@ $('.addContact').fadeIn(25); $('#mask').css('z-index', '16');" ><i class="materi
 
 
 
-<ul id="slide-out" class="side-nav">
+<ul id="slide-out" class="sidenav" style="width: 320px; transform: translateX(-100%);">
     <li><div class="user-view">
       <div class="background">
         <img src="images/background.jpg">
@@ -1413,10 +1519,15 @@ $('.addContact').fadeIn(25); $('#mask').css('z-index', '16');" ><i class="materi
 
       <a href="#!info"><img onclick="$('.photoWatcher').fadeIn(200);
 $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', $(this).attr('src'));" class="circle" id="infoPanelImage" src="images/defaultprofileimage.jpg"></a>
-      <a href="#!info"><span class="white-text name" id="infoPanelName" class="truncate">Орехус</span></a>
-      <a href="#!info"><span class="white-text email" id="infoPanelLogin" class="truncate">орехус@gmail.com</span></a>
+      <a href="#!info"><span class="white-text name" id="infoPanelName">Орехус </span>  </a>
+      <a href="#!info"><span class="white-text email" id="infoPanelLogin">орехус@gmail.com</span></a>
     </div></li>
-    
+
+
+     <li class="waves-effect" style="width: 100%;" onclick="$('#mask').show(50);
+$('.selectUserForPrivateChat').show(75);"><a style="cursor: pointer;"><i class="material-icons">lock_outline</i><span style="margin-left: -17px;">Приватный чат</span><i class="material-icons whatIsThisIcon z-depth-1">help_outline</i></a></li>
+
+     <div class="divider"></div>
     <li class="waves-effect" style="width: 100%;" onclick="$('#mask').show(50);
 $('.mySettings').show(25);
 
@@ -1441,7 +1552,12 @@ client.onClickContacts();
 
 "><a style="cursor: pointer;"><i class="material-icons">contacts</i><span style="margin-left: -17px;">Контакты</span></a></li>
 
-    <li class="waves-effect" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons">&#xE8AF;</i><span style="margin-left: -17px;">Поддержка</span></a></li>
+    <li class="waves-effect" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons"></i><span style="margin-left: -17px;">Поддержка</span></a></li>
+
+
+    <li class="waves-effect" onclick="client.exit();" style="width: 100%;"><a style="cursor: pointer;"><i class="material-icons" style="
+    color: #F44336;
+"></i><span style="margin-left: -17px;color: #f11606; ">Выход</span></a></li>
   
   </ul>
   
@@ -1452,17 +1568,37 @@ client.onClickContacts();
 
 
  <!-- Modal Structure -->
-  <div id="modal1" class="modal">
+  <div id="modal1" class="modal" style="z-index: 1003;">
     <div class="modal-content">
-      <h4 id="textModalHeader">Modal Header</h4>
-      <p id="textModal">A bunch of text</p>
+      <h4 class="textModalHeader">Modal Header</h4>
+      <p class="textModal">A bunch of text</p>
     </div>
     <div class="modal-footer">
+     <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">ОТМЕНА</a>
       <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">ОК</a>
+
     </div>
   </div>
-          
+        <div id="modalUserInfo" class="popUpDialog">
+    <div class="modal-content">
+    <p id="whatTheInfo">Пользователь</p>
+    </div>
+        <div class="modal-footer">
 
+
+    </div>    
+    </div> 
+
+  <div id="modalExitAccount" class="modal" style="z-index: 1005;">
+    <div class="modal-content">
+      <p class="textModalHeader">Modal Header</p>
+    </div>
+    <div class="modal-footer">
+     <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">НЕТ</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" style="color: #f11606;">ДА</a>
+
+    </div>
+  </div>
 
 
 <div id="mask"></div>
@@ -1477,9 +1613,9 @@ client.onClickContacts();
    <a class="waves-effect waves-green btn-flat" id="agreeButton" onclick="  $('#mask').hide();">OK</a>
 </div>
 
+  <div class="bottomGrayColor"></div>
+<div class="simpleBlock z-depth-5" style="z-index: 4; display: block;" id="blockAuth">
 
-<div class="simpleBlock" style="display: none;z-index: 4;" id="blockAuth">
-  
 
 
 <center>
@@ -1584,7 +1720,9 @@ client.onClickContacts();
 
  <div class="row" style="display: none;background: #e7ebf0;">
  
-<div id="leftPanelMessages" class="z-depth-1">
+<div id="leftPanelMessages" class="z-depth-1" style="left: 0px;">
+
+
   <div id="topPanelWithMenu">
     <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons" style="    font-size: 46px;
     color: #757575;
@@ -1599,8 +1737,8 @@ client.onClickContacts();
 
   </div>
 
-<p id="noDialogsText"></p>
 
+  <p class="simpleInformation" id="noDialogs">У вас пока-что нет сообщений</p>
 
 <div class="preloader-wrapper active" id="prealoderDialogs" style="
     width: 48px;
@@ -1635,7 +1773,7 @@ client.onClickContacts();
 
 
 
-<div class="rightBlock">
+<div class="rightBlock" style="width: 575px; left: 265px;">
 
 <div class="preloader-wrapper big active " id="spinnerMessages" style="
     width: 48px;
@@ -1681,7 +1819,7 @@ client.onClickContacts();
 
 <form style="opacity: 0;position: absolute;left: -1000%;" id="formInputFile">
   
-  <input type="file" name="file" class="uploadFileInput" multiple style="
+  <input type="file" name="file" class="uploadFileInput" multiple="" style="
 ">
 
 
@@ -1699,7 +1837,9 @@ client.onClickContacts();
 ">
 
 </form>
-
+<div class="popActionMenu" id="actionMenuMessages">
+  <li class="waves-effect" style="width: 100%;height: 43px;line-height: 44px;/* font-size: 19px; */"><a class="center-align" style="cursor: pointer;color: white;font-size: 12px;position: relative;text-align: center;left: 63px;/* height: 62px; *//* padding: 7px 14px; */"><span style="margin-left: -29px;font-size: 16px;">Удалить сообщение</span></a></li>
+</div>
 
 <script>
 
@@ -1782,15 +1922,12 @@ $('.cirleLoadUserImageCall').circleProgress({
   });
 
 
- $('.button-collapse').sideNav({
-      menuWidth: 320, // Default is 300
-      edge: 'left', // Choose the horizontal origin
-      closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-      draggable: true, // Choose whether you can drag to open on touch screens,
-      onOpen: function(el) { /* Do Stuff */ }, // A function to be called when sideNav is opened
-      onClose: function(el) { /* Do Stuff  */ }, // A function to be called when sideNav is closed
-    }
-  );
+ $(document).ready(function(){
+    $('.sidenav').sidenav();
+  });
+
+
+ 
 var tmpSocket = new ServerCommunitation(io());
 tmpSocket.socketCopy.on('connect', function(){
 
@@ -1840,8 +1977,9 @@ $('#firstLoadingAnimation').show();
 
 
 
-$('html')[0].ondragover = function() {
-
+$('html')[0].ondragover = function(e) {
+console.log(e.dataTransfer.files);
+if(e.dataTransfer.files.length==0) return false;
 if(isEmpty($('.selectedDialog').attr('id'))) return false;
 
 
@@ -1908,9 +2046,9 @@ if(e.keyCode==13){
 
 
   client.sendMessage($('#block'+to+' .messageSendBlock').text(), to);
-  setTimeout(function(){
+
     $('#block'+to+' .messageSendBlock').html('');
-  }, 250);
+
   
 } 
 });
@@ -1950,10 +2088,13 @@ function modulesWindow(){
 
    this.openWindowText = function(win, data){
      // data = {onAgree:function(){}, onCancel:function(){}, text:'Duck', title:'Quack'}
-    $('#mask').show();
-     $('#modal1').modal('open');
-     $('#textModalHeader').text(data['title']);
-     $('#textModal').text(data['text']);
+     if(isEmpty(win)) win = "#modal1";
+     $(win).modal('open');
+     $('.textModalHeader').text(data['title']);
+     $('.textModal').text(data['text']);
+
+     $('.cancelModal').attr('onclick', data.onCancel);
+      $('.okModal').attr('onclick', data.onAgree);
 
 
   };
@@ -1970,7 +2111,11 @@ function getCookie(name) {
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-
+function deleteCookie(name) {
+  setCookie(name, "", {
+    expires: -1
+  })
+}
 
 function setCookie(name, value, options) {
   options = options || {};
@@ -2150,6 +2295,6 @@ function getMobileOperatingSystem() {
 }
 
 
-</script>
-</body> 
-</html>
+</script><div class="drag-target" data-sidenav="slide-out" style="left: 0px; touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+ 
+<script id="wappalyzer" src="chrome-extension://gppongmhjkpfnbhagpmjfkannfbllamg/js/inject.js"></script><div class="hiddendiv common"></div></body></html>

@@ -1,9 +1,9 @@
 function ServerCommunitation(socketObj){
 
 
+/*var Dialogs = openDatabase("dialogs", "1.0", "Dialogs cache", 10 * 1024 * 1024);
 
-
-
+this.Dialogs = Dialogs;*/
   var socket = socketObj;
 
   this.socketCopy = socket;
@@ -21,7 +21,7 @@ function ServerCommunitation(socketObj){
     
   };
 
-
+  this.r=sendRequest;
 
 
 this.setKey=function(to, key){
@@ -73,7 +73,9 @@ return new Promise(function(r,rj){
 	});
 
 };
-
+this.exit = function(){
+	sendRequest({method:'account.exit'});
+}
 this.getMessages=function(login){
 return new Promise(function(r,rj){
 		r(sendRequest({method:'messages.get', login:login}));

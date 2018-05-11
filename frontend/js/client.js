@@ -1,18 +1,31 @@
 function Client(serverCommunitation) {
 
+var db = openDatabase("dialogs", "1.0", "Dialogs cache", 10 * 1024 * 1024);
+const that = this;
+db.transaction(function(tx) {
+	// Some changes in proto
+	that.tx = tx;
 
+	console.log('open connect');
+	// console.log(tx);
+	// tx.executeSql = (query, attr)=>{
+	// 	return new Promise((resolve,reject)=>{
+	// 		tx.executeSql(query, attr, result=>resolve(result), (_, err)=>reject(err));
+	// 		return false;
+	// 	});
+	// }
+
+});
 	window.AudioContext = window.AudioContext || window.webkitAudioContext; // copypaste from socket.io-p2p, TODO
-	
+
+
+
 
 	var blobsCaches = {};
 	var win = new modulesWindow();
 	var socket = serverCommunitation;
 
-	var P2P = window.P2P;
-	var p2p = new P2P(socket.socketCopy);
-
-	p2p.usePeerConnection = true;
-
+	var Peer;
 
 
 	var isCalling = false;
@@ -47,7 +60,8 @@ function Client(serverCommunitation) {
 
 
 	socket.socketCopy.on('new message', function(msg) {
-		msg = JSON.parse(LZString.decompressFromUTF16(msg))['msg'];
+		msg = JSON.parse(LZString.decompressFromUTF16(msg));
+		console.log(msg);
 		var key = getKeyForUser(msg['from']);
 
 		if (key == undefined) key = getKeyForUser(msg['to']);
@@ -77,20 +91,20 @@ function Client(serverCommunitation) {
 
 
 				console.log('length null');
-				socket.fastInfo(msg['from']).then(function(z) {
-
-					console.log(z);
 
 
-					getFileSecter(z['msg']['image'], 'photo_128').then(function(url) {
 
 
-						tmpCache['s' + z['msg']['image']] = url;
+
+					getFileSecter(msg['image'], 'photo_128').then(function(url) {
+
+
+						tmpCache['s' + msg['image']] = url;
 						if (url == false) url = '/images/defaultprofileimage.jpg';
 
 						if(document.hidden){
 									Notification.requestPermission(function(){
-							var mailNotification = new Notification(z['msg']['name'] + " " + z['msg']['surname'], {
+							var mailNotification = new Notification(msg['name'] + " " + msg['surname'], {
 							tag: "message",
 							body: messageInfo['dialogsText'],
 							icon: url
@@ -102,15 +116,15 @@ function Client(serverCommunitation) {
 							};
 						});
 						}
-				
 
 
 
-						
+
+
 
 
 						$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('` + msg['from'] + `')" id="message` + msg['from'] + `">
-  <p id="userName">` + z['msg']['name'] + " " + z['msg']['surname'] + `</p>
+  <p id="userName">` + msg['name'] + " " + msg['surname'] + `</p>
    <p id="textMessage" class="truncate" style="
 ">` + messageInfo['dialogsText'] + `</p>
   <img src="` + url + `" id="profilePhoto"></img>
@@ -121,7 +135,7 @@ function Client(serverCommunitation) {
 
 
 
-				});
+
 
 
 			}
@@ -144,6 +158,68 @@ function Client(serverCommunitation) {
 
 
 	});
+
+	socket.socketCopy.on('privateChat', function(data){
+
+		if(JSON.parse(data.signal).candidate) return false;
+		console.log(data.signal)
+		if(!isEmpty(Peer) && Peer.initiator==true) var peer = Peer;
+		else var peer = new SimplePeer({reconnectTimer:1});
+
+			peer.on('signal', (d)=>{
+
+				console.log(d);
+			socket.socketCopy.emit("messages.startPrivate", {signal:JSON.stringify(d), login:data.from})
+	});
+
+			peer.on('connect', function(){
+				console.log("Connect with peer");
+				window.test = peer;
+				peer.on('data', (data)=>console.log('Get msg : ' + data));
+			})
+		peer.signal(data.signal);
+
+		Peer = peer;
+
+
+	});
+
+	this.startPrivateChat = function(to){
+	let peer = new SimplePeer({ initiator: true, reconnectTimer:1 });
+	peer.on('signal', (data)=>socket.socketCopy.emit("messages.startPrivate", {signal:JSON.stringify(data), login:to}));
+	Peer = peer;
+	};
+
+	socket.socketCopy.on('signal', function(data){
+
+		if(JSON.parse(data.signal).candidate) return false;
+		console.log(data.signal)
+		if(!isEmpty(Peer) && Peer.initiator==true) var peer = Peer;
+		else var peer = new SimplePeer({reconnectTimer:1});
+
+			peer.on('signal', (d)=>{
+
+				console.log(d);
+			socket.socketCopy.emit("startCall", {signal:JSON.stringify(d), login:data.from})
+	});
+
+			peer.on('connect', function(){
+				console.log("Connect with peer");
+				window.test = peer;
+				peer.on('data', (data)=>console.log('Get msg : ' + data));
+			})
+		peer.signal(data.signal);
+
+		Peer = peer;
+
+
+	});
+
+	this.startCall = function(to){
+	let peer = new SimplePeer({ initiator: true, reconnectTimer:1 });
+	peer.on('signal', (data)=>socket.socketCopy.emit("startCall", {signal:JSON.stringify(data), login:to}));
+	Peer = peer;
+	};
 
 	socket.socketCopy.on('encryptionKey', function(key) {
 		key = JSON.parse(LZString.decompressFromUTF16(key));
@@ -181,7 +257,7 @@ function Client(serverCommunitation) {
 
 		callingInterval = setInterval(function() {
 			var callingTime = new Date(Math.floor(Date.now()/1000)-callingStartTimestamp);
-			
+
 			$('.callingTime').text(callingTime.getMinutes() + ':' + callingTime.getSeconds());
 
 		}, 1000);
@@ -200,7 +276,7 @@ function Client(serverCommunitation) {
 
 		console.log(data);
 
-		  var binary= convertDataURIToBinary(data);
+		  var binary=convertDataURIToBinary(data);
 
 
   var blob=new Blob([binary], {type : 'audio/webm'});
@@ -247,12 +323,12 @@ function Client(serverCommunitation) {
 
 	});
 
-	
 
 
 
 
-	
+
+
 
 function convertDataURIToBinary(dataURI) {
 	var BASE64_MARKER = ';base64,';
@@ -269,7 +345,7 @@ function convertDataURIToBinary(dataURI) {
 }
 
 
-	
+
 	socket.socketCopy.on('callEnd', function(msg) {
 		blobsCalling = [];
 		callingMs=0;
@@ -282,7 +358,7 @@ function convertDataURIToBinary(dataURI) {
 
 
 
-	
+
 	socket.socketCopy.on('call', function(msg) {
 		msg = JSON.parse(LZString.decompressFromUTF16(msg));
 
@@ -308,10 +384,10 @@ function convertDataURIToBinary(dataURI) {
 
 
 						if (photo == false) photo = '/images/defaultprofileimage.jpg';
-						if(photo=='defaultImage') photo = '/images/defaultprofileimage.jpg'; 
+						if(photo=='defaultImage') photo = '/images/defaultprofileimage.jpg';
 
 
-				
+
 						$('.callingProcessBlock #userImageCalling').attr('src', photo);
 
 						tmpCache['m' + msg['image']] = photo;
@@ -332,7 +408,7 @@ function convertDataURIToBinary(dataURI) {
 
 
 
-	
+
 	});
 
 	socket.socketCopy.on('typing', function(msg) {
@@ -366,17 +442,23 @@ function convertDataURIToBinary(dataURI) {
 
 			console.log(r);
 			$('#prealoderDialogs').hide();
-			if (isEmpty(r['msg'])) {
+			if (r['msg'].length==0) {
 
 				console.log('No dialogs');
 
-				$('#noDialogsText').show();
+				/*$('#noDialogs').show();*/
 			}
 			forEach(r['msg'], function(key, value) {
 				var message;
 				try {
 					message = decryptMessage(value['message'], getKeyForUser(value['with']));
 				} catch (e) {
+				// todo
+				//
+
+				var key = generateEncryptKey();
+				setKeyForUser(value['with'], key);
+				setKey(value['with'], key);
 					message = '<span style="color:#ce4242;">Ошибка</span>';
 				}
 
@@ -392,9 +474,9 @@ function convertDataURIToBinary(dataURI) {
 					tmpCache['s' + value['image']] = url;
 
 					var styleVerify = '';
-					if(value.is_offical==1) styleVerify = `<img src="images/verify_account.svg" class="userVerify">`;
+					if(value.is_offical==1) styleVerify = `<img src="images/verify_account.svg" class="userVerify" id='messagesVerify'>`;
 
-			
+
 					$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('` + value['with'] + `')" id="message` + value['with'] + `">
   <p id="userName">` + value['name'] + " " + value['surname']+styleVerify + `</p>
    <p id="textMessage" class="truncate" style="
@@ -412,11 +494,26 @@ function convertDataURIToBinary(dataURI) {
 
 		});
 	}
+this.exit = function(){
+socket.exit();
+deleteCookie('lastLogin');
+deleteCookie('lastCrt');
+window.location.reload();
+};
 
-
+this.onClickUserInfo = function(login){
+	if($(window).width()>=1366){
+		// показываем правый справедливый блок
+	}
+	else{
+		// попап
+	}
+}
 
 	this.selectDialog = function(login) {
-
+		$('.dialog[data-issearch="true"]').remove();
+		$('.dialog[data-issearch!="true"]').animate({left:'0px'}, 50);
+$('.dialog[data-issearch!="true"]').show();
 		$('.dialog').removeClass('selectedDialog');
 		$('.dialog #userName').removeClass('selectedName');
 		$('.dialog #textMessage').removeClass('selectedText');
@@ -424,8 +521,6 @@ function convertDataURIToBinary(dataURI) {
 
 
 		$('#message' + login).addClass('selectedDialog');
-
-		$('#message' + login).attr('data-issearch', 'false');
 
 
 		$('#message' + login + ' #userName').addClass('selectedName');
@@ -507,7 +602,7 @@ function convertDataURIToBinary(dataURI) {
 
 
 				$(`<div class="messagesBlock" id="block` + login + `">
-  
+
   <div class="userInfoTopPanel z-depth-2">
   <div class='back z-depth-2'>
 <a class="waves-effect waves-light btn whatDoWithMsgButton deleteMessageButton">УДАЛИТЬ</a>
@@ -534,7 +629,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 </ul>
 
-<div class="messagesSendSection" style="
+<div class="messagesSendSection z-depth-1" style="
 ">
 
 <i class="material-icons sendAttachmentButton" style="" onclick="$('.uploadFileInput').trigger('click'); console.log('Choose file');">attachment</i>
@@ -543,9 +638,9 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 <div class="messageSendBlock" contenteditable="true" style="
 "></div>
 
-<i class="material-icons sendMsgButton" onclick="client.sendMessage($('#block` + login + ` .messageSendBlock').text(), '` + login + `')">send</i>
+<i class="material-icons waves-effect z-depth-1 center-align valign-wrapper sendMsgButton" onclick="client.sendMessage($('#block` + login + ` .messageSendBlock').text(), '` + login + `')">send</i>
 </div>
-  
+
 </div>`).prependTo('.rightBlock');
 
 				$('#block' + login + ' .messageSendBlock').focus();
@@ -569,8 +664,14 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 					console.log(value);
 					var whoIsWho = (getCookie('lastLogin') == value['from']) ? value['to'] : value['from'];
 
+					try{
+						var text = decryptMessage(value['message'], getKeyForUser(whoIsWho));
+					}
+					catch(e){
 
-					var text = decryptMessage(value['message'], getKeyForUser(whoIsWho));
+						return false;
+					}
+
 
 
 					var messageClass = (value['to'] == whoIsWho) ? 'messageFromMe' : 'messageToMe';
@@ -658,7 +759,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 	}
 
-	
+
 	this.hideMessagesParams = function(){
 		setTimeout(function() {
 			$('div .userInfoTopPanel .back').hide();
@@ -694,11 +795,11 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 			$('.deleteMessageButton').hide();
 			$('.editMessageButton').hide();
 		}
-		$('.deleteMessageButton').attr('onclick', 'client.deleteMessage("'+id+'")');
+		$('.deleteMessageButton').attr('onclick', 'client.deleteMessage("'+object.attr('id').replace('messageID', '')+'")');
 	}
 
-		
-	
+
+
 
 	this.registration = function(email, login, name, surname) {
 
@@ -726,7 +827,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 			} else if (r['error_code'] == ERROR_USERS_EXITS) {
 				$('#myLoginRegInput').addClass('invalid');
 
-				win.openWindowText('infoPopup', {
+				win.openWindowText('', {
 					title: 'Логин занят',
 					text: 'Данный логин занят.'
 				});
@@ -762,41 +863,14 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 				$('#myRegcodeInput').addClass('invalid');
 			} else if (r['error_code'] == ERROR_AUTHCODE_ISNT_VALID) {
 				$('#myRegcodeInput').addClass('invalid');
-				win.openWindowText('infoPopup', {
+				win.openWindowText('', {
 					title: 'Неверный код',
 					text: 'Данный код авторизации неверен.'
 				});
 
 			} else if (r['code'] == SUCCESSFUL_AUTH) {
 				// auth!
-				$('#blockAuth').remove();
-				getDialogs();
-
-				$('#infoPanelLogin').text(login);
-
-				socket.fastInfo(login).then(function(info) {
-					$('#infoPanelName').text(info['msg']['name'] + ' ' + info['msg']['surname']);
-
-
-					getFileSecter(info['msg']['image'], 'photo_128').then(function(photo) { // load photo
-						if (photo == false) photo = '/images/defaultprofileimage.jpg';
-
-
-
-						$('#infoPanelImage').attr('src', photo);
-
-					});
-
-				});
-
-
-
-				$('.row').fadeIn(250);
-				setCookie('lastLogin', r['msg']['login']);
-				setCookie('lastCrt', r['msg']['crt']);
-
-
-				$('#blockAuth').fadeOut(200);
+				onAuth(login, r['msg']['crt'])
 			}
 
 
@@ -852,30 +926,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 			if (r['code'] == 10) {
-				// auth!!
-				$('#blockAuth').remove();
-				getDialogs()
-				$('.row').fadeIn(250);
-				$('#blockAuth').fadeOut(200);
-
-				$('#infoPanelLogin').text(login);
-
-				socket.fastInfo(login).then(function(info) {
-					$('#infoPanelName').text(info['msg']['name'] + ' ' + info['msg']['surname']);
-
-
-					getFileSecter(info['msg']['image'], 'photo_128').then(function(photo) { // load photo
-						if (photo == false) photo = '/images/defaultprofileimage.jpg';
-						$('#infoPanelImage').attr('src', photo);
-
-					});
-
-				});
-
-
-
-				setCookie('lastLogin', r['msg']['login']);
-				setCookie('lastCrt', r['msg']['crt']);
+			onAuth(login, r['msg']['crt']);
 			}
 
 
@@ -895,10 +946,10 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 			$('.rightBlock').width(widthBlock);
 			$('.rightBlock').css('left', '265px');
-		
+
 		} else {
 			$('.rightBlock').width($(window).width());
-			
+
 			$('.rightBlock').css('left', '0px');
 
 		}
@@ -918,7 +969,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 		$('#callingEnd').attr('onclick', "client.callEnd('"+login+"', true);");
-		
+
 
 		if(!isEmpty($('#message' + login + ' #userName').text())) $('.callingProcessBlock .userInfoCall').text($('#message' + login + ' #userName').text());
 
@@ -942,10 +993,10 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 						if (photo == false) photo = '/images/defaultprofileimage.jpg';
-						if(photo=='defaultImage') photo = '/images/defaultprofileimage.jpg'; 
+						if(photo=='defaultImage') photo = '/images/defaultprofileimage.jpg';
 
 
-				
+
 						$('.callingProcessBlock #userImageCalling').attr('src', photo);
 
 						tmpCache['m' + z['msg']['image']] = photo;
@@ -954,33 +1005,33 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 
 
-				
+
 			});
 			/**/
 		}
-		
+
 		$('#userImageCalling').attr('src', $('#message' + login + ' #profilePhoto').attr('src'));
 		$('.callingProcessBlock .userInfoCall').text($('#message' + login + ' #userName').text());
 
 
 			socket.callUser(login).then(function(r){
-			
+
 				if(r['error_code']==502){
-					win.openWindowText('infoPopup', {
+					win.openWindowText('', {
 					title: login + ' не в сети',
 					text: "Пользователь " + login + ' сейчас не в сети'
 				});
 					endCall(login);
 				}
 				if(r['error_code']==403){
-					win.openWindowText('infoPopup', {
+					win.openWindowText('', {
 					title: 'Вы не можете позвонить самому себе',
 					text: "К сожалению, вы не можете позвонить себе."
 				});
 					endCall(login);
 				}
 				if(r['error_code']==500){
-					win.openWindowText('infoPopup', {
+					win.openWindowText('', {
 					title: login + ' сейчас разговаривает',
 					text: "Пользователь " + login + ' сейчас разговаривает с другим'
 				});
@@ -989,16 +1040,16 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 			});
 
 
-	
+
 			$('.callingProcessBlock #callingEnd').removeClass('scale-out');
 			$('.callingProcessBlock #callingEnd').addClass('scale-in');
 			$('.callingProcessBlock #callingEnd').css('animation', 'shake 300ms infinite');
 
 
 
-	
-		
-		
+
+
+
 	}
 
 
@@ -1024,7 +1075,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 		if(sendRequest){
 			// send reqeust
-			// 
+			//
 			socket.callEnd(login);
 		}
 
@@ -1054,7 +1105,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 
 			callingStartTimestamp = Math.floor(Date.now()/1000);
 
-			
+
 			clearInterval(callingInterval);
 
 		callingInterval = setInterval(function() {
@@ -1062,7 +1113,7 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 			console.log(Math.floor(Date.now()/1000)-callingStartTimestamp);
 
 			var callingTime = new Date(Math.floor(Date.now()/1000)-callingStartTimestamp);
-			
+
 			$('.callingTime').text(callingTime.getMinutes() + ':' + callingTime.getSeconds());
 
 		}, 1000);
@@ -1085,12 +1136,12 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 	var decryptMessage = function(text, key) {
 		var encryptedBytes = aesjs.utils.hex.toBytes(text);
 		key = aesjs.utils.hex.toBytes(key);
-		// The counter mode of operation maintains internal state, so to 
-		// decrypt a new instance must be instantiated. 
+		// The counter mode of operation maintains internal state, so to
+		// decrypt a new instance must be instantiated.
 		var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
 		var decryptedBytes = aesCtr.decrypt(encryptedBytes);
 
-		// Convert our bytes back into text 
+		// Convert our bytes back into text
 		var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
 		return decryptedText;
 
@@ -1109,16 +1160,9 @@ navigator.mediaDevices.getUserMedia({
     var mediaStreamDestination = audioContext.createMediaStreamDestination()
     mediaStreamSource.connect(mediaStreamDestination)
 
- 
-    
-   	    var p2p = new P2P(socket.socketCopy, {peerOpts: {stream: mediaStreamDestination.stream}});
 
-  
 
-   
-      p2p.usePeerConnection = true;
 
-    p2p.emit('ready', { peerId: p2p.peerId });
 
 
 
@@ -1147,17 +1191,17 @@ navigator.mediaDevices.getUserMedia({
 		socket.contactsAdd(mail, howWrite).then(function(r) {
 			console.log(r);
 			if (r['error_code'] == 401) {
-				win.openWindowText('infoPopup', {
+				win.openWindowText('', {
 					title: 'Ошибка',
 					text: 'Данный пользователь еще не зарегестрирован или почта неверна.'
 				});
 			} else if (r['error_code'] == 400) {
-				win.openWindowText('infoPopup', {
+				win.openWindowText('', {
 					title: 'Ошибка',
 					text: 'Контакт уже в вашем контакт-листе'
 				});
 			} else if (r['error_code'] == 403) {
-				win.openWindowText('infoPopup', {
+				win.openWindowText('', {
 					title: 'Ошибка',
 					text: 'Вы не можете добавить самого себя в конакты'
 				});
@@ -1168,6 +1212,9 @@ navigator.mediaDevices.getUserMedia({
 				$('#emailContacts').addClass('valid');
 				$('#nameContacts').addClass('valid');
 
+				$('#emailContacts').val('');
+				$('#nameContacts').val('');
+				$('#contactsEmpty').hide();
 				var date = new Date(Math.floor(Date.now() / 10000));
 				if (!isEmpty(tmpCache['s' + r['msg']['image']])) {
 
@@ -1175,10 +1222,10 @@ navigator.mediaDevices.getUserMedia({
 					$(` <div class="userBlock waves-effect" data-login="` + r['msg']['login'] + `">
     <img src="` + tmpCache['s' + r['msg']['image']] + `" class="userImage">
     <p class="userName truncate">` + howWrite + `</p>
-    <p class="whenWasAdded truncate">Добавлен ` + date.getFullYear() + '.' + date.getMonth() + "." + date.getDate() + `</p>
+    <p class="whenWasAdded truncate">`+r['msg']['mail']+`</p>
   </div>`).prependTo('.contentContacts');
 				} else {
-					getFileSecter(value['image'], 'photo_128').then(function(url) {
+					getFileSecter(r['msg']['image'], 'photo_128').then(function(url) {
 
 						if (url == false) url = '/images/defaultprofileimage.jpg';
 
@@ -1186,7 +1233,7 @@ navigator.mediaDevices.getUserMedia({
 						$(` <div class="userBlock waves-effect" data-login="` + r['msg']['login'] + `">
     <img src="` + url + `" class="userImage">
     <p class="userName truncate">` + howWrite + `</p>
-    <p class="whenWasAdded truncate">Добавлен ` + date.getFullYear() + '.' + date.getMonth() + "." + date.getDate() + `</p>
+    <p class="whenWasAdded truncate">`+r['msg']['mail']+`</p>
   </div>`).prependTo('.contentContacts');
 
 					});
@@ -1227,38 +1274,7 @@ navigator.mediaDevices.getUserMedia({
 			if (to != getCookie('lastLogin')) {
 
 
-				if ($('#message' + to).length == 0) {
 
-
-
-					socket.fastInfo(to).then(function(z) {
-
-						console.log(z);
-
-
-						getFileSecter(z['msg']['image'], 'photo_128').then(function(url) {
-
-							if (url == false) url = '/images/defaultprofileimage.jpg';
-							tmpCache['s' + z['msg']['image']] = url;
-							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('` + to + `')" id="message` + to + `">
-  <p id="userName">` + z['msg']['name'] + " " + z['msg']['surname'] + `</p>
-   <p id="textMessage" class="truncate" style="
-">` + messageRaw + `</p>
-  <img src="` + url + `" id="profilePhoto"></img>
-</div>`).prependTo('#leftPanelMessages');
-
-
-
-							// wait send msg
-
-
-
-						});
-
-
-
-					});
-				}
 
 
 
@@ -1276,6 +1292,14 @@ navigator.mediaDevices.getUserMedia({
 
 			}
 			socket.sendMessage(message, to).then(function(r) {
+
+				if ($('#message' + to).length == 0) {
+
+
+
+					dialogCreate(r.msg, messageInfo['dialogsText']);
+				}
+
 				console.log(r);
 				$('#messageID' + randomID + ' .statusSendMessage').text('check');
 				$('#messageID' + randomID).attr('oldid', randomID);
@@ -1294,6 +1318,7 @@ navigator.mediaDevices.getUserMedia({
 
 
 	this.sendMessage = function(message, to) {
+		if(isEmpty(message) || message == '') return false;
 
 		$('#block' + to + ' .messageSendBlock').text('');
 		var key = getKeyForUser(to);
@@ -1320,38 +1345,6 @@ navigator.mediaDevices.getUserMedia({
 
 
 
-				if ($('#message' + to).length == 0) {
-
-
-
-					socket.fastInfo(to).then(function(z) {
-
-						console.log(z);
-
-
-						getFileSecter(z['msg']['image'], 'photo_128').then(function(url) {
-							if (url == false) url = '/images/defaultprofileimage.jpg';
-							tmpCache['s' + z['msg']['image']] = url;
-							$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('` + to + `')" id="message` + to + `">
-  <p id="userName">` + z['msg']['name'] + " " + z['msg']['surname'] + `</p>
-   <p id="textMessage" class="truncate" style="
-">` + messageRaw + `</p>
-  <img src="` + url + `" id="profilePhoto"></img>
-</div>`).prependTo('#leftPanelMessages');
-
-
-
-							// wait send msg
-
-
-
-						});
-
-
-
-					});
-				}
-
 
 
 				$('#block' + to + ' .messagesList').append(messageInfo['template']);
@@ -1368,9 +1361,15 @@ navigator.mediaDevices.getUserMedia({
 			}
 			socket.sendMessage(message, to).then(function(r) {
 				console.log(r);
+				if ($('#message' + to).length == 0) {
+
+
+
+					dialogCreate(r.msg, messageInfo['dialogsText']);
+				}
 				$('#messageID' + randomID + ' .statusSendMessage').text('check');
 				$('#messageID' + randomID).attr('oldID', randomID);
-				$('#messageID' + randomID).attr('id', r['msg']['id']);
+				$('#messageID' + randomID).attr('id', 'messageID'+r['msg']['id']);
 
 
 			});
@@ -1455,34 +1454,11 @@ navigator.mediaDevices.getUserMedia({
 				$('#myAuthcodeInput').addClass('invalid');
 			} else if (r['code'] == 6) {
 				// auth!!
+				onAuth(login, r['msg']['crt']);
 
-				$('#blockAuth').remove();
-				getDialogs()
-				$('.row').fadeIn(250);
-
-
-				$('#infoPanelLogin').text(login);
-
-				socket.fastInfo(login).then(function(info) {
-					$('#infoPanelName').text(info['msg']['name'] + ' ' + info['msg']['surname']);
-
-
-					getFileSecter(info['msg']['image'], 'photo_128').then(function(photo) { // load photo
-						if (photo == false) url = '/images/defaultprofileimage.jpg';
-						$('#infoPanelImage').attr('src', photo);
-
-					});
-
-				});
-
-
-				$('#blockAuth').fadeOut(200);
-
-				setCookie('lastLogin', r['msg']['login']);
-				setCookie('lastCrt', r['msg']['crt']);
 			} else if (r['error_code'] == 4) {
 
-				win.openWindowText('infoPopup', {
+				win.openWindowText('', {
 					title: 'Неверный код',
 					text: 'Данный код регистрации неверен.'
 				});
@@ -1510,7 +1486,9 @@ navigator.mediaDevices.getUserMedia({
 
 
 	var getObjectMessageID = function(id){
-		var objectID = id;
+
+		console.log('ID :  '+ id);
+		var objectID = $('#messageID'+id);
 					if ($("li[oldid='" + id + "']").length != 0) {
 						console.log('&c OLD ID IS DELEETE');
 						objectID = $("li[oldid='" + id + "']").attr('id');
@@ -1518,12 +1496,10 @@ navigator.mediaDevices.getUserMedia({
 
 					}
 
-					if (objectID.indexOf("messageID") == -1) objectID = '#messageID' + objectID;
-					else objectID = '#' + objectID;
-					return $(objectID);
+					return objectID;
 	};
 
-
+	this.GetObjectMessageID=getObjectMessageID;
 
 	function createBlobFromSource(b64Data, contentType, sliceSize) {
 		contentType = contentType || '';
@@ -1571,7 +1547,7 @@ navigator.mediaDevices.getUserMedia({
 
 			var percentComplete = event.loaded / event.total;
 
-		
+
 			cb(percentComplete);
 		}
 
@@ -1600,7 +1576,7 @@ navigator.mediaDevices.getUserMedia({
 					return false;
 				}
 				resolve(blob);
-				
+
 			} else {
 				console.log("error " + this.status);
 			}
@@ -1638,7 +1614,7 @@ navigator.mediaDevices.getUserMedia({
 
 			var percentComplete = event.loaded / event.total;
 
-		
+
 			cb(percentComplete);
 		}
 
@@ -1667,7 +1643,7 @@ navigator.mediaDevices.getUserMedia({
 					return false;
 				}
 				resolve(blob);
-				
+
 			} else {
 				console.log("error " + this.status);
 			}
@@ -1689,6 +1665,40 @@ navigator.mediaDevices.getUserMedia({
 
 	}
 
+	// Helpers Function //
+
+
+
+	async function dialogCreate (msg, dialogText){
+			getFileSecter(msg['image'], 'photo_128').then(function(url) {
+
+
+						tmpCache['s' + msg['image']] = url;
+						if (url == false) url = '/images/defaultprofileimage.jpg';
+
+
+
+
+
+
+
+
+
+						$(`<div class="dialog waves-effect waves-light" onclick="client.selectDialog('` + msg['from'] + `')" id="message` + msg['from'] + `">
+  <p id="userName">` + msg['name'] + " " + msg['surname'] + `</p>
+   <p id="textMessage" class="truncate" style="
+">` + dialogText + `</p>
+  <img src="` + url + `" id="profilePhoto"></img>
+</div>`).prependTo('#leftPanelMessages');
+
+
+					});
+	}
+
+this.puDialogCreate = dialogCreate;
+
+
+	// END
 	var uploadFile = function(file, isProfileImage, token, to, fileInfo, cb) {
 
 
@@ -1789,6 +1799,8 @@ navigator.mediaDevices.getUserMedia({
 		socket.contactsGet().then((r) => {
 
 			$('#prealoderContacts').hide();
+			$('#contactsEmpty').hide();
+			if(typeof r['msg'][0] =='undefined') $('#contactsEmpty').show();
 			forEach(r['msg'], function(key, value) {
 				console.log(value);
 				var date = new Date(Math.floor(value['date'] * 1000));
@@ -1800,7 +1812,7 @@ navigator.mediaDevices.getUserMedia({
 					$(` <div class="userBlock waves-effect" data-login="` + value['loginUser'] + `">
     <img src="` + tmpCache['s' + value['image']] + `" class="userImage">
     <p class="userName truncate">` + value['name'] + ' ' + value['surname'] + `</p>
-    <p class="whenWasAdded truncate">Добавлен ` + date.getFullYear() + '.' + date.getMonth() + "." + date.getDate() + `</p>
+    <p class="whenWasAdded truncate">`+value['mail']+`</p>
   </div>`).prependTo('.contentContacts');
 				} else {
 					getFileSecter(value['image'], 'photo_128').then(function(url) {
@@ -1808,7 +1820,7 @@ navigator.mediaDevices.getUserMedia({
 						$(` <div class="userBlock waves-effect" data-login="` + value['loginUser'] + `">
     <img src="` + url + `" class="userImage">
     <p class="userName truncate">` + value['name'] + ' ' + value['surname'] + `</p>
-    <p class="whenWasAdded truncate">Добавлен ` + date.getFullYear() + '.' + date.getMonth() + "." + date.getDate() + `</p>
+    <p class="whenWasAdded truncate">`+value['mail']+`</p>
   </div>`).prependTo('.contentContacts');
 
 					});
@@ -1902,9 +1914,10 @@ navigator.mediaDevices.getUserMedia({
 
 	objectID.hide();
 		socket.deleteMessage(id).then(function(r){
+			console.log(r);
 			if(r['code']!=702){
 					objectID.show();
-					win.openWindowText('infoPopup', {
+					win.openWindowText('', {
 					title: 'Срок удаления истек',
 					text: 'Вы не можете удалить сообщение, так как его срок удаления истек'
 				});
@@ -1912,7 +1925,7 @@ navigator.mediaDevices.getUserMedia({
 			else objectID.remove();
 
 		});
-		
+
 		$('div .userInfoTopPanel .back').hide();
 		isMessageSelected=false;
 		$('div .userInfoTopPanel').css('transform', 'rotateX(0deg)');
@@ -1947,7 +1960,7 @@ navigator.mediaDevices.getUserMedia({
 				switch (infoText[0]) {
 					case 'image':
 						template = `<li ondblclick='client.showMessagesParams("`+id+`");' class='` + messageClass + `' id='messageID` + id + `'><div class="cirleLoadImageMsg"></div> <img src='/images/photoPreview.png' width='320px' height='320px' class='dialogsImageSend'>` + att + `</li>`;
-						
+
 						$('#messageID' +id+ ' .cirleLoadImageMsg').circleProgress({
     value: 0.0,
     size: 60,
@@ -1981,7 +1994,7 @@ if($(this).children().text() == 'play_arrow'){
 $(this).children().text('pause');
 console.log(window.audio);
 window.audio.playAudio();
-} 
+}
 
 else{
 	window.audio.stopAudio();
@@ -2017,20 +2030,9 @@ $(this).children().text('play_arrow');
 				}
 
 
-					var objectID = id;
-					if ($("li[oldid='" + id + "']").length != 0) {
-						console.log('&c OLD ID IS DELEETE');
-						objectID = $("li[oldid='" + id + "']").attr('id');
+					var objectID = '#'+ getObjectMessageID(id).attr('id');
 
-
-					}
-
-					if (objectID.indexOf("messageID") == -1) objectID = '#messageID' + objectID;
-					else objectID = '#' + objectID;
-
-					console.log('objectID : ' + objectID);
-
-
+					console.log('ID : ' + objectID)
 
 
 				getFileSecter(infoText[1], 'photo_450', function(percent){
@@ -2043,7 +2045,7 @@ $(this).children().text('play_arrow');
 
 				}).then(function(url) {
 
-
+					console.log('ID : ' + objectID);
 					console.log('LOAD!!!');
 					tmpCache['m'+infoText[1]] = url;
 					tmpCache[infoText[1]] = url;
@@ -2054,7 +2056,7 @@ $(this).children().text('play_arrow');
 $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher .imageView').attr('src', '`+url+`');"*/
 
 
-				
+
 
 
 					if (infoText[0] == 'image') {
@@ -2062,7 +2064,9 @@ $('.photoWatcher .closeIcon').css('transform', 'rotate(0deg)'); $('.photoWatcher
 						$( objectID + ' .cirleLoadImageMsg').hide();
 
 
-
+						console.log('Image : ');
+						objectID = '#' + getObjectMessageID(id).attr('id');
+						console.log(objectID)
 						$(objectID + ' img').attr('src', url);
 						$(objectID + ' img').attr('width', undefined);
 						$(objectID + ' img').attr('height', undefined);
@@ -2122,7 +2126,7 @@ $('#mask').on('click', function(){
 
 		} else $('.popUpDialog').hide();
 
- 
+
   $('#mask').css('z-index', '')
   $('#mask').hide();
    $('.btn-floating').removeClass('scale-in');
@@ -2140,8 +2144,11 @@ $('#mask').on('click', function(){
     $('.popUpDialogInfo').hide();
 
 
-    
+
 });
+
+// utils function
+
 
 	var generateRandomBackground = function() {
 		return 'rgb(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ', ' + Math.round(Math.random() * 255) + ')';
@@ -2160,7 +2167,7 @@ $('#mask').on('click', function(){
 
 	// admin function
 
-	
+
 	// end
 
 	this.openPhotoShower = function(id) {
@@ -2303,9 +2310,75 @@ $('#mask').on('click', function(){
 
 
 
-	this.seePhoto = function(url) {
 
-	};
+	document.addEventListener('click', function(e){
+		var obj = $(e.toElement);
+		if(obj.attr('id')=='actionMenuMessages' || obj.parent().attr('id')=='actionMenuMessages') return false;
+		$('#actionMenuMessages').hide();
+	});
+
+	 document.addEventListener( "contextmenu", function(e) {
+	 	  var obj = $(e.toElement);
+   try{
+   	var id = parseInt(obj.attr('id').replace('messageID', ''));
+   }
+   catch(e){
+
+   }
+
+
+
+	 	$('#actionMenuMessages').hide();
+	 	$('#actionMenuMessages').css({width:'130px', height:'140px'});
+
+
+
+
+
+   if(isNaN(id)){
+
+   	$('#actionMenuMessages').hide();
+   	return false;
+   }
+   $('#actionMenuMessages').fadeIn(200);
+   	 	$('#actionMenuMessages').css({width:'210px', height:'220px'});
+
+   $('#actionMenuMessages').css({left:e.clientX, top:e.clientY});
+   console.log(e);
+
+   e.preventDefault();
+
+  });
+
+
+ function onAuth (login, crt){
+	$('.bottomGrayColor').hide();
+				$('#blockAuth').remove();
+				getDialogs()
+				$('.row').fadeIn(250);
+
+
+				$('#infoPanelLogin').text(login);
+
+				socket.fastInfo(login).then(function(info) {
+					$('#infoPanelName').text(info['msg']['name'] + ' ' + info['msg']['surname']);
+
+
+					getFileSecter(info['msg']['image'], 'photo_128').then(function(photo) { // load photo
+						if (photo == false) url = '/images/defaultprofileimage.jpg';
+						$('#infoPanelImage').attr('src', photo);
+
+					});
+
+				});
+
+
+				$('#blockAuth').fadeOut(200);
+
+				setCookie('lastLogin', login);
+				setCookie('lastCrt', crt);
+}
+
 
 }
 

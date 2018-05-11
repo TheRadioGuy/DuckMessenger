@@ -1,5 +1,19 @@
+const p = require('./popular.js');
 
-const withoutCompress = false; // Disable photo compress?
+var connection, es;
+var setConnection = function(c){
+connection=c;
+p.setConnection(connection);
+};
+var setEscape = function(e){
+es = e;
+};
+module.exports.setConnection=setConnection;
+module.exports.setEscape=setEscape;
+
+
+
+const withoutCompress = require(__dirname+'/../config.js').withoutCompress; // Disable photo compress?
 
 
 if(!withoutCompress) var sharp = require('sharp');
@@ -60,6 +74,7 @@ low(adapter)
             Attachment['id'] = (shortid.generate() + shortid.generate()).replace('_', '-');
 
             Attachment['type'] = whatTheType(Attachment['mime']);
+            
 
 
            

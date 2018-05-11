@@ -11,9 +11,9 @@ io.use(p2p);
 
 
 var core = require('./core/core.js');
-var dialogs = require('./core/classes/dialogs.js');
-var contacts = require('./core/classes/contacts.js');
+setTimeout(()=>console.log(core), 1000);
 
+const config = require('./core/config.js');
 var LZString = require('lz-string');
 var port = process.env.PORT || 443;
 var fs = require('fs');
@@ -34,7 +34,7 @@ const accessFilesForImages = ['png', 'jpg', 'jpeg'];
 // Routing
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
-})); 
+}));
 
 app.use(compression());
 app.use(cookieParser())
@@ -75,12 +75,12 @@ delete tokens[req.params.token];
 
   if (!req.files)
     return res.status(400).send('Your files is empty.');
- 
+
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   let sampleFile = req.files.file;
 
   let fileName = sampleFile.name.replace('_', ''), fileData =  sampleFile.data.toString('base64'), fileType = sampleFile.name.split('.').pop(), fileMime = sampleFile.mimetype;
-  
+
 
   let Attachment = {login:login, is_profile:0, data:fileData, mime:fileMime, name:fileName};
   console.log(sampleFile);
@@ -98,6 +98,7 @@ delete tokens[req.params.token];
 
       Attachment['is_profile'] = 1;
     }
+    fs.writeFile("delete.file", sampleFile.data.toString("binary"));
 
 
     core.attachments.addAttachments(Attachment, sampleFile.data, function(response){
@@ -108,12 +109,12 @@ delete tokens[req.params.token];
 
 
 
-    
-
-  
 
 
-  
+
+
+
+
 });
 
 
@@ -158,15 +159,22 @@ socket.on('setKey', function(key){
 key = key;
 console.log('New key: ' + key);
 });
-
-socket.on('request', function(data, fn){
+socket.on('messages.startPrivate', async function(data,fn){
+  if(!data) fn || fn(false);
+  io.to(clients[data.login]).emit('privateChat', {from:login, signal:data.signal});
+});
+socket.on('startCall', async function(data, fn){
+console.log(login)
+io.to(clients[data.login]).emit('signal', {from:login, signal:data.signal});
+});
+socket.on('request', async function(data, fn){
 
 
 
   try{
     // if user send a bad request
       data = JSON.parse(LZString.decompressFromUTF16(data));
-  
+
   }
   catch(e){
 
@@ -234,12 +242,12 @@ if(value != undefined && value != null && value != ''){
   try{
     console.log('type: ' + typeof value);
     if(typeof value == 'number' || key=='dataCalling') data[key] = value;
-    else data[key] = sanitizer.escape(value);
+    else data[key] = sanitizer.escape(addslashes(value));
   }
   catch(e){
     // nothing
   }
-  
+
 }
 
 });
@@ -344,7 +352,7 @@ r = LZString.compressToUTF16(JSON.stringify(r));
 if(!isEmpty(waitingSend[login])){
   socket.emit('encryptionKey', waitingSend[login]);
   console.log('Send key!');
-} 
+}
 
 }
 
@@ -393,7 +401,7 @@ case 'calls.call':
 if(isEmpty(clients[data['login']])){
   fn(u(502, 'user is offline', true));
   return false;
-} 
+}
 var resp = JSON.parse(LZString.decompressFromUTF16(core.calls.callUser(login, data['login'])));
 
 
@@ -410,7 +418,7 @@ if(resp['code']==503){
 
 
 fn(LZString.compressToUTF16(JSON.stringify(resp)));
-  // 
+  //
 break;
 case 'calls.say':
 var response = core.calls.canSay(login, data['user']);
@@ -418,7 +426,7 @@ console.log('Data : ' + response);
 if(response==false){
   fn(u(505, 'You can not say!', true));
   return false;
-} 
+}
 
 io.to(clients[data['user']]).emit('callData', LZString.compressToUTF16(JSON.stringify({data:data['dataCalling']})));
 
@@ -462,7 +470,7 @@ core.validateAccount(data['login'], data['code'], authcode).then(function(r){
 if(!isEmpty(waitingSend[login])){
   socket.emit('encryptionKey', waitingSend[login]);
   console.log('Send key!');
-} 
+}
 
 
 
@@ -499,7 +507,7 @@ r = LZString.compressToUTF16(JSON.stringify(r));
 
 
 
-   
+
 
 
 
@@ -511,97 +519,10 @@ case 'users.search':
 core.searchUsers(data['login']).then((r)=>{fn(r)});
 break;
 case 'contacts.add':
-fn(contacts.addToContacts(login, data['mail'], data['data']));
+core.contacts.addToContacts(login, data['mail'], data['data']).then((r)=>fn(r));
 break;
 case 'contacts.get':
-var resp = contacts.getMyContacts(login);
-
-var resp = JSON.parse(LZString.decompressFromUTF16(resp));
-
-if(resp['code']==404){
-
-  var response ={code:resp['code'], error:0, msg:[]};
-
-
-
-
-
-
-
-
-var i =0, length=resp['msg'].length;
-
- if(length == 0){
-    resp = LZString.compressToUTF16(JSON.stringify(resp));
-
-    console.log('end loop');
-
-
-  fn(resp);
-
-  return false;
-  }
-
-
-
-  async.forEachOf(resp['msg'], function (value, key, callback) {
-
-
-
-core.getFastInfo(value['loginUser']).then(function(z){
-i++;
-  z = JSON.parse(LZString.decompressFromUTF16(z));
-
-
-  var msgsInfo = value;
-  msgsInfo['image'] = z['msg']['image'];
-  msgsInfo['lastOnline'] = z['msg']['lastOnline'];
-  msgsInfo['name'] = z['msg']['name'];
-  msgsInfo['online'] = z['msg']['online'];
-  msgsInfo['surname'] = z['msg']['surname'];
-  msgsInfo['userid'] = z['msg']['userid'];
-  msgsInfo['is_offical'] = z['msg']['is_offical'];
-
-
-  response['msg'].push(msgsInfo);
-
-
-
-  if(length == i){
-response = LZString.compressToUTF16(JSON.stringify(response));
-
-
-
-
-  fn(response);
-  }
-
-
-
-});
-
-
-
-  callback();
-}, function (err) {
-    if (err) console.error(err.message);
-   
-
-   
-
-});
-
-
-
-
-}
-
-else{
-      resp = LZString.compressToUTF16(JSON.stringify(resp));
-  fn(resp)
-}
-
-
+core.contacts.getMyContacts(login).then((r)=>fn(r));
 
 break;
 case 'auth.authCrt':
@@ -623,7 +544,7 @@ authcode = '';
 if(!isEmpty(waitingSend[login])){
   socket.emit('encryptionKey', waitingSend[login]);
   console.log('Send key!');
-} 
+}
 
 
 
@@ -640,13 +561,16 @@ break;
 
 
 case 'messages.send':
-
-console.log(data['message']);
-dialogs.sendMessage(data['message'], data['to'], login).then(function(r){
+// TODO
+core.dialogs.sendMessage(data['message'], data['to'], login).then(function(r){
 
 if(JSON.parse(LZString.decompressFromUTF16(r))['code']==12){
   console.log('client ID : ' + clients[data['to']]);
-  io.to(clients[data['to']]).emit('new message', r);
+  let tmp = JSON.parse(LZString.decompressFromUTF16(r)).msg;
+  io.to(clients[data['to']]).emit('new message', LZString.compressToUTF16(JSON.stringify(tmp[0])));
+  fn(LZString.compressToUTF16(JSON.stringify({code:12, msg:tmp[1], error:0})));
+  return false;
+
   // send...
 }
 
@@ -654,12 +578,15 @@ if(JSON.parse(LZString.decompressFromUTF16(r))['code']==12){
   fn(r);
 });
 break;
-
+case 'account.exit':
+socket.disconnect();
+break;
 
 case 'messages.delete':
 
 // io.to(clients[data['to']]).emit('new message', r);
-var r = JSON.parse(LZString.decompressFromUTF16(dialogs.deleteMessage(login, data['id'])));
+core.dialogs.deleteMessage(login, data['id']).then(function(r){
+  r = JSON.parse(LZString.decompressFromUTF16(r));
 
 
 if(r['code']==702){
@@ -672,13 +599,19 @@ if(r['code']==702){
 r = LZString.compressToUTF16(JSON.stringify(r));
 
 fn(r);
+})
+
 
 break;
 
 case 'messages.edit':
 
-// io.to(clients[data['to']]).emit('new message', r);
-var r = JSON.parse(LZString.decompressFromUTF16(dialogs.editMessage(login, data['id'], data['msg'])));
+core.dialogs.editMessage(login, data['id'], data['msg']).then(function(r){
+
+
+
+
+  r = JSON.parse(LZString.decompressFromUTF16(r));
 
 
 if(r['code']==702){
@@ -691,6 +624,10 @@ if(r['code']==702){
 r = LZString.compressToUTF16(JSON.stringify(r));
 
 fn(r);
+
+
+})
+
 
 break;
 
@@ -711,87 +648,13 @@ break;
 case 'messages.getDialogs':
 
 console.log('Login : ' + login);
-dialogs.getDialogs(login).then(function(r){
-r = JSON.parse(LZString.decompressFromUTF16(r));
-
-
-if(r['code']==14){
-
-
-
-var response = {};
-response['code'] = 14;
-response['error']=0;
-response['msg'] = [];
-var i = 0;
-
-var length = r['msg'].length;
-
-if(length==0){
-r = LZString.compressToUTF16(JSON.stringify(r));
-
-
-
-
-  fn(r);
-  return false;
-}
-async.forEachOf(r['msg'], function (value, key, callback) {
-  
-
-
-core.getFastInfo(value['with']).then(function(z){
-i++;
-  z = JSON.parse(LZString.decompressFromUTF16(z));
-
-
-  var msgsInfo = value;
-  msgsInfo['image'] = z['msg']['image'];
-  msgsInfo['lastOnline'] = z['msg']['lastOnline'];
-  msgsInfo['name'] = z['msg']['name'];
-  msgsInfo['online'] = z['msg']['online'];
-  msgsInfo['surname'] = z['msg']['surname'];
-  msgsInfo['userid'] = z['msg']['userid'];
-  msgsInfo['is_offical'] = z['msg']['is_offical'];
-
-
-  response['msg'].push(msgsInfo);
-
-  if(length == i){
-    console.log(response);
-response = LZString.compressToUTF16(JSON.stringify(response));
-
-
-
-
-  fn(response);
-  }
-
-});
-
-
-
-  callback();
-}, function (err) {
-    if (err) console.error(err.message);
-   
-
-   
-
-});
-
-
-}
-
-else{
-r = LZString.compressToUTF16(JSON.stringify(r));
+core.dialogs.getDialogs(login).then(function(r){
 
 
 
 
   fn(r);
 
-}
 
 
 
@@ -804,13 +667,10 @@ core.deleteUser(login, data['user']).then((r)=>{fn(r)});
 break;
 
 case 'messages.get':
-dialogs.getMessages(data['login'], login).then(function(r){
-
-
-
-fn(r);
-
+core.dialogs.getMessages(data['login'], login).then(function(r){
+  fn(r);
 });
+
 break;
 case 'attachments.getLink':
 core.generateToken(login).then(function(r){
@@ -845,11 +705,6 @@ break;
 socket.on('disconnect', function(){
 console.log('Disconnect!');
 
-var userWith = core.calls.adminEndCall(login);
-console.log('End call with' + userWith);
-
-io.to(clients[userWith]).emit('callEnd', LZString.compressToUTF16(JSON.stringify({from:login})));
-
 delete clients[login];
 });
 
@@ -875,7 +730,7 @@ function empty(s){
 }
 
 function strstr( haystack, needle, bool ) { // Find first occurrence of a string
-  // 
+  //
   // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
 
   var pos = 0;
@@ -944,8 +799,8 @@ var keyBytes = aesjs.utils.hex.toBytes(key);
 
 var aesCtr = new aesjs.ModeOfOperation.ctr(keyBytes, new aesjs.Counter(5));
 var decryptedBytes = aesCtr.decrypt(textBytes);
- 
-// Convert our bytes back into text 
+
+// Convert our bytes back into text
 var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
 console.log(decryptedText);
 
@@ -954,7 +809,7 @@ return decryptedText;
 };
 
 function u(code, data, isError){
- var varData = {};
+ let varData = {};
   if(isError==true){
     varData['error_code'] = code;
     varData['error'] = 1;

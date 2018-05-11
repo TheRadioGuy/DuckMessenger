@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DuckMessenger</title>
+
+
+
+  <script src="/js/jquery.min.js"></script>
+  <script src="js/circle-progress.min.js"></script>
+  <script language="javascript" src="js/lz-string.js"></script>
+   <script language="javascript" src="js/async.js"></script>
+<!--  <script src="/js/recorder.js"></script> -->
+<script type="text/javascript" src="/js/aes.js"></script>
+<script type="text/javascript" src="/js/simplepeer.min.js"></script>
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
+
+  <script src="/socket.io/socket.io.js"></script>
+  
+    <script src="js/Server.js"></script>
+  	<script src="js/Client.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<style type="text/css">
+	
+#leftBlock {
+    height: 100vh;
+    background: #f7f7f7;
+    width: 20vw;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    float: left;
+}
+#rightBlock{
+       position: absolute;
+    height: 100vh;
+    background: red;
+    width: 80%;
+    display: inline-block;
+    float: right;
+    right: 0px;
+}
+</style>
+</head>
+<body>
+<div id="leftBlock"></div>
+<div id="rightBlock"></div>
+<script type="text/javascript">
+	const client = new Client(io());
+</script>
+</body>
+</html>
